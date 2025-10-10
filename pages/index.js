@@ -11,6 +11,7 @@ export default function Home() {
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
+  const [showArrow, setShowArrow] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Home() {
     };
 
     const handleScroll = () => {
-      const sections = ['home', 'about', 'projects', 'contact'];
+      const sections = ['home', 'about', 'projects', 'blog', 'contact'];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -35,16 +36,26 @@ export default function Home() {
       });
 
       setActiveSection(currentSection || '');
+
+      // Show arrow on all sections except home
+      setShowArrow(currentSection !== 'home');
     };
 
     const links = document.querySelectorAll(`.${styles.menuLink}`);
     links.forEach(link => link.addEventListener("click", smoothScroll));
 
+    const container = document.querySelector(`.${styles.container}`);
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Call once to set initial active section
 
     return () => {
       links.forEach(link => link.removeEventListener("click", smoothScroll));
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -140,17 +151,26 @@ export default function Home() {
           <span></span>
           <span></span>
         </div>
-        <ul>
-          <li><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`}>Home</a></li>
-          <li><a href="#about" className={`${styles.menuLink} ${activeSection === 'about' ? styles.active : ''}`}>About</a></li>
-          <li><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`}>Projects</a></li>
-          <li><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`}>Contact</a></li>
+        <ul style={{padding: 0}}>
+          <li style={{padding: 0}}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Home</a></li>
+          <li style={{padding: 0}}><a href="#about" className={`${styles.menuLink} ${activeSection === 'about' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>About</a></li>
+          <li style={{padding: 0}}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Projects</a></li>
+          <li style={{padding: 0}}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Writing</a></li>
+          <li style={{padding: 0}}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Contact</a></li>
         </ul>
       </nav>
 
-      <a href="#home" className={styles.topArrow}>
+      <button
+        onClick={() => {
+          const homeSection = document.getElementById('home');
+          if (homeSection) {
+            homeSection.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${activeSection === 'about' || activeSection === 'blog' ? styles.lightBackground : ''}`}
+      >
         <i className="fas fa-arrow-up"></i>
-      </a>
+      </button>
 
       <section id="home" className={`${styles.section} ${styles.home}`}>
         <h1 className={styles.sectionTitle}>Parker Smith</h1>
@@ -229,7 +249,26 @@ export default function Home() {
           </a>
         </div>
       </section>
-      <section id="contact" className={`${styles.section} ${styles.contact}`}>
+      <section id="blog" className={`${styles.section} ${styles.about}`}>
+        <h2 className={styles.sectionSubtitle}>Writing</h2>
+        <div className={styles.projectGrid}>
+          <Link href="/learning-at-the-edge" className={styles.projectLink}>
+            <div className={styles.projectCard}>
+              <div className={styles.projectFront}>
+                <i className="fas fa-lightbulb"></i>
+                <h3>Learning at the Edge of Knowledge</h3>
+              </div>
+              <div className={styles.projectBack}>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px'}}>
+                  <p style={{fontSize: '2rem', margin: 0}}>October</p>
+                  <p style={{fontSize: '2rem', margin: 0}}>2025</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+      <section id="contact" className={`${styles.section} ${styles.home}`}>
         <h2 className={styles.sectionSubtitle}>Contact Me</h2>
         <p>elparkowebsite@proton.me</p>
         <div className={styles.socialLinks}>
@@ -243,7 +282,7 @@ export default function Home() {
       </section>
 
       <footer className={styles.footer}>
-        <p>&copy; 2024 Parker Smith</p>
+        <p>&copy; 2025 Parker Smith</p>
       </footer>
     </div>
   );

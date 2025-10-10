@@ -1,0 +1,136 @@
+/* Top Arrow Styles */
+.topArrow {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #000000;
+  color: #f5f5dc;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  text-decoration: none;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.topArrow.showArrow {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.topArrow:hover {
+  background-color: #f5f5dc;
+  color: #000000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.topArrow:hover i {
+  color: #000000;
+}
+
+/* Menu Styles */
+.menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.menuToggle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #f5f5dc;
+  transition: all 0.3s ease;
+}
+
+.menuToggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: #f5f5dc;
+  margin: 2px 0;
+  transition: all 0.3s ease;
+}
+
+.menu ul {
+  list-style-type: none;
+  padding: 10px 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.menu:hover ul {
+  max-height: 300px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.menu li {
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+
+.menu .menuLink {
+  color: #f5f5dc;
+  text-decoration: none;
+  font-size: 1.2rem;
+  display: block;
+  padding: 15px 30px;
+}
+
+.menu li:hover {
+  background-color: rgba(245, 245, 220, 0.8);
+}
+
+.menu .menuLink:hover {
+  color: #000000;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #000000;
+  color: #f5f5dc;
+  text-align: center;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.footer p {
+  margin: 0;
+}
+
+/* Section Title */
+.sectionTitle {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+}

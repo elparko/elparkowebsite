@@ -19,8 +19,8 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: var(--light-beige);
+  background-color: var(--light-beige);
+  color: var(--black);
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -30,11 +30,45 @@
   font-size: 24px;
   text-decoration: none;
   z-index: 1000;
-  transition: background-color 0.3s ease;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.topArrow.showArrow {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .topArrow:hover {
   background-color: var(--black);
+  color: var(--light-beige);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.topArrow:hover i {
+  color: var(--light-beige);
+}
+
+/* Light background sections - dark arrow */
+.topArrow.lightBackground {
+  background-color: var(--black);
+  color: var(--light-beige);
+}
+
+.topArrow.lightBackground:hover {
+  background-color: var(--light-beige) !important;
+  color: var(--black) !important;
+}
+
+.topArrow.lightBackground:hover i {
+  color: var(--black) !important;
 }
 
 .nav {
@@ -113,10 +147,15 @@
   gap: 2rem;
   width: 100%;
   max-width: 1000px;
+  justify-items: center;
+}
+
+.projectGrid > * {
+  width: 100%;
+  max-width: 300px;
 }
 
 .projectCard {
-  background-color: rgba(245, 245, 220, 0.1);
   border-radius: 10px;
   height: 200px;
   perspective: 1000px;
@@ -135,6 +174,7 @@
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  border-radius: 10px;
 }
 
 .projectFront {
@@ -163,6 +203,22 @@
 
 .projectFront h3 {
   font-size: 1.5rem;
+  color: var(--light-beige);
+}
+
+/* Black cards for light sections */
+.about .projectFront {
+  background-color: var(--black);
+}
+
+.about .projectFront i,
+.about .projectFront .material-icons,
+.about .projectFront h3 {
+  color: var(--light-beige);
+}
+
+.about .projectBack {
+  background-color: var(--black);
   color: var(--light-beige);
 }
 
@@ -271,7 +327,8 @@
 .projectLink {
   text-decoration: none;
   color: inherit;
-  display: contents;
+  width: 100%;
+  max-width: 300px;
 }
 
 .largeIcon {
@@ -484,7 +541,7 @@
 }
 
 .socialLink {
-  color: var(--black);
+  color: var(--light-beige);
   text-decoration: none;
   transition: color 0.3s ease;
 }
