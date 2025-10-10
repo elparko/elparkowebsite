@@ -2,8 +2,14 @@
   "today": 17,
   "week": 3417,
   "total": 3425,
-  "previousToday": 0,
-  "previousWeek": 0,
-  "previousTotal": 0,
-  "lastUpdated": "2025-10-09T22:19:25.121520"
+  "timeToday": 0,
+  "timeWeek": 0,
+  "timeTotal": 0,
+  "previousToday": 17,
+  "previousWeek": 3417,
+  "previousTotal": 3425,
+  "previousTimeToday": 0,
+  "previousTimeWeek": 0,
+  "previousTimeTotal": 0,
+  "lastUpdated": "2025-10-09T22:47:32.971726"
 }
