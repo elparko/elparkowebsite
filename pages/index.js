@@ -6,6 +6,11 @@ import Link from 'next/link';
 export default function Home() {
   const [activeSection, setActiveSection] = useState('');
   const menuToggleRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [currentTime, setCurrentTime] = useState('0:00');
+  const [duration, setDuration] = useState('0:00');
   const [showArrow, setShowArrow] = useState(false);
   const [ankiStats, setAnkiStats] = useState(null);
   const [displayToday, setDisplayToday] = useState(0);
@@ -14,6 +19,7 @@ export default function Home() {
   const [displayTimeToday, setDisplayTimeToday] = useState(0);
   const [displayTimeWeek, setDisplayTimeWeek] = useState(0);
   const [displayTimeTotal, setDisplayTimeTotal] = useState(0);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     const smoothScroll = (e) => {
