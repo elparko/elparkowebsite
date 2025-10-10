@@ -1,0 +1,97 @@
+// ARCHIVED AUDIO PLAYER CODE
+// This was in the About Me section of index.js
+// Can be restored later if needed
+
+// State variables:
+const [isPlaying, setIsPlaying] = useState(false);
+const [progress, setProgress] = useState(0);
+const [volume, setVolume] = useState(1);
+const [currentTime, setCurrentTime] = useState('0:00');
+const [duration, setDuration] = useState('0:00');
+const audioRef = useRef(null);
+
+// useEffect hook:
+useEffect(() => {
+  audioRef.current = new Audio('/resume.wav');
+  const audio = audioRef.current;
+
+  const updateTime = () => {
+    setCurrentTime(formatTime(audio.currentTime));
+    setProgress((audio.currentTime / audio.duration) * 100);
+  };
+
+  const loadedMetadata = () => {
+    setDuration(formatTime(audio.duration));
+  };
+
+  audio.addEventListener('timeupdate', updateTime);
+  audio.addEventListener('loadedmetadata', loadedMetadata);
+  audio.addEventListener('ended', () => setIsPlaying(false));
+
+  return () => {
+    audio.removeEventListener('timeupdate', updateTime);
+    audio.removeEventListener('loadedmetadata', loadedMetadata);
+    audio.removeEventListener('ended', () => setIsPlaying(false));
+  };
+}, []);
+
+// Helper functions:
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
+
+const togglePlay = () => {
+  if (isPlaying) {
+    audioRef.current.pause();
+  } else {
+    audioRef.current.play();
+  }
+  setIsPlaying(!isPlaying);
+};
+
+const handleProgressChange = (e) => {
+  const newTime = (e.target.value / 100) * audioRef.current.duration;
+  audioRef.current.currentTime = newTime;
+  setProgress(e.target.value);
+};
+
+const adjustVolume = (e) => {
+  const newVolume = e.target.value / 100;
+  audioRef.current.volume = newVolume;
+  setVolume(newVolume);
+};
+
+// JSX in About section:
+<div className={styles.audioContainer}>
+  <div className={styles.audioControls}>
+    <div className={styles.topControls}>
+      <button onClick={togglePlay} className={styles.playPauseButton}>
+        {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+      </button>
+      <div className={styles.audioTimer}>
+        {currentTime} / {duration}
+      </div>
+      <div className={styles.volumeControl}>
+        <i className="fas fa-volume-up"></i>
+        <input
+          type="range"
+          className={styles.volumeSlider}
+          value={volume * 100}
+          onChange={adjustVolume}
+          min="0"
+          max="100"
+        />
+      </div>
+    </div>
+  </div>
+  <input
+    type="range"
+    className={styles.progressBar}
+    value={progress}
+    onChange={handleProgressChange}
+    min="0"
+    max="100"
+  />
+</div>

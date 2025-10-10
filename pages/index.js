@@ -6,13 +6,14 @@ import Link from 'next/link';
 export default function Home() {
   const [activeSection, setActiveSection] = useState('');
   const menuToggleRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [currentTime, setCurrentTime] = useState('0:00');
-  const [duration, setDuration] = useState('0:00');
   const [showArrow, setShowArrow] = useState(false);
-  const audioRef = useRef(null);
+  const [ankiStats, setAnkiStats] = useState(null);
+  const [displayToday, setDisplayToday] = useState(0);
+  const [displayWeek, setDisplayWeek] = useState(0);
+  const [displayTotal, setDisplayTotal] = useState(0);
+  const [displayTimeToday, setDisplayTimeToday] = useState(0);
+  const [displayTimeWeek, setDisplayTimeWeek] = useState(0);
+  const [displayTimeTotal, setDisplayTimeTotal] = useState(0);
 
   useEffect(() => {
     const smoothScroll = (e) => {
@@ -87,55 +88,52 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    audioRef.current = new Audio('/resume.wav');
-    const audio = audioRef.current;
-
-    const updateTime = () => {
-      setCurrentTime(formatTime(audio.currentTime));
-      setProgress((audio.currentTime / audio.duration) * 100);
-    };
-
-    const loadedMetadata = () => {
-      setDuration(formatTime(audio.duration));
-    };
-
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', loadedMetadata);
-    audio.addEventListener('ended', () => setIsPlaying(false));
-
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', loadedMetadata);
-      audio.removeEventListener('ended', () => setIsPlaying(false));
-    };
+    // Fetch Anki stats
+    fetch('/anki-stats.json')
+      .then(res => res.json())
+      .then(data => setAnkiStats(data))
+      .catch(err => console.error('Error loading Anki stats:', err));
   }, []);
 
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
+  // Animate numbers from previous to current values
+  useEffect(() => {
+    if (!ankiStats) return;
 
-  const togglePlay = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
+    const duration = 5000; // 5 seconds
+    const frameRate = 60; // 60 FPS
+    const totalFrames = (duration / 1000) * frameRate;
 
-  const handleProgressChange = (e) => {
-    const newTime = (e.target.value / 100) * audioRef.current.duration;
-    audioRef.current.currentTime = newTime;
-    setProgress(e.target.value);
-  };
+    const animateValue = (start, end, setter) => {
+      const increment = (end - start) / totalFrames;
+      let current = start;
+      let frame = 0;
 
-  const adjustVolume = (e) => {
-    const newVolume = e.target.value / 100;
-    audioRef.current.volume = newVolume;
-    setVolume(newVolume);
-  };
+      const timer = setInterval(() => {
+        frame++;
+        current += increment;
+
+        if (frame >= totalFrames) {
+          setter(end);
+          clearInterval(timer);
+        } else {
+          setter(Math.round(current));
+        }
+      }, 1000 / frameRate);
+
+      return timer;
+    };
+
+    const timers = [
+      animateValue(ankiStats.previousToday, ankiStats.today, setDisplayToday),
+      animateValue(ankiStats.previousWeek, ankiStats.week, setDisplayWeek),
+      animateValue(ankiStats.previousTotal, ankiStats.total, setDisplayTotal),
+      animateValue(ankiStats.previousTimeToday || 0, ankiStats.timeToday || 0, setDisplayTimeToday),
+      animateValue(ankiStats.previousTimeWeek || 0, ankiStats.timeWeek || 0, setDisplayTimeWeek),
+      animateValue(ankiStats.previousTimeTotal || 0, ankiStats.timeTotal || 0, setDisplayTimeTotal)
+    ];
+
+    return () => timers.forEach(timer => clearInterval(timer));
+  }, [ankiStats]);
 
   return (
     <div className={styles.container}>
@@ -177,38 +175,46 @@ export default function Home() {
         <p>another resumé</p>
       </section>
       <section id="about" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionTitle}>About Me</h2>
-        <div className={styles.audioContainer}>
-          <div className={styles.audioControls}>
-            <div className={styles.topControls}>
-              <button onClick={togglePlay} className={styles.playPauseButton}>
-                {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
-              </button>
-              <div className={styles.audioTimer}>
-                {currentTime} / {duration}
-              </div>
-              <div className={styles.volumeControl}>
-                <i className="fas fa-volume-up"></i>
-                <input 
-                  type="range" 
-                  className={styles.volumeSlider} 
-                  value={volume * 100} 
-                  onChange={adjustVolume}
-                  min="0" 
-                  max="100" 
-                />
-              </div>
+        <h2 className={styles.sectionTitle}>Anki Stats</h2>
+        {ankiStats ? (
+          <div style={{display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap'}}>
+            <div style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              padding: '30px 40px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              minWidth: '180px'
+            }}>
+              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>Today</h3>
+              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayToday.toLocaleString()}</p>
+              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeToday.toFixed(1)} min</p>
+            </div>
+            <div style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              padding: '30px 40px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              minWidth: '180px'
+            }}>
+              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>This Week</h3>
+              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayWeek.toLocaleString()}</p>
+              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeWeek.toFixed(1)} min</p>
+            </div>
+            <div style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              padding: '30px 40px',
+              borderRadius: '10px',
+              textAlign: 'center',
+              minWidth: '180px'
+            }}>
+              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>Total</h3>
+              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayTotal.toLocaleString()}</p>
+              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeTotal.toFixed(1)} hrs</p>
             </div>
           </div>
-          <input 
-            type="range" 
-            className={styles.progressBar}
-            value={progress}
-            onChange={handleProgressChange}
-            min="0" 
-            max="100" 
-          />
-        </div>
+        ) : (
+          <p>Loading stats...</p>
+        )}
       </section>
 
       <section id="projects" className={`${styles.section} ${styles.projects}`}>
