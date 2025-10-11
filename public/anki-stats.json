@@ -1,15 +1,11 @@
 {
   "today": 1055,
-  "week": 24703,
   "total": 24803,
   "timeToday": 197.4,
-  "timeWeek": 4453.1,
   "timeTotal": 74.4,
-  "previousToday": 110,
-  "previousWeek": 24087,
-  "previousTotal": 24200,
-  "previousTimeToday": 15.5,
-  "previousTimeWeek": 4327.2,
-  "previousTimeTotal": 72.2,
-  "lastUpdated": "2025-10-10T19:51:03.028633"
+  "previousToday": 1055,
+  "previousTotal": 24803,
+  "previousTimeToday": 197.4,
+  "previousTimeTotal": 74.4,
+  "lastUpdated": "2025-10-10T20:01:08.127247"
 }
