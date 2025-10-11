@@ -14,10 +14,8 @@ export default function Home() {
   const [showArrow, setShowArrow] = useState(false);
   const [ankiStats, setAnkiStats] = useState(null);
   const [displayToday, setDisplayToday] = useState(0);
-  const [displayWeek, setDisplayWeek] = useState(0);
   const [displayTotal, setDisplayTotal] = useState(0);
   const [displayTimeToday, setDisplayTimeToday] = useState(0);
-  const [displayTimeWeek, setDisplayTimeWeek] = useState(0);
   const [displayTimeTotal, setDisplayTimeTotal] = useState(0);
   const audioRef = useRef(null);
 
@@ -131,10 +129,8 @@ export default function Home() {
 
     const timers = [
       animateValue(ankiStats.previousToday, ankiStats.today, setDisplayToday),
-      animateValue(ankiStats.previousWeek, ankiStats.week, setDisplayWeek),
       animateValue(ankiStats.previousTotal, ankiStats.total, setDisplayTotal),
       animateValue(ankiStats.previousTimeToday || 0, ankiStats.timeToday || 0, setDisplayTimeToday),
-      animateValue(ankiStats.previousTimeWeek || 0, ankiStats.timeWeek || 0, setDisplayTimeWeek),
       animateValue(ankiStats.previousTimeTotal || 0, ankiStats.timeTotal || 0, setDisplayTimeTotal)
     ];
 
@@ -194,17 +190,6 @@ export default function Home() {
               <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>Today</h3>
               <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayToday.toLocaleString()}</p>
               <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeToday.toFixed(1)} min</p>
-            </div>
-            <div style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.05)',
-              padding: '30px 40px',
-              borderRadius: '10px',
-              textAlign: 'center',
-              minWidth: '180px'
-            }}>
-              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>This Week</h3>
-              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayWeek.toLocaleString()}</p>
-              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeWeek.toFixed(1)} min</p>
             </div>
             <div style={{
               backgroundColor: 'rgba(0, 0, 0, 0.05)',
