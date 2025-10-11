@@ -93,6 +93,9 @@ export default function Stats() {
             }}>
               <h2 style={{fontSize: '1.2rem', marginBottom: '10px', fontWeight: 'normal'}}>Cards Reviewed Today</h2>
               <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{stats.today}</p>
+              <p style={{fontSize: '0.9rem', color: '#666', marginTop: '10px'}}>
+                Time: {stats.timeToday} min
+              </p>
             </div>
 
             <div style={{
@@ -101,8 +104,11 @@ export default function Stats() {
               borderRadius: '10px',
               textAlign: 'center'
             }}>
-              <h2 style={{fontSize: '1.2rem', marginBottom: '10px', fontWeight: 'normal'}}>Cards Reviewed This Week</h2>
-              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{stats.week}</p>
+              <h2 style={{fontSize: '1.2rem', marginBottom: '10px', fontWeight: 'normal'}}>Total Cards Reviewed</h2>
+              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{stats.total}</p>
+              <p style={{fontSize: '0.9rem', color: '#666', marginTop: '10px'}}>
+                Total time: {stats.timeTotal} hrs
+              </p>
             </div>
 
             <p style={{textAlign: 'center', marginTop: '30px', fontSize: '0.9rem', color: '#666'}}>
