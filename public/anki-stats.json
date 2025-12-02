@@ -1,11 +1,11 @@
 {
-  "today": 1965,
-  "total": 39087,
-  "timeToday": 417.3,
-  "timeTotal": 116.1,
-  "previousToday": 0,
-  "previousTotal": 38212,
-  "previousTimeToday": 0,
-  "previousTimeTotal": 113.3,
-  "lastUpdated": "2025-12-01T18:33:36.698637"
+  "today": 1985,
+  "total": 39107,
+  "timeToday": 423.7,
+  "timeTotal": 116.2,
+  "previousToday": 1965,
+  "previousTotal": 39087,
+  "previousTimeToday": 417.3,
+  "previousTimeTotal": 116.1,
+  "lastUpdated": "2025-12-01T18:43:41.246173"
 }
