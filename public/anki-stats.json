@@ -1,11 +1,11 @@
 {
-  "today": 0,
-  "total": 45511,
-  "timeToday": 0,
-  "timeTotal": 132.4,
-  "previousToday": 649,
-  "previousTotal": 45294,
-  "previousTimeToday": 86.5,
-  "previousTimeTotal": 131.8,
-  "lastUpdated": "2026-01-22T14:12:27.404973"
+  "today": 26,
+  "total": 45516,
+  "timeToday": 5.4,
+  "timeTotal": 132.5,
+  "previousToday": 0,
+  "previousTotal": 45511,
+  "previousTimeToday": 0,
+  "previousTimeTotal": 132.4,
+  "lastUpdated": "2026-01-22T14:22:32.560162"
 }
