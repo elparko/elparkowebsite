@@ -47,6 +47,10 @@ export default function WritingLayout({ children, title, date }) {
               Home
             </a>
           </li>
+
+          <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
+            WRITING
+          </li>
           <li
             onMouseEnter={() => setHoveredItem('learning')}
             onMouseLeave={() => setHoveredItem(null)}
@@ -58,6 +62,70 @@ export default function WritingLayout({ children, title, date }) {
               style={{color: hoveredItem === 'learning' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
             >
               Learning at the Edge of Knowledge
+            </a>
+          </li>
+
+          <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, marginTop: '10px', letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
+            CURRENT PROJECTS
+          </li>
+          <li
+            onMouseEnter={() => setHoveredItem('crswne')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'crswne' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/crswne-keto-research"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'crswne' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
+            >
+              CRSwNP & Keto Research
+            </a>
+          </li>
+
+          <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, marginTop: '10px', letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
+            CURRENT SIDE QUEST
+          </li>
+          <li
+            onMouseEnter={() => setHoveredItem('clawdbot')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'clawdbot' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/clawdbot"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'clawdbot' ? '#000000' : '#f5f5dc', display: 'block', padding: '12px 30px'}}
+            >
+              ClawdBot
+            </a>
+          </li>
+
+          <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, marginTop: '10px', letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
+            COMPLETED SIDE QUESTS
+          </li>
+          <li
+            onMouseEnter={() => setHoveredItem('sauna')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'sauna' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/sauna-build"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'sauna' ? '#000000' : '#f5f5dc', display: 'block', padding: '12px 30px'}}
+            >
+              Sauna Build
+            </a>
+          </li>
+          <li
+            onMouseEnter={() => setHoveredItem('mohs')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'mohs' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/art-feature"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'mohs' ? '#000000' : '#f5f5dc', display: 'block', padding: '12px 30px'}}
+            >
+              Mohs Map
             </a>
           </li>
         </ul>

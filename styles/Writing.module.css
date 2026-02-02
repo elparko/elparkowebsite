@@ -85,9 +85,10 @@
 }
 
 .menu:hover ul {
-  max-height: 300px;
+  max-height: 80vh;
   opacity: 1;
   margin-top: 10px;
+  overflow-y: auto;
 }
 
 .menu li {
@@ -98,9 +99,9 @@
 .menu .menuLink {
   color: #f5f5dc;
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   display: block;
-  padding: 15px 30px;
+  padding: 12px 30px;
 }
 
 .menu li:hover {

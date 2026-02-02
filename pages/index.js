@@ -12,11 +12,6 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
   const [showArrow, setShowArrow] = useState(false);
-  const [ankiStats, setAnkiStats] = useState(null);
-  const [displayToday, setDisplayToday] = useState(0);
-  const [displayTotal, setDisplayTotal] = useState(0);
-  const [displayTimeToday, setDisplayTimeToday] = useState(0);
-  const [displayTimeTotal, setDisplayTimeTotal] = useState(0);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -30,7 +25,7 @@ export default function Home() {
     };
 
     const handleScroll = () => {
-      const sections = ['home', 'about', 'projects', 'blog', 'contact'];
+      const sections = ['home', 'projects', 'blog', 'current-sidequest', 'completed-sidequests', 'contact'];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -91,52 +86,6 @@ export default function Home() {
     return () => window.removeEventListener('scroll', updateMenuToggleColor);
   }, []);
 
-  useEffect(() => {
-    // Fetch Anki stats
-    fetch('/anki-stats.json')
-      .then(res => res.json())
-      .then(data => setAnkiStats(data))
-      .catch(err => console.error('Error loading Anki stats:', err));
-  }, []);
-
-  // Animate numbers from previous to current values
-  useEffect(() => {
-    if (!ankiStats) return;
-
-    const duration = 5000; // 5 seconds
-    const frameRate = 60; // 60 FPS
-    const totalFrames = (duration / 1000) * frameRate;
-
-    const animateValue = (start, end, setter) => {
-      const increment = (end - start) / totalFrames;
-      let current = start;
-      let frame = 0;
-
-      const timer = setInterval(() => {
-        frame++;
-        current += increment;
-
-        if (frame >= totalFrames) {
-          setter(end);
-          clearInterval(timer);
-        } else {
-          setter(Math.round(current));
-        }
-      }, 1000 / frameRate);
-
-      return timer;
-    };
-
-    const timers = [
-      animateValue(ankiStats.previousToday, ankiStats.today, setDisplayToday),
-      animateValue(ankiStats.previousTotal, ankiStats.total, setDisplayTotal),
-      animateValue(ankiStats.previousTimeToday || 0, ankiStats.timeToday || 0, setDisplayTimeToday),
-      animateValue(ankiStats.previousTimeTotal || 0, ankiStats.timeTotal || 0, setDisplayTimeTotal)
-    ];
-
-    return () => timers.forEach(timer => clearInterval(timer));
-  }, [ankiStats]);
-
   return (
     <div className={styles.container}>
       <Head>
@@ -153,9 +102,9 @@ export default function Home() {
         </div>
         <ul style={{padding: 0}}>
           <li style={{padding: 0}}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Home</a></li>
-          <li style={{padding: 0}}><a href="#about" className={`${styles.menuLink} ${activeSection === 'about' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>About</a></li>
           <li style={{padding: 0}}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Projects</a></li>
           <li style={{padding: 0}}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Writing</a></li>
+          <li style={{padding: 0}}><a href="#sidequests" className={`${styles.menuLink} ${activeSection === 'sidequests' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Side Quests</a></li>
           <li style={{padding: 0}}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Contact</a></li>
         </ul>
       </nav>
@@ -167,50 +116,30 @@ export default function Home() {
             homeSection.scrollIntoView({ behavior: "smooth" });
           }
         }}
-        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${activeSection === 'about' || activeSection === 'blog' ? styles.lightBackground : ''}`}
+        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${activeSection === 'blog' ? styles.lightBackground : ''}`}
       >
         <i className="fas fa-arrow-up"></i>
       </button>
 
-      <section id="home" className={`${styles.section} ${styles.home}`}>
+      <section id="home" className={`${styles.section} ${styles.about}`}>
         <h1 className={styles.sectionTitle}>Parker Smith</h1>
         <p>another resumé</p>
-      </section>
-      <section id="about" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionTitle}>Anki Stats</h2>
-        {ankiStats ? (
-          <div style={{display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap'}}>
-            <div style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.05)',
-              padding: '30px 40px',
-              borderRadius: '10px',
-              textAlign: 'center',
-              minWidth: '180px'
-            }}>
-              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>Today</h3>
-              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayToday.toLocaleString()}</p>
-              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeToday.toFixed(1)} min</p>
-            </div>
-            <div style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.05)',
-              padding: '30px 40px',
-              borderRadius: '10px',
-              textAlign: 'center',
-              minWidth: '180px'
-            }}>
-              <h3 style={{fontSize: '1rem', marginBottom: '10px', fontWeight: 'normal'}}>Total</h3>
-              <p style={{fontSize: '3rem', fontWeight: 'bold', margin: 0}}>{displayTotal.toLocaleString()}</p>
-              <p style={{fontSize: '0.9rem', marginTop: '10px', color: '#666'}}>{displayTimeTotal.toFixed(1)} hrs</p>
-            </div>
-          </div>
-        ) : (
-          <p>Loading stats...</p>
-        )}
       </section>
 
       <section id="projects" className={`${styles.section} ${styles.projects}`}>
         <h2 className={styles.sectionSubtitle}>My Projects</h2>
         <div className={styles.projectGrid}>
+          <Link href="/crswne-keto-research" className={styles.projectLink}>
+            <div className={styles.projectCard}>
+              <div className={styles.projectFront}>
+                <i className="fas fa-flask"></i>
+                <h3>CRSwNP & Keto Research</h3>
+              </div>
+              <div className={styles.projectBack}>
+                <p>Exploring the relationship between ketogenic diet and chronic rhinosinusitis with nasal polyps.</p>
+              </div>
+            </div>
+          </Link>
           <a href="https://www.pereste.com" target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
             <div className={styles.projectCard}>
               <div className={styles.projectFront}>
@@ -218,7 +147,7 @@ export default function Home() {
                 <h3>Pereste, Inc.</h3>
               </div>
               <div className={styles.projectBack}>
-                <p>A failed venture into AI in healthcare focused on health literacy.</p>
+                <p>A venture into AI in healthcare focused on health literacy.</p>
               </div>
             </div>
           </a>
@@ -265,7 +194,50 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      <section id="contact" className={`${styles.section} ${styles.home}`}>
+      <section id="current-sidequest" className={`${styles.section} ${styles.projects}`}>
+        <h2 className={styles.sectionSubtitle}>Current Side Quest</h2>
+        <div className={styles.projectGrid}>
+          <Link href="/clawdbot" className={styles.projectLink}>
+            <div className={styles.projectCard}>
+              <div className={styles.projectFront}>
+                <i className="fas fa-robot"></i>
+                <h3>ClawdBot</h3>
+              </div>
+              <div className={styles.projectBack}>
+                <p>An upcoming project in development.</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+      <section id="completed-sidequests" className={`${styles.section} ${styles.about}`}>
+        <h2 className={styles.sectionSubtitle}>Completed Side Quests</h2>
+        <div className={styles.projectGrid}>
+          <Link href="/sauna-build" className={styles.projectLink}>
+            <div className={styles.projectCard}>
+              <div className={styles.projectFront}>
+                <i className="fas fa-fire"></i>
+                <h3>Sauna Build</h3>
+              </div>
+              <div className={styles.projectBack}>
+                <p>Building a custom sauna from scratch.</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/art-feature" className={styles.projectLink}>
+            <div className={styles.projectCard}>
+              <div className={styles.projectFront}>
+                <i className="fas fa-palette"></i>
+                <h3>Mohs Map</h3>
+              </div>
+              <div className={styles.projectBack}>
+                <p>Featured in the inaugural issue of Hippocratic magazine Ex Vivo.</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+      <section id="contact" className={`${styles.section} ${styles.projects}`}>
         <h2 className={styles.sectionSubtitle}>Contact Me</h2>
         <p>elparkowebsite@proton.me</p>
         <div className={styles.socialLinks}>
