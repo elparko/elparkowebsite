@@ -66,11 +66,11 @@ export default function Home() {
         const rect = menuToggleRef.current.getBoundingClientRect();
         const elementAtPoint = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
         const backgroundColor = window.getComputedStyle(elementAtPoint).backgroundColor;
-        
+
         // Check if the background color is light or dark
         const rgb = backgroundColor.match(/\d+/g);
         const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
-        
+
         if (brightness > 128) {
           menuToggleRef.current.classList.remove(styles.dark);
           menuToggleRef.current.classList.add(styles.light);
@@ -100,12 +100,12 @@ export default function Home() {
           <span></span>
           <span></span>
         </div>
-        <ul style={{padding: 0}}>
-          <li style={{padding: 0}}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Home</a></li>
-          <li style={{padding: 0}}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Projects</a></li>
-          <li style={{padding: 0}}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Writing</a></li>
-          <li style={{padding: 0}}><a href="#sidequests" className={`${styles.menuLink} ${activeSection === 'sidequests' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Side Quests</a></li>
-          <li style={{padding: 0}}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{display: 'block', padding: '15px 30px'}}>Contact</a></li>
+        <ul style={{ padding: 0 }}>
+          <li style={{ padding: 0 }}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Home</a></li>
+          <li style={{ padding: 0 }}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Projects</a></li>
+          <li style={{ padding: 0 }}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Writing</a></li>
+          <li style={{ padding: 0 }}><a href="#sidequests" className={`${styles.menuLink} ${activeSection === 'sidequests' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Side Quests</a></li>
+          <li style={{ padding: 0 }}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Contact</a></li>
         </ul>
       </nav>
 
@@ -128,17 +128,17 @@ export default function Home() {
 
       <section id="featured-project" className={`${styles.section} ${styles.about}`}>
         <h2 className={styles.sectionSubtitle}>Latest Project</h2>
-        <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <Link href="/pereste-parse" className={styles.projectLink}>
             <div className={styles.featuredProjectCard}>
               <div className={styles.featuredProjectFront}>
                 <i className="fas fa-microchip"></i>
                 <h3>PeresteParse</h3>
-                <span className={styles.versionBadge}>v2.0.0</span>
+                <span className={styles.versionBadge}>v2.1.1</span>
               </div>
               <div className={styles.featuredProjectBack}>
                 <p>Privacy-focused macOS study app that converts voice recordings into Anki flashcards using local LLMs.</p>
-                <p style={{fontSize: '0.9rem', marginTop: '10px'}}>Click to learn more →</p>
+                <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Click to learn more →</p>
               </div>
             </div>
           </Link>
@@ -204,9 +204,9 @@ export default function Home() {
                 <h3>Learning at the Edge of Knowledge</h3>
               </div>
               <div className={styles.projectBack}>
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px'}}>
-                  <p style={{fontSize: '2rem', margin: 0}}>October</p>
-                  <p style={{fontSize: '2rem', margin: 0}}>2025</p>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                  <p style={{ fontSize: '2rem', margin: 0 }}>October</p>
+                  <p style={{ fontSize: '2rem', margin: 0 }}>2025</p>
                 </div>
               </div>
             </div>
