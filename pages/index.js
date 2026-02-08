@@ -270,7 +270,7 @@ export default function Home() {
       </section>
 
       <footer className={styles.footer}>
-        <p>&copy; 2026 Parker Smith</p>
+        <p>&copy; 2025 Parker Smith</p>
       </footer>
     </div>
   );
