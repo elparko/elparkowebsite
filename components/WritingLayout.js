@@ -81,6 +81,19 @@ export default function WritingLayout({ children, title, date }) {
               CRSwNP & Keto Research
             </a>
           </li>
+          <li
+            onMouseEnter={() => setHoveredItem('pereste-parse')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'pereste-parse' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/pereste-parse"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'pereste-parse' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
+            >
+              PeresteParse
+            </a>
+          </li>
 
           <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, marginTop: '10px', letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
             CURRENT SIDE QUEST

@@ -25,7 +25,7 @@ export default function Home() {
     };
 
     const handleScroll = () => {
-      const sections = ['home', 'projects', 'blog', 'current-sidequest', 'completed-sidequests', 'contact'];
+      const sections = ['home', 'featured-project', 'projects', 'blog', 'current-sidequest', 'completed-sidequests', 'contact'];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -121,9 +121,28 @@ export default function Home() {
         <i className="fas fa-arrow-up"></i>
       </button>
 
-      <section id="home" className={`${styles.section} ${styles.about}`}>
+      <section id="home" className={`${styles.section} ${styles.projects}`}>
         <h1 className={styles.sectionTitle}>Parker Smith</h1>
         <p>another resumé</p>
+      </section>
+
+      <section id="featured-project" className={`${styles.section} ${styles.about}`}>
+        <h2 className={styles.sectionSubtitle}>Latest Project</h2>
+        <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
+          <Link href="/pereste-parse" className={styles.projectLink}>
+            <div className={styles.featuredProjectCard}>
+              <div className={styles.featuredProjectFront}>
+                <i className="fas fa-microchip"></i>
+                <h3>PeresteParse</h3>
+                <span className={styles.versionBadge}>v2.0.0</span>
+              </div>
+              <div className={styles.featuredProjectBack}>
+                <p>Privacy-focused macOS study app that converts voice recordings into Anki flashcards using local LLMs.</p>
+                <p style={{fontSize: '0.9rem', marginTop: '10px'}}>Click to learn more →</p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </section>
 
       <section id="projects" className={`${styles.section} ${styles.projects}`}>
