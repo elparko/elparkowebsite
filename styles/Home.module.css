@@ -336,17 +336,21 @@
 }
 
 /* Black cards for light sections */
-.about .projectFront {
+.about .projectFront,
+.about .featuredProjectFront {
   background-color: var(--black);
 }
 
 .about .projectFront i,
 .about .projectFront .material-icons,
-.about .projectFront h3 {
+.about .projectFront h3,
+.about .featuredProjectFront i,
+.about .featuredProjectFront h3 {
   color: var(--light-beige);
 }
 
-.about .projectBack {
+.about .projectBack,
+.about .featuredProjectBack {
   background-color: var(--black);
   color: var(--light-beige);
 }

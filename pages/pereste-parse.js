@@ -3,14 +3,14 @@ import WritingLayout from '../components/WritingLayout';
 export default function PeresteParse() {
   return (
     <WritingLayout title="PeresteParse" date="02/2026">
-      <p style={{marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem'}}>
+      <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
         A privacy-focused macOS study application that transforms voice recordings
         into Anki flashcards using locally-run large language models.
       </p>
 
-      <div style={{textAlign: 'center', marginBottom: '30px'}}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <a
-          href="https://github.com/elparko/PeresteParse/releases/tag/v2.0.0"
+          href="https://github.com/elparko/PeresteParse/releases/latest"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -35,7 +35,7 @@ export default function PeresteParse() {
             e.target.style.border = 'none';
           }}
         >
-          Download v2.0.0 for macOS
+          Download Latest Version for macOS
         </a>
       </div>
 
@@ -71,12 +71,12 @@ export default function PeresteParse() {
         you flexibility based on your privacy preferences and internet connectivity.
       </p>
 
-      <p style={{marginTop: '30px', textAlign: 'center', fontSize: '0.9rem'}}>
+      <p style={{ marginTop: '30px', textAlign: 'center', fontSize: '0.9rem' }}>
         <a
           href="https://github.com/elparko/PeresteParse"
           target="_blank"
           rel="noopener noreferrer"
-          style={{color: '#000000', textDecoration: 'underline'}}
+          style={{ color: '#000000', textDecoration: 'underline' }}
         >
           View source code on GitHub
         </a>
