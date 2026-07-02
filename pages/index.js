@@ -25,7 +25,7 @@ export default function Home() {
     };
 
     const handleScroll = () => {
-      const sections = ['home', 'featured-project', 'projects', 'blog', 'current-sidequest', 'completed-sidequests', 'contact'];
+      const sections = ['home', 'featured-project', 'projects', 'blog', 'completed-sidequests', 'contact'];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -104,7 +104,7 @@ export default function Home() {
           <li style={{ padding: 0 }}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Home</a></li>
           <li style={{ padding: 0 }}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Projects</a></li>
           <li style={{ padding: 0 }}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Writing</a></li>
-          <li style={{ padding: 0 }}><a href="#sidequests" className={`${styles.menuLink} ${activeSection === 'sidequests' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Side Quests</a></li>
+          <li style={{ padding: 0 }}><a href="#completed-sidequests" className={`${styles.menuLink} ${activeSection === 'completed-sidequests' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Side Quests</a></li>
           <li style={{ padding: 0 }}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Contact</a></li>
         </ul>
       </nav>
@@ -116,7 +116,7 @@ export default function Home() {
             homeSection.scrollIntoView({ behavior: "smooth" });
           }
         }}
-        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${activeSection === 'blog' ? styles.lightBackground : ''}`}
+        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${['featured-project', 'blog', 'contact'].includes(activeSection) ? styles.lightBackground : ''}`}
       >
         <i className="fas fa-arrow-up"></i>
       </button>
@@ -127,17 +127,30 @@ export default function Home() {
       </section>
 
       <section id="featured-project" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionSubtitle}>Latest Project</h2>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <Link href="/pereste-parse" className={styles.projectLink}>
+        <h2 className={styles.sectionSubtitle}>Latest Projects</h2>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch', gap: '2rem', flexWrap: 'wrap', width: '100%' }}>
+          <Link href="/smile-msi" className={styles.projectLink}>
             <div className={styles.featuredProjectCard}>
               <div className={styles.featuredProjectFront}>
-                <i className="fas fa-microchip"></i>
-                <h3>PeresteParse</h3>
-                <span className={styles.versionBadge}>v2.1.1</span>
+                <i className="fas fa-microscope"></i>
+                <h3>SMILE-MSI</h3>
+                <span className={styles.versionBadge}>v1.0.1</span>
               </div>
               <div className={styles.featuredProjectBack}>
-                <p>Privacy-focused macOS study app that converts voice recordings into Anki flashcards using local LLMs.</p>
+                <p>Open-source, fully-local desktop tool that turns raw mass spectrometry imaging data into annotated maps of tissue lipids.</p>
+                <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Click to learn more →</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/pereste-health" className={styles.projectLink}>
+            <div className={styles.featuredProjectCard}>
+              <div className={styles.featuredProjectFront}>
+                <i className="fas fa-comment-medical"></i>
+                <h3>Pereste Health</h3>
+                <span className={styles.versionBadge}>Healthcare AI</span>
+              </div>
+              <div className={styles.featuredProjectBack}>
+                <p>A venture bringing AI to healthcare, focused on health literacy.</p>
                 <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Click to learn more →</p>
               </div>
             </div>
@@ -159,17 +172,6 @@ export default function Home() {
               </div>
             </div>
           </Link>
-          <a href="https://www.pereste.com" target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-hospital"></i>
-                <h3>Pereste, Inc.</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>A venture into AI in healthcare focused on health literacy.</p>
-              </div>
-            </div>
-          </a>
           <a href="https://www.instagram.com/migrainesofuci?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
             <div className={styles.projectCard}>
               <div className={styles.projectFront}>
@@ -213,23 +215,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      <section id="current-sidequest" className={`${styles.section} ${styles.projects}`}>
-        <h2 className={styles.sectionSubtitle}>Current Side Quest</h2>
-        <div className={styles.projectGrid}>
-          <Link href="/clawdbot" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-robot"></i>
-                <h3>ClawdBot</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>An upcoming project in development.</p>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
-      <section id="completed-sidequests" className={`${styles.section} ${styles.about}`}>
+      <section id="completed-sidequests" className={`${styles.section} ${styles.projects}`}>
         <h2 className={styles.sectionSubtitle}>Completed Side Quests</h2>
         <div className={styles.projectGrid}>
           <Link href="/sauna-build" className={styles.projectLink}>
@@ -256,7 +242,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      <section id="contact" className={`${styles.section} ${styles.projects}`}>
+      <section id="contact" className={`${styles.section} ${styles.about}`}>
         <h2 className={styles.sectionSubtitle}>Contact Me</h2>
         <p>elparkowebsite@proton.me</p>
         <div className={styles.socialLinks}>

@@ -69,6 +69,32 @@ export default function WritingLayout({ children, title, date }) {
             CURRENT PROJECTS
           </li>
           <li
+            onMouseEnter={() => setHoveredItem('smile-msi')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'smile-msi' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/smile-msi"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'smile-msi' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
+            >
+              SMILE-MSI
+            </a>
+          </li>
+          <li
+            onMouseEnter={() => setHoveredItem('pereste-health')}
+            onMouseLeave={() => setHoveredItem(null)}
+            style={{backgroundColor: hoveredItem === 'pereste-health' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
+          >
+            <a
+              href="/pereste-health"
+              className={styles.menuLink}
+              style={{color: hoveredItem === 'pereste-health' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
+            >
+              Pereste Health
+            </a>
+          </li>
+          <li
             onMouseEnter={() => setHoveredItem('crswne')}
             onMouseLeave={() => setHoveredItem(null)}
             style={{backgroundColor: hoveredItem === 'crswne' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
@@ -79,36 +105,6 @@ export default function WritingLayout({ children, title, date }) {
               style={{color: hoveredItem === 'crswne' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
             >
               CRSwNP & Keto Research
-            </a>
-          </li>
-          <li
-            onMouseEnter={() => setHoveredItem('pereste-parse')}
-            onMouseLeave={() => setHoveredItem(null)}
-            style={{backgroundColor: hoveredItem === 'pereste-parse' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
-          >
-            <a
-              href="/pereste-parse"
-              className={styles.menuLink}
-              style={{color: hoveredItem === 'pereste-parse' ? '#000000' : '#f5f5dc', display: 'block', padding: '15px 30px'}}
-            >
-              PeresteParse
-            </a>
-          </li>
-
-          <li style={{padding: '10px 30px', color: '#f5f5dc', fontSize: '1.1rem', fontWeight: 'bold', opacity: 1, marginTop: '10px', letterSpacing: '0.1em', fontFamily: 'inherit', pointerEvents: 'none'}}>
-            CURRENT SIDE QUEST
-          </li>
-          <li
-            onMouseEnter={() => setHoveredItem('clawdbot')}
-            onMouseLeave={() => setHoveredItem(null)}
-            style={{backgroundColor: hoveredItem === 'clawdbot' ? 'rgba(245, 245, 220, 0.8)' : 'transparent', padding: 0}}
-          >
-            <a
-              href="/clawdbot"
-              className={styles.menuLink}
-              style={{color: hoveredItem === 'clawdbot' ? '#000000' : '#f5f5dc', display: 'block', padding: '12px 30px'}}
-            >
-              ClawdBot
             </a>
           </li>
 

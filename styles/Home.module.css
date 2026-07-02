@@ -679,6 +679,11 @@
   transition: color 0.3s ease;
 }
 
+/* Dark icons when the contact section sits on a light background */
+.about .socialLink {
+  color: var(--black);
+}
+
 .socialLink i {
   font-size: 36px; /* Large icon size */
 }
