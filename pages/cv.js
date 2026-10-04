@@ -18,7 +18,7 @@ const SECTIONS = [
   {
     heading: 'Presentations and awards',
     rows: [
-      ['2026-10', <>Oral presentation, AAO-HNSF Annual Meeting: &ldquo;Dietary Metabolites Regulate NLRP3 Inflammasome Activation and Disease Severity in a Mouse Model of Chronic Rhinosinusitis.&rdquo;</>],
+      ['2026-10-18', <>Oral presentation, AAO-HNSF Annual Meeting: &ldquo;Dietary Modulation of Type 2 Inflammation and Olfaction in a Murine Model of CRSwNP.&rdquo; Smith PJ, Chow K, Matabele MN.</>],
       ['2026-09', <>First place, Epic Cosmos Datathon, LSU Health Shreveport: &ldquo;Social and Clinical Determinants of Discharge Disposition After Free Flap Reconstruction for Head and Neck Cancer.&rdquo;</>],
       ['2026-06', <>Otolaryngology Research Day, LSU Health Shreveport: &ldquo;Dietary Modulation of Type 2 Inflammation and Olfaction in a Murine Model of CRSwNP.&rdquo;</>],
       ['2026-02', <>Journal club, Plastic Surgery Interest Group: &ldquo;Nasal Reconstruction after Mohs Cancer Resection: Lessons Learned from 2553 Consecutive Cases&rdquo; (Thornton et al., 2021).</>],
