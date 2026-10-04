@@ -252,3 +252,21 @@
     text-align: left !important;
   }
 }
+
+.bookHeading {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.book {
+  margin-bottom: 1.2rem;
+}
+
+.book h4 {
+  margin: 0;
+}
+
+.bookMeta {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
