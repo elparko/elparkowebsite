@@ -29,7 +29,7 @@ const READ = [
 
 const READING = [
   { title: 'A Psalm for the Wild-Built', author: 'Becky Chambers' },
-  { title: 'The Technological Republic', author: 'Alexander C. Karp and Nicholas W. Zamiska', note: 'Just started. Seems a little outdated so far.' },
+  { title: 'The Technological Republic', author: 'Alexander C. Karp and Nicholas W. Zamiska' },
 ];
 
 const NEXT = [
