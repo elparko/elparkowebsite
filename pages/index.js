@@ -1,95 +1,97 @@
-import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import { useState, useEffect, useRef } from "react";
+import Head from 'next/head';
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import styles from '@/styles/Index.module.css';
 import SocialMeta from '@/components/SocialMeta';
-import { HOME } from '@/lib/pages.mjs';
+import { AREAS, EXTERNAL, HOME, PAGES } from '@/lib/pages.mjs';
+
+const SECTIONS = [
+  { area: 'research', blurb: 'Lab and clinical research.' },
+  { area: 'ai-code', blurb: 'Software for medicine and for myself.' },
+  { area: 'builds', blurb: 'Things I made with my hands, or close to it.' },
+  { area: 'writing', blurb: 'Essays and notes.' },
+];
+
+const today = new Date().toISOString().slice(0, 10);
+const entries = PAGES.flatMap((p) => (p.log || []).map((e) => ({ ...e, page: p })))
+  .sort((a, b) => b.date.localeCompare(a.date));
+const upcoming = entries.filter((e) => e.date > today).reverse();
+const recent = entries.filter((e) => e.date <= today).slice(0, 6);
+
+function Entries({ heading, items }) {
+  if (!items.length) return null;
+  return (
+    <>
+      <h4>{heading}</h4>
+      {items.map((e) => (
+        <div key={e.page.slug + e.date + e.text} className={styles.entry}>
+          <span>{e.date}</span>
+          <span><Link href={`/${e.page.slug}`}>{e.page.title}</Link>: {e.text}</span>
+        </div>
+      ))}
+    </>
+  );
+}
+
+function Card({ item }) {
+  const body = (
+    <>
+      <i className={`fas ${item.icon}`}></i>
+      <h3>{item.title}</h3>
+      <p>{item.description}</p>
+      <span className={styles.cardMeta}>
+        {item.slug ? `${item.status.replace('-', ' ')} · updated ${item.updated}` : 'external site ↗'}
+      </span>
+    </>
+  );
+  return item.slug
+    ? <Link href={`/${item.slug}`} className={styles.card}>{body}</Link>
+    : <a href={item.href} className={styles.card}>{body}</a>;
+}
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState('');
-  const menuToggleRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [currentTime, setCurrentTime] = useState('0:00');
-  const [duration, setDuration] = useState('0:00');
-  const [showArrow, setShowArrow] = useState(false);
-  const audioRef = useRef(null);
+  const scroller = useRef(null);
+  const [active, setActive] = useState('top');
 
   useEffect(() => {
-    const smoothScroll = (e) => {
+    const el = scroller.current;
+    el.focus({ preventScroll: true });
+    const sections = () => [...el.querySelectorAll('section')];
+    const current = () => {
+      const y = el.scrollTop + el.clientHeight / 3;
+      return sections().findLast((s) => s.offsetTop <= y) || sections()[0];
+    };
+    const onScroll = () => setActive(current().id);
+    const onKey = (e) => {
+      if (e.target.closest('input, textarea')) return;
+      const down = ['ArrowDown', 'PageDown'].includes(e.key) || (e.key === ' ' && !e.shiftKey);
+      const up = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
+      if (!down && !up) return;
+      const list = sections();
+      const sec = current();
+      const bottom = sec.offsetTop + sec.offsetHeight;
+      const viewBottom = el.scrollTop + el.clientHeight;
+      const page = el.clientHeight * 0.85;
+      const below = bottom - viewBottom;
+      const above = el.scrollTop + el.querySelector('nav').offsetHeight - sec.offsetTop;
       e.preventDefault();
-      const targetId = e.currentTarget.getAttribute("href").slice(1);
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
-      }
+      if (down && below > 4) return el.scrollBy({ top: Math.min(below, page) });
+      if (up && above > 4) return el.scrollBy({ top: -Math.min(above, page) });
+      const next = list[list.indexOf(sec) + (down ? 1 : -1)];
+      if (next) next.scrollIntoView();
     };
-
-    const handleScroll = () => {
-      const sections = ['home', 'featured-project', 'projects', 'blog', 'completed-sidequests', 'contact'];
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 50 && rect.bottom > 50;
-        }
-        return false;
-      });
-
-      setActiveSection(currentSection || '');
-
-      // Show arrow on all sections except home
-      setShowArrow(currentSection !== 'home');
-    };
-
-    const links = document.querySelectorAll(`.${styles.menuLink}`);
-    links.forEach(link => link.addEventListener("click", smoothScroll));
-
-    const container = document.querySelector(`.${styles.container}`);
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-    }
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call once to set initial active section
-
+    el.addEventListener('scroll', onScroll);
+    window.addEventListener('keydown', onKey);
     return () => {
-      links.forEach(link => link.removeEventListener("click", smoothScroll));
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
-      }
-      window.removeEventListener('scroll', handleScroll);
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('keydown', onKey);
     };
   }, []);
 
-  useEffect(() => {
-    const updateMenuToggleColor = () => {
-      if (menuToggleRef.current) {
-        const rect = menuToggleRef.current.getBoundingClientRect();
-        const elementAtPoint = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-        const backgroundColor = window.getComputedStyle(elementAtPoint).backgroundColor;
-
-        // Check if the background color is light or dark
-        const rgb = backgroundColor.match(/\d+/g);
-        const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
-
-        if (brightness > 128) {
-          menuToggleRef.current.classList.remove(styles.dark);
-          menuToggleRef.current.classList.add(styles.light);
-        } else {
-          menuToggleRef.current.classList.remove(styles.light);
-          menuToggleRef.current.classList.add(styles.dark);
-        }
-      }
-    };
-
-    updateMenuToggleColor();
-    window.addEventListener('scroll', updateMenuToggleColor);
-    return () => window.removeEventListener('scroll', updateMenuToggleColor);
-  }, []);
+  const theme = (id) => (['top', 'research', 'builds', 'contact'].includes(id) ? styles.dark : styles.light);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.page} ref={scroller} tabIndex={-1}>
       <Head>
         <title>Parker Smith</title>
         <meta name="description" content={HOME.description} />
@@ -97,173 +99,64 @@ export default function Home() {
         <SocialMeta title={HOME.title} description={HOME.description} path="/" image="/og/home.png" />
       </Head>
 
-      <nav className={styles.menu}>
-        <div className={styles.menuToggle}>
-          <span></span>
-          <span></span>
-          <span></span>
+      <nav className={`${styles.nav} ${theme(active)}`}>
+        <a href="#top" className={styles.navName}>Parker Smith</a>
+        <div className={styles.navLinks}>
+          {[['recent', 'Recent'], ...SECTIONS.map(({ area }) => [area, AREAS[area]])].map(([id, label]) => (
+            <a key={id} href={`#${id}`} className={active === id ? styles.navActive : ''}>{label}</a>
+          ))}
+          <Link href="/cv">CV</Link>
+          <a href="#contact" className={active === 'contact' ? styles.navActive : ''}>Contact</a>
         </div>
-        <ul style={{ padding: 0 }}>
-          <li style={{ padding: 0 }}><a href="#home" className={`${styles.menuLink} ${activeSection === 'home' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Home</a></li>
-          <li style={{ padding: 0 }}><a href="#projects" className={`${styles.menuLink} ${activeSection === 'projects' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Projects</a></li>
-          <li style={{ padding: 0 }}><a href="#blog" className={`${styles.menuLink} ${activeSection === 'blog' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Writing</a></li>
-          <li style={{ padding: 0 }}><a href="#completed-sidequests" className={`${styles.menuLink} ${activeSection === 'completed-sidequests' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Side Quests</a></li>
-          <li style={{ padding: 0 }}><a href="#contact" className={`${styles.menuLink} ${activeSection === 'contact' ? styles.active : ''}`} style={{ display: 'block', padding: '15px 30px' }}>Contact</a></li>
-        </ul>
       </nav>
 
-      <button
-        onClick={() => {
-          const homeSection = document.getElementById('home');
-          if (homeSection) {
-            homeSection.scrollIntoView({ behavior: "smooth" });
-          }
-        }}
-        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''} ${['featured-project', 'blog', 'contact'].includes(activeSection) ? styles.lightBackground : ''}`}
-      >
-        <i className="fas fa-arrow-up"></i>
-      </button>
-
-      <section id="home" className={`${styles.section} ${styles.projects}`}>
-        <h1 className={styles.sectionTitle}>Parker Smith</h1>
-        <p>another resumé</p>
+      <section id="top" className={`${styles.section} ${theme('top')} ${styles.hero}`}>
+        <h1>Parker Smith</h1>
+        <p>Medical student who likes to build things.</p>
+        <div className={styles.buttons}>
+          <Link href="/cv" className={styles.button}>CV</Link>
+          <a href="https://x.com/parker5smith" className={styles.button}>X</a>
+          <a href="https://github.com/elparko" className={styles.button}>GitHub</a>
+        </div>
+        <span className={styles.hint}>↓</span>
       </section>
 
-      <section id="featured-project" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionSubtitle}>Latest Projects</h2>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch', gap: '2rem', flexWrap: 'wrap', width: '100%' }}>
-          <Link href="/smile-msi" className={styles.projectLink}>
-            <div className={styles.featuredProjectCard}>
-              <div className={styles.featuredProjectFront}>
-                <i className="fas fa-microscope"></i>
-                <h3>SMILE-MSI</h3>
-                <span className={styles.versionBadge}>v1.0.1</span>
-              </div>
-              <div className={styles.featuredProjectBack}>
-                <p>Open-source, fully-local desktop tool that turns raw mass spectrometry imaging data into annotated maps of tissue lipids.</p>
-                <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Click to learn more →</p>
-              </div>
-            </div>
-          </Link>
-          <Link href="/pereste-health" className={styles.projectLink}>
-            <div className={styles.featuredProjectCard}>
-              <div className={styles.featuredProjectFront}>
-                <i className="fas fa-comment-medical"></i>
-                <h3>Pereste Health</h3>
-                <span className={styles.versionBadge}>Healthcare AI</span>
-              </div>
-              <div className={styles.featuredProjectBack}>
-                <p>A venture bringing AI to healthcare, focused on health literacy.</p>
-                <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Click to learn more →</p>
-              </div>
-            </div>
-          </Link>
+      <section id="recent" className={`${styles.section} ${theme('recent')}`}>
+        <h2 className={styles.heading}>Recent</h2>
+        <p className={styles.blurb}>Dated changes from every page.</p>
+        <div className={styles.entries}>
+          <Entries heading="Upcoming" items={upcoming} />
+          <Entries heading="Latest" items={recent} />
         </div>
       </section>
 
-      <section id="projects" className={`${styles.section} ${styles.projects}`}>
-        <h2 className={styles.sectionSubtitle}>My Projects</h2>
-        <div className={styles.projectGrid}>
-          <Link href="/crswne-keto-research" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-flask"></i>
-                <h3>CRSwNP & Keto Research</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>Exploring the relationship between ketogenic diet and chronic rhinosinusitis with nasal polyps.</p>
-              </div>
+      {SECTIONS.map(({ area, blurb }) => {
+        const items = [
+          ...PAGES.filter((p) => p.area === area),
+          ...EXTERNAL.filter((e) => e.area === area),
+        ];
+        return (
+          <section key={area} id={area} className={`${styles.section} ${theme(area)}`}>
+            <h2 className={styles.heading}>{AREAS[area]}</h2>
+            <p className={styles.blurb}>{blurb}</p>
+            <div className={styles.grid}>
+              {items.map((item) => <Card key={item.slug || item.href} item={item} />)}
             </div>
-          </Link>
-          <a href="https://www.instagram.com/migrainesofuci?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-brain"></i>
-                <h3>The Migraine Club at UCI</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>A club I founded at UCI.</p>
-              </div>
-            </div>
-          </a>
-          <a href="https://mohswoundcare.com" target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-user-md"></i>
-                <h3>MohsWoundCare</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>A comprehensive guide for Mohs surgery wound care and recovery.</p>
-              </div>
-            </div>
-          </a>
-        </div>
-      </section>
-      <section id="blog" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionSubtitle}>Writing</h2>
-        <div className={styles.projectGrid}>
-          <Link href="/learning-at-the-edge" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-lightbulb"></i>
-                <h3>Learning at the Edge of Knowledge</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
-                  <p style={{ fontSize: '2rem', margin: 0 }}>October</p>
-                  <p style={{ fontSize: '2rem', margin: 0 }}>2025</p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
-      <section id="completed-sidequests" className={`${styles.section} ${styles.projects}`}>
-        <h2 className={styles.sectionSubtitle}>Completed Side Quests</h2>
-        <div className={styles.projectGrid}>
-          <Link href="/sauna-build" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-fire"></i>
-                <h3>Sauna Build</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>Building a custom sauna from scratch.</p>
-              </div>
-            </div>
-          </Link>
-          <Link href="/art-feature" className={styles.projectLink}>
-            <div className={styles.projectCard}>
-              <div className={styles.projectFront}>
-                <i className="fas fa-palette"></i>
-                <h3>Mohs Map</h3>
-              </div>
-              <div className={styles.projectBack}>
-                <p>Featured in the inaugural issue of Hippocratic magazine Ex Vivo.</p>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
-      <section id="contact" className={`${styles.section} ${styles.about}`}>
-        <h2 className={styles.sectionSubtitle}>Contact Me</h2>
-        <p>elparkowebsite@proton.me</p>
-        <div className={styles.socialLinks}>
-          <a href="https://github.com/elparko" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-            <i className="fab fa-github"></i>
-          </a>
-          <a href="https://www.instagram.com/park.rsmith" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="https://x.com/parker5smith" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-            <i className="fab fa-x-twitter"></i>
-          </a>
-        </div>
-      </section>
+          </section>
+        );
+      })}
 
-      <footer className={styles.footer}>
-        <p>&copy; 2026 Parker Smith</p>
-      </footer>
+      <section id="contact" className={`${styles.section} ${theme('contact')}`}>
+        <h2 className={styles.heading}>Contact</h2>
+        <div className={styles.social}>
+          <a href="https://x.com/parker5smith" aria-label="X"><i className="fab fa-x-twitter"></i></a>
+          <a href="https://github.com/elparko" aria-label="GitHub"><i className="fab fa-github"></i></a>
+          <a href="https://www.instagram.com/park.rsmith" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
+        </div>
+        <p className={styles.footer}>
+          &copy; 2026 Parker Smith · <Link href="/about-this-site" style={{color: 'inherit'}}>About this site</Link>
+        </p>
+      </section>
     </div>
   );
 }
