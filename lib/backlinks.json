@@ -21,7 +21,9 @@
     "tools",
     "cv"
   ],
-  "tools": [],
+  "tools": [
+    "cv"
+  ],
   "cv": [],
   "about-this-site": [
     "tools"
