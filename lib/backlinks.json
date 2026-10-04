@@ -1,0 +1,29 @@
+{
+  "smile-msi": [
+    "cv"
+  ],
+  "pereste-health": [
+    "cv"
+  ],
+  "crswne-keto-research": [
+    "cv"
+  ],
+  "learning-at-the-edge": [],
+  "sauna-build": [],
+  "art-feature": [],
+  "mirror": [
+    "voice-assistant",
+    "tools",
+    "cv"
+  ],
+  "voice-assistant": [
+    "mirror",
+    "tools",
+    "cv"
+  ],
+  "tools": [],
+  "cv": [],
+  "about-this-site": [
+    "tools"
+  ]
+}

@@ -2,6 +2,8 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useState, useEffect, useRef } from "react";
 import Link from 'next/link';
+import SocialMeta from '@/components/SocialMeta';
+import { HOME } from '@/lib/pages.mjs';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('');
@@ -90,8 +92,9 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Parker Smith</title>
-        <meta name="description" content="Parker Smith's personal portfolio website" />
+        <meta name="description" content={HOME.description} />
         <link rel="icon" href="/favicon.ico" />
+        <SocialMeta title={HOME.title} description={HOME.description} path="/" image="/og/home.png" />
       </Head>
 
       <nav className={styles.menu}>
@@ -252,11 +255,14 @@ export default function Home() {
           <a href="https://www.instagram.com/park.rsmith" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
             <i className="fab fa-instagram"></i>
           </a>
+          <a href="https://x.com/parker5smith" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+            <i className="fab fa-x-twitter"></i>
+          </a>
         </div>
       </section>
 
       <footer className={styles.footer}>
-        <p>&copy; 2025 Parker Smith</p>
+        <p>&copy; 2026 Parker Smith</p>
       </footer>
     </div>
   );

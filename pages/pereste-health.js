@@ -2,7 +2,7 @@ import WritingLayout from '../components/WritingLayout';
 
 export default function PeresteHealth() {
   return (
-    <WritingLayout title="Pereste Health" date="07/2026">
+    <WritingLayout>
       <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
         A venture bringing AI to healthcare, focused on health literacy and
         helping patients understand their own care.

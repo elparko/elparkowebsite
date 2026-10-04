@@ -2,7 +2,7 @@ import WritingLayout from '../components/WritingLayout';
 
 export default function ArtFeature() {
   return (
-    <WritingLayout title="Mohs Map" date="2024">
+    <WritingLayout>
       <div style={{textAlign: 'center', backgroundColor: 'rgba(0, 0, 0, 0.05)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
         <p style={{margin: 0}}>Featured in the inaugural issue of Hippocratic Collective's magazine Ex Vivo.</p>
       </div>

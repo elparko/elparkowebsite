@@ -2,7 +2,7 @@ import WritingLayout from '../components/WritingLayout';
 
 export default function SmileMSI() {
   return (
-    <WritingLayout title="SMILE-MSI" date="07/2026">
+    <WritingLayout>
       <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
         An open-source, fully-local desktop workspace that turns raw mass
         spectrometry imaging data into annotated, statistically defensible maps

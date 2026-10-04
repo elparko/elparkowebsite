@@ -1,34 +1,18 @@
-# Parker Smith - Personal Website
+# elparko.com
 
-A personal portfolio website built with Next.js and optimized for GitHub Pages deployment.
+Parker Smith's site. Next.js static export, deployed to GitHub Pages on every push to `main`.
 
-## Features
-
-- Static site generation for GitHub Pages
-- Responsive design
-- Audio resume player
-- Smooth scrolling navigation
-- Project showcase
-
-## Deployment
-
-This site is configured to automatically deploy to GitHub Pages using GitHub Actions.
-
-1. Push to the `main` branch
-2. GitHub Actions will build and deploy the site
-3. The site will be available at `https://[username].github.io/[repository-name]`
-
-## Local Development
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Build for Production
+## Adding a page
 
-```bash
-npm run build
-```
+1. Add an entry to `PAGES` in `lib/pages.mjs`: slug, title, description, area, status, authorship (`human`, `ai-edited`, `ai-drafted`), model (for AI bylines), created, updated, related, and a dated `log`. Add `image` to put a photo on the X preview card.
+2. Create `pages/<slug>.js` wrapped in `WritingLayout`.
+3. Run `npm run og` to draw the X preview card into `public/og/<slug>.png`. It uses the locally installed Google Chrome.
 
-The built files will be in the `out/` directory.
+`npm run build` fails if a page has no preview card. It also rebuilds `lib/backlinks.json` from the internal links in each page.

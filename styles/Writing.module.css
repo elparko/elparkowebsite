@@ -135,3 +135,120 @@
   margin-bottom: 1rem;
   font-size: 2.5rem;
 }
+
+.menuHeading {
+  padding: 10px 30px 4px;
+  color: #f5f5dc;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+
+.menu .menuGroup {
+  max-height: none;
+  opacity: 1;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+}
+
+.pageMeta {
+  font-size: 0.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+.pageMeta a {
+  color: inherit;
+}
+
+.pageList {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.pageList ul {
+  list-style: none;
+}
+
+.pageList a {
+  color: #000000;
+  font-weight: bold;
+}
+
+.preview {
+  position: fixed;
+  z-index: 2000;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 14px;
+  background: #f5f5dc;
+  color: #000000;
+  border: 1px solid #000000;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.preview p {
+  margin: 6px 0;
+}
+
+.preview small {
+  opacity: 0.7;
+}
+
+.menu li.menuArea:hover {
+  background-color: transparent;
+}
+
+.logEntry {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.logDate {
+  flex: 0 0 6.5rem;
+  opacity: 0.6;
+}
+
+.content a,
+.pageMeta a {
+  color: #000000;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 0, 0, 0.35);
+}
+
+.content a:hover,
+.pageMeta a:hover {
+  text-decoration-color: #000000;
+}
+
+.content a[href^="http"]::after {
+  content: "↗";
+  font-size: 0.75em;
+  margin-left: 0.1em;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.content {
+  hyphens: auto;
+}
+
+@media (max-width: 600px) {
+  .content {
+    text-align: left !important;
+  }
+}

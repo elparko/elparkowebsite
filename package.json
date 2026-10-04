@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "pages": "node scripts/check-pages.mjs",
+    "og": "node scripts/make-og.mjs",
+    "predev": "npm run pages",
+    "prebuild": "npm run pages",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -17,6 +21,7 @@
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.2.7"
+    "eslint-config-next": "14.2.7",
+    "playwright-core": "^1.63.0"
   }
 }
