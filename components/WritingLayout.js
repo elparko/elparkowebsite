@@ -76,7 +76,9 @@ export default function WritingLayout({ children }) {
       <Head>
         <title>{`${page.title} - Parker Smith`}</title>
         <meta name="description" content={page.description} />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" href="/icon-512.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <SocialMeta title={page.title} description={page.description} path={`/${slug}/`} image={`/og/${slug}.png`} />
       </Head>
 

@@ -95,7 +95,9 @@ export default function Home() {
       <Head>
         <title>Parker Smith</title>
         <meta name="description" content={HOME.description} />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" href="/icon-512.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <SocialMeta title={HOME.title} description={HOME.description} path="/" image="/og/home.png" />
       </Head>
 
