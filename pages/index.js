@@ -52,6 +52,7 @@ function Card({ item }) {
 export default function Home() {
   const scroller = useRef(null);
   const [active, setActive] = useState('top');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const el = scroller.current;
@@ -102,8 +103,16 @@ export default function Home() {
       </Head>
 
       <nav className={`${styles.nav} ${theme(active)}`}>
-        <a href="#top" className={styles.navName}>Parker Smith</a>
-        <div className={styles.navLinks}>
+        <a href="#top" className={styles.navName} onClick={() => setMenuOpen(false)}>Parker Smith</a>
+        <button
+          type="button"
+          className={styles.navToggle}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? 'Close' : 'Menu'}
+        </button>
+        <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`} onClick={() => setMenuOpen(false)}>
           {[['recent', 'Recent'], ...SECTIONS.map(({ area }) => [area, AREAS[area]])].map(([id, label]) => (
             <a key={id} href={`#${id}`} className={active === id ? styles.navActive : ''}>{label}</a>
           ))}
@@ -115,7 +124,7 @@ export default function Home() {
       <section id="top" className={`${styles.section} ${theme('top')} ${styles.hero}`}>
         <img src="/drawings/home.svg" alt="" className={styles.drawing} />
         <h1>Parker Smith</h1>
-        <p>Medical student who likes to build things.</p>
+        <p>Medical student, builds things.</p>
         <div className={styles.buttons}>
           <Link href="/cv" className={styles.button}>CV</Link>
           <a href="https://x.com/parker5smith" className={styles.button}>X</a>
