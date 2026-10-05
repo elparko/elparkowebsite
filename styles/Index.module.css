@@ -254,3 +254,12 @@
     flex-basis: 5.5rem;
   }
 }
+
+.drawing {
+  display: block;
+  height: clamp(160px, 28vh, 260px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+}

@@ -113,6 +113,7 @@ export default function Home() {
       </nav>
 
       <section id="top" className={`${styles.section} ${theme('top')} ${styles.hero}`}>
+        <img src="/drawings/home.svg" alt="" className={styles.drawing} />
         <h1>Parker Smith</h1>
         <p>Medical student who likes to build things.</p>
         <div className={styles.buttons}>

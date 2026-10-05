@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="189.8 73.0 220.5 241.8" width="220" height="242">
+  <style>
+    .bg     { fill: #f0f0d8; }
+    .card   { fill: #ececd5; stroke: #dedec7; stroke-width: 1; }
+    polygon, polyline, path, ellipse, circle, rect.o { stroke: #3c3c36; stroke-width: 1; stroke-linejoin: round; }
+    .t      { fill: #e5e5ce; }
+    .l      { fill: #e9e9d1; }
+    .r      { fill: #ececd4; }
+    .bezel  { fill: #eaead3; }
+    .screen { fill: #f2f2da; stroke: #4a4a43; }
+    .dark   { fill: #f2f2da; }
+    .hair   { fill: none; stroke: #4a4a43; stroke-width: 0.75; }
+    .line   { fill: none; }
+    .ft     { fill: #e5e5ce; stroke: #4a4a43; stroke-width: 0.75; }
+    .scr    { fill: #35352f; font: 9px ui-monospace, Menlo, monospace; letter-spacing: 1px; stroke: none; }
+    .lab    { fill: #43433c; font: 10px ui-monospace, Menlo, monospace; letter-spacing: 2px; text-transform: uppercase; stroke: none; }
+    .paint  { fill: none; stroke: #35352f; stroke-width: 0.9; stroke-linecap: round; }
+    .faint  { fill: none; stroke: #ceceba; stroke-width: 0.75; }
+  </style>
+  <polygon class="l" points="194.3,239.3 316.9,310.1 316.9,297.9 202.8,232.0"/>
+  <polygon class="r" points="405.7,258.8 316.9,310.1 316.9,297.9 397.2,251.5"/>
+  <polygon class="t" points="283.1,185.6 397.2,251.5 316.9,297.9 202.8,232.0"/>
+  <polygon class="t" points="287.3,82.5 292.6,85.6 287.3,88.6 282.0,85.6"/>
+  <polygon class="l" points="328.5,222.2 333.8,225.3 287.3,88.6 282.0,85.6"/>
+  <polygon class="r" points="339.1,222.2 333.8,225.3 287.3,88.6 292.6,85.6"/>
+  <polygon class="t" points="278.9,77.7 284.2,80.7 278.9,83.8 273.6,80.7"/>
+  <polygon class="l" points="218.6,234.4 223.9,237.5 278.9,83.8 273.6,80.7"/>
+  <polygon class="r" points="229.2,234.4 223.9,237.5 278.9,83.8 284.2,80.7"/>
+  <polygon class="t" points="283.1,80.1 288.4,83.1 283.1,86.2 277.8,83.1"/>
+  <polygon class="l" points="307.4,285.7 312.7,288.7 283.1,86.2 277.8,83.1"/>
+  <polygon class="r" points="318.0,285.7 312.7,288.7 283.1,86.2 288.4,83.1"/>
+  <polygon class="t" points="234.5,189.3 319.0,238.1 306.3,245.4 221.8,196.6"/>
+  <polygon class="l" points="221.8,202.7 306.3,251.5 306.3,245.4 221.8,196.6"/>
+  <polygon class="r" points="319.0,244.2 306.3,251.5 306.3,245.4 319.0,238.1"/>
+  <polyline class="hair" points="225.0,194.8 309.5,243.6"/>
+  <polygon class="t" points="235.6,105.7 311.6,149.6 308.5,151.5 232.4,107.5"/>
+  <polygon class="l" points="232.4,195.4 308.5,239.3 308.5,151.5 232.4,107.5"/>
+  <polygon class="r" points="311.6,237.5 308.5,239.3 308.5,151.5 311.6,149.6"/>
+  <polygon class="t" points="272.5,113.6 285.2,121.0 276.8,125.8 264.1,118.5"/>
+  <polygon class="l" points="264.1,125.8 276.8,133.2 276.8,125.8 264.1,118.5"/>
+  <polygon class="r" points="285.2,128.3 276.8,133.2 276.8,125.8 285.2,121.0"/>
+  <g transform="matrix(1.0565 0.6100 0.0000 1.2200 232.4 107.5)">
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.77,1.17 70.84,1.17"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.77,2.34 21.56,2.34"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.77,3.31 21.56,3.31"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,10.90 9.24,10.90"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,12.22 9.24,12.22"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,13.54 9.24,13.54"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,14.87 9.24,14.87"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,16.19 9.24,16.19"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,17.51 9.24,17.51"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,18.84 9.24,18.84"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,20.16 9.24,20.16"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,21.48 9.24,21.48"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,22.81 9.24,22.81"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,7.78 8.47,7.78"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,24.91 8.47,24.91"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,57.21 8.47,57.21"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="0.39,67.72 8.47,67.72"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="63.14,47.09 71.23,47.09"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="63.14,48.65 71.23,48.65"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="63.14,50.21 71.23,50.21"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="63.14,51.76 71.23,51.76"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="63.14,53.32 71.23,53.32"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="54.29,50.98 71.23,50.98"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="54.29,67.72 71.23,67.72"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="54.67,68.89 70.84,68.89"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="36.19,68.11 50.05,68.11"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="54.67,70.05 70.84,70.05"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="36.19,69.28 50.05,69.28"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="54.67,71.22 70.84,71.22"/>
+  <polyline class="faint" vector-effect="non-scaling-stroke" points="36.19,70.44 50.05,70.44"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M11.55,38.92 Q22.72,26.85 33.88,38.53 Q22.72,47.09 11.55,38.92"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M61.60,10.90 Q58.52,27.63 49.28,35.42 Q47.74,23.74 61.60,10.90"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M52.36,27.63 m-0.39,-3.50 a0.39,-0.78 0 -2.27,-3.50 3.08,-3.50 a0.39,-0.78 0 -2.27,-3.50 -3.08,-3.50"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M53.90,54.88 Q58.52,49.43 63.14,54.88 Q58.52,59.55 53.90,54.88"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M28.49,22.96 a0.00,-1.17 0 -2.27,-3.50 2.31,-3.50 a0.00,-1.17 0 -2.27,-3.50 -2.31,-3.50"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M34.27,9.34 L34.84,27.63 L11.17,21.79"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M39.27,16.74 L42.74,20.63 L40.04,23.74 L45.43,25.30 L41.97,28.41"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M8.47,51.76 L28.11,45.54 L35.04,56.04 L20.79,68.11"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M42.74,55.65 L50.82,67.72 L51.21,47.09"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M57.75,3.89 Q52.75,4.28 53.90,7.39 Q56.21,9.73 60.83,8.17"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M6.93,50.98 Q10.78,48.26 14.63,50.98 Q18.48,53.32 24.26,50.59"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M22.33,54.10 L25.41,57.60 L22.33,60.71 L19.25,57.60 Z"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M41.97,37.75 Q38.12,42.42 40.81,46.70 Q43.51,50.98 43.12,54.88"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M19.25,20.63 L31.19,9.34 L25.41,18.29"/>
+  <path class="paint" vector-effect="non-scaling-stroke" d="M8.86,37.75 Q5.39,41.25 8.86,44.76"/>
+  <circle class="paint" vector-effect="non-scaling-stroke" cx="23.10" cy="37.36" r="0.46"/>
+  <circle class="paint" vector-effect="non-scaling-stroke" cx="58.52" cy="54.88" r="0.39"/>
+  </g>
+</svg>

@@ -121,6 +121,8 @@ export default function WritingLayout({ children }) {
           created {page.created} · updated {page.updated}
         </p>
 
+        <img src={`/drawings/${slug}.svg`} alt="" className={styles.drawing} />
+
         <div ref={contentRef} className={styles.content} style={{textAlign: 'justify', lineHeight: '1.8', maxWidth: '100%', wordWrap: 'break-word'}}>
           {children}
           {page.log?.length > 0 && (

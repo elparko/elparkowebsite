@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="214.0 49.0 172.0 262.0" width="172" height="262">
+  <style>
+    .bg     { fill: #f0f0d8; }
+    .card   { fill: #ececd5; stroke: #dedec7; stroke-width: 1; }
+    polygon, polyline, path, ellipse, circle, rect.o { stroke: #3c3c36; stroke-width: 1; stroke-linejoin: round; }
+    .t      { fill: #e5e5ce; }
+    .l      { fill: #e9e9d1; }
+    .r      { fill: #ececd4; }
+    .bezel  { fill: #eaead3; }
+    .screen { fill: #f2f2da; stroke: #4a4a43; }
+    .dark   { fill: #f2f2da; }
+    .hair   { fill: none; stroke: #4a4a43; stroke-width: 0.75; }
+    .line   { fill: none; }
+    .ft     { fill: #e5e5ce; stroke: #4a4a43; stroke-width: 0.75; }
+    .scr    { fill: #35352f; font: 9px ui-monospace, Menlo, monospace; letter-spacing: 1px; stroke: none; }
+    .lab    { fill: #43433c; font: 10px ui-monospace, Menlo, monospace; letter-spacing: 2px; text-transform: uppercase; stroke: none; }
+  </style>
+  <polygon class="l" points="218.6,242.5 329.4,306.5 329.4,294.5 225.5,234.5"/>
+  <polygon class="r" points="381.4,276.5 329.4,306.5 329.4,294.5 374.5,268.5"/>
+  <polygon class="t" points="270.5,208.5 374.5,268.5 329.4,294.5 225.5,234.5"/>
+  <polygon class="t" points="272.3,53.5 351.9,99.5 341.5,105.5 261.9,59.5"/>
+  <polygon class="l" points="261.9,227.5 341.5,273.5 341.5,105.5 261.9,59.5"/>
+  <polygon class="r" points="351.9,267.5 341.5,273.5 341.5,105.5 351.9,99.5"/>
+  <polygon class="ft" points="331.2,245.5 338.1,249.5 338.1,237.5 331.2,233.5"/>
+  <polygon class="t" points="274.0,80.5 326.0,110.5 322.5,112.5 270.5,82.5"/>
+  <polygon class="l" points="270.5,222.5 322.5,252.5 322.5,112.5 270.5,82.5"/>
+  <polygon class="r" points="326.0,250.5 322.5,252.5 322.5,112.5 326.0,110.5"/>
+  <polygon class="screen" points="272.7,221.2 320.3,248.8 320.3,113.8 272.7,86.2"/>
+  <g transform="matrix(0.866 0.5 0 1 272.7 86.2)"><text class="scr" x="4.5" y="21" text-anchor="start" style="font-size:17px;letter-spacing:1.36px">7:42</text><text class="scr" x="5" y="28" text-anchor="start" style="font-size:3.6px;letter-spacing:0.29px">MONDAY 5 OCTOBER</text><line x1="20" y1="60" x2="32" y2="48" class="hair"/><line x1="24" y1="66" x2="38" y2="52" class="hair"/><text class="scr" x="5" y="92" text-anchor="start" style="font-size:3.6px;letter-spacing:0.29px">OCTOBER</text><rect x="20.0" y="96.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="25.0" y="96.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="30.0" y="96.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="35.0" y="96.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="4.4" y="100.4" width="3.2" height="3.2" fill="none" stroke="#35352f" stroke-width="0.6"/><rect x="5.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="10.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="15.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="20.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="25.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="30.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="35.0" y="101.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="5.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="10.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="15.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="20.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="25.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="30.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="35.0" y="106.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="5.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="10.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="15.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="20.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="25.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="30.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="35.0" y="111.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="5.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="10.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="15.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="20.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="25.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><rect x="30.0" y="116.0" width="2" height="2" fill="#4a4a43" stroke="none"/><text class="scr" x="5" y="129" text-anchor="start" style="font-size:3.6px;letter-spacing:0.29px">72° CLEAR</text></g>
+  <polyline class="hair" points="317.3,247.5 317.3,254.5 332.9,263.5 332.9,247.5"/>
+  <polygon class="t" points="332.0,236.0 337.2,239.0 332.9,241.5 327.7,238.5"/>
+  <polygon class="l" points="327.7,247.5 332.9,250.5 332.9,241.5 327.7,238.5"/>
+  <polygon class="r" points="337.2,248.0 332.9,250.5 332.9,241.5 337.2,239.0"/>
+</svg>
