@@ -1,7 +1,9 @@
 {
   "smile-msi": [
+    "open-slx",
     "cv"
   ],
+  "open-slx": [],
   "pereste-health": [
     "cv"
   ],

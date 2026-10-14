@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="131.0 81.0 338.0 202.0" width="338" height="202">
+  <style>
+    polygon, polyline { stroke: #3c3c36; stroke-width: 1; stroke-linejoin: round; }
+    .t    { fill: #e5e5ce; }
+    .l    { fill: #e9e9d1; }
+    .r    { fill: #ececd4; }
+    .hair { fill: none; stroke: #4a4a43; stroke-width: 0.75; }
+    .arrow { fill: none; stroke: #4a4a43; stroke-width: 1; stroke-dasharray: 3 3; }
+    .head { fill: #4a4a43; }
+    .lbl  { fill: #41413a; font: 6px ui-monospace, Menlo, monospace; letter-spacing: 0.8px; stroke: none; }
+  </style>
+  <polygon class="l" points="158,125 210,155 210,163 158,133"/>
+  <polygon class="r" points="262,125 210,155 210,163 262,133"/>
+  <polygon class="t" points="210,95 262,125 210,155 158,125"/>
+  <polyline class="hair" points="180,119 220,108"/>
+  <polyline class="hair" points="188,124 232,113"/>
+  <text class="lbl" transform="matrix(0.866 0.5 -0.866 0.5 184 112)" x="8" y="21">.SLX</text>
+  <polygon class="l" points="158,205 210,235 210,243 158,213"/>
+  <polygon class="r" points="262,205 210,235 210,243 262,213"/>
+  <polygon class="t" points="210,175 262,205 210,235 158,205"/>
+  <polyline class="hair" points="180,199 220,188"/>
+  <polyline class="hair" points="188,204 232,193"/>
+  <text class="lbl" transform="matrix(0.866 0.5 -0.866 0.5 184 192)" x="8" y="21">.SBD</text>
+  <polygon class="l" points="338,165 390,195 390,203 338,173"/>
+  <polygon class="r" points="442,165 390,195 390,203 442,173"/>
+  <polygon class="t" points="390,135 442,165 390,195 338,165"/>
+  <polyline class="hair" points="360,159 400,148"/>
+  <polyline class="hair" points="368,164 412,153"/>
+  <text class="lbl" transform="matrix(0.866 0.5 -0.866 0.5 364 152)" x="8" y="21">IMZML</text>
+  <polyline class="arrow" points="262,125 296,145 310,153"/>
+  <polyline class="arrow" points="262,205 296,185 310,177"/>
+  <polygon class="head" points="322,158 308,157 311,148"/>
+  <polygon class="head" points="322,172 311,181 308,171"/>
+</svg>
