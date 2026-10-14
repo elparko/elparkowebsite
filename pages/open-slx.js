@@ -17,7 +17,7 @@ export default function OpenSLX() {
       <p>
         open-slx reads a SCiLS Lab project and writes imzML 1.1. It is pure
         Python and the licence is MIT. I tested it on macOS (Apple silicon).
-        It is expected to run on Linux and Windows.
+        I did not test it on Linux or Windows.
       </p>
       <p>
         The existing exporter,{' '}
@@ -29,7 +29,8 @@ export default function OpenSLX() {
         >
           slx2imzml
         </a>{' '}
-        from CeMOS, exports through the proprietary SCiLS Lab Python API.
+        from CeMOS (Center for Mass Spectrometry and Optical Spectroscopy,
+        Mannheim University of Applied Sciences), exports through the proprietary SCiLS Lab Python API.
         open-slx needs no SCiLS Lab installation, no SCiLS Python API, and no
         licence key.
       </p>
@@ -64,7 +65,7 @@ export default function OpenSLX() {
       </p>
       <p>
         For the m/z values, the file stores the gaps between neighbouring
-        peaks. It compresses the gaps with zstd. open-slx decodes the gaps and
+        peaks. It compresses the gaps with Zstandard (zstd). open-slx decodes the gaps and
         adds them to get the m/z values.
       </p>
       <p>
@@ -105,9 +106,9 @@ export default function OpenSLX() {
         </li>
         <li>
           open-slx reads centroid data only. It checks <code>Version</code> and{' '}
-          <code>SpectraType</code>. If <code>SpectraType</code> is not{' '}
-          <code>Peaks</code>, it stops with exit code 4 and writes no imzML
-          file.
+          <code>SpectraType</code>. If the file version is not supported, or{' '}
+          <code>SpectraType</code> is not <code>Peaks</code>, it stops with
+          exit code 4 and writes no imzML file.
         </li>
         <li>A full conversion of a large dataset is not tested.</li>
         <li>
@@ -124,8 +125,9 @@ open-slx PROJECT.slx -o OUT`}
         </code>
       </pre>
       <p>
-        This writes <code>OUT.imzML</code> and <code>OUT.ibd</code>. It also
-        writes <code>OUT_features.csv</code> and{' '}
+        This writes <code>OUT.imzML</code> and <code>OUT.ibd</code>. For more
+        than one raster, it writes <code>OUT_r00.imzML</code>,{' '}
+        <code>OUT_r01.imzML</code>, and so on. It also writes <code>OUT_features.csv</code> and{' '}
         <code>OUT_metadata.json</code>.
       </p>
 
@@ -151,9 +153,6 @@ open-slx PROJECT.slx -o OUT`}
       <p>
         open-slx is not affiliated with Bruker. Bruker does not endorse it. SCiLS
         is a trademark of Bruker.
-      </p>
-      <p>
-        See also <a href="/smile-msi" style={{ color: '#000000', textDecoration: 'underline' }}>SMILE-MSI</a>.
       </p>
 
       <p style={{ marginTop: '30px', textAlign: 'center', fontSize: '0.9rem' }}>
