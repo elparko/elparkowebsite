@@ -3,7 +3,18 @@ import WritingLayout from '../components/WritingLayout';
 const linkStyle = { color: '#000000', textDecoration: 'underline' };
 const listStyle = { marginTop: '12px', marginBottom: '24px', marginLeft: '20px', lineHeight: '1.6' };
 const itemStyle = { marginBottom: '0.6em' };
-const codeBlockStyle = { overflowX: 'auto', textAlign: 'left', lineHeight: '1.5', margin: '12px 0 20px' };
+const codeBlockStyle = {
+  overflowX: 'auto',
+  whiteSpace: 'pre-wrap',
+  overflowWrap: 'anywhere',
+  textAlign: 'left',
+  lineHeight: '1.5',
+  margin: '12px 0 20px',
+  padding: '10px 12px',
+  background: '#f4f4f4',
+  borderRadius: '4px',
+};
+const headingStyle = { marginTop: '1.8em', marginBottom: '0.5em' };
 
 function Link({ href, children }) {
   return (
@@ -22,7 +33,7 @@ export default function OpenSLX() {
         It needs no SCiLS Lab and no licence.
       </p>
 
-      <h3>What it does</h3>
+      <h3 style={headingStyle}>What it does</h3>
       <p>
         Mass spectrometry imaging (MSI) maps the mass spectra of a tissue
         section, spot by spot.
@@ -41,7 +52,7 @@ export default function OpenSLX() {
         <Link href="https://github.com/elparko/open-slx/tree/main/docs">repo docs</Link>.
       </p>
 
-      <h3>What you need</h3>
+      <h3 style={headingStyle}>What you need</h3>
       <p>Two files from your SCiLS Lab project, in one folder:</p>
       <ul style={listStyle}>
         <li style={itemStyle}><code>PROJECT.slx</code></li>
@@ -53,7 +64,7 @@ export default function OpenSLX() {
         You do not need the original Bruker .d folder.
       </p>
 
-      <h3>How to run it</h3>
+      <h3 style={headingStyle}>How to run it</h3>
       <p>Install it with uv:</p>
       <pre style={codeBlockStyle}>
         <code>uv tool install git+https://github.com/elparko/open-slx</code>
@@ -63,7 +74,7 @@ export default function OpenSLX() {
         <code>open-slx PROJECT.slx -o OUT</code>
       </pre>
 
-      <h3>What you get</h3>
+      <h3 style={headingStyle}>What you get</h3>
       <ul style={listStyle}>
         <li style={itemStyle}>
           <code>OUT.imzML</code> and <code>OUT.ibd</code>.
@@ -83,7 +94,7 @@ export default function OpenSLX() {
         </li>
       </ul>
 
-      <h3>What is tested and what is not</h3>
+      <h3 style={headingStyle}>What is tested and what is not</h3>
       <p>Tested:</p>
       <ul style={listStyle}>
         <li style={itemStyle}>
@@ -114,7 +125,7 @@ export default function OpenSLX() {
         For other files, it stops with an error and writes no output.
       </p>
 
-      <h3>Credits</h3>
+      <h3 style={headingStyle}>Credits</h3>
       <ul style={listStyle}>
         <li style={itemStyle}>
           <Link href="https://github.com/CeMOS-Mannheim/slx2imzml">slx2imzml</Link>{' '}
