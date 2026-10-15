@@ -28,9 +28,9 @@ export default function OpenSLX() {
   return (
     <WritingLayout>
       <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
-        SCiLS Lab projects are locked to SCiLS Lab. open-slx turns them into
+        Other tools cannot open SCiLS Lab projects. open-slx turns them into
         imzML, the open format that other mass spectrometry imaging tools read.
-        It needs no SCiLS Lab and no licence.
+        It needs no SCiLS Lab and no licence key.
       </p>
 
       <h3 style={headingStyle}>What it does</h3>
@@ -39,7 +39,7 @@ export default function OpenSLX() {
         section, spot by spot.
       </p>
       <p>
-        A SCiLS Lab project only opens in SCiLS Lab.
+        Other tools cannot open SCiLS Lab projects.
         I wanted to use my data in other tools.
         So I wrote open-slx.
       </p>
@@ -65,7 +65,9 @@ export default function OpenSLX() {
       </p>
 
       <h3 style={headingStyle}>How to run it</h3>
-      <p>Install it with uv:</p>
+      <p>
+        Install it with <Link href="https://docs.astral.sh/uv/">uv</Link>, a Python installer:
+      </p>
       <pre style={codeBlockStyle}>
         <code>uv tool install git+https://github.com/elparko/open-slx</code>
       </pre>
@@ -107,7 +109,7 @@ export default function OpenSLX() {
         <li style={itemStyle}>
           An automated test converts 200 spots.
           The total ion count of each spot matches the value SCiLS stored,
-          within 1e-4.
+          within 0.01 percent.
         </li>
       </ul>
       <p>Not tested:</p>
@@ -116,27 +118,28 @@ export default function OpenSLX() {
         <li style={itemStyle}>Resampled timsTOF projects.</li>
         <li style={itemStyle}>
           M2aia, Cardinal, and METASPACE.
-          They should open the files, but I have not checked.
+          They are expected to open the files. I have not tested them.
         </li>
         <li style={itemStyle}>Linux and Windows.</li>
       </ul>
       <p>
         open-slx reads SCiLS Lab 14 files with centroid data only.
-        For other files, it stops with an error and writes no output.
+        For other files, it stops with an error and writes no imzML file.
       </p>
 
       <h3 style={headingStyle}>Credits</h3>
       <ul style={listStyle}>
         <li style={itemStyle}>
           <Link href="https://github.com/CeMOS-Mannheim/slx2imzml">slx2imzml</Link>{' '}
-          from CeMOS (Mannheim University of Applied Sciences) does the same
-          job through the SCiLS Lab Python API.
+          from CeMOS (Center for Mass Spectrometry and Optical Spectroscopy,
+          Mannheim University of Applied Sciences) does the same
+          job through the SCiLS Lab Python application programming interface (API).
           I used it to learn what an export contains.
           open-slx has no code from it.
         </li>
         <li style={itemStyle}>
           The test data is Zenodo record 21251439 (CC BY 4.0).
-          It is a RomicsProcessor project from PNNL (Pacific Northwest
+          It comes from the RomicsProcessor project of PNNL (Pacific Northwest
           National Laboratory).
         </li>
       </ul>
