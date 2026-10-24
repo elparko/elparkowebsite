@@ -1,24 +1,27 @@
 import AppDocLayout from '@/components/AppDocLayout';
 import SupportEmail from '@/components/SupportEmail';
-import { APP_NAME, privacyPath, supportPath } from '@/lib/mac-app.mjs';
+import { APPS } from '@/lib/mac-app.mjs';
+
+const app = APPS.rowlight;
 
 export default function PrivacyPolicy() {
   return (
     <AppDocLayout
-      title={`${APP_NAME} Privacy Policy`}
-      description={`Privacy policy for ${APP_NAME}, a Mac PDF reader. No account, no analytics, and no data collected by the developer.`}
-      path={privacyPath}
+      appName={app.name}
+      title={`${app.name} Privacy Policy`}
+      description={`Privacy policy for ${app.name}, a Mac PDF reader. No account, no analytics, and no data collected by the developer.`}
+      path={app.privacyPath}
     >
       <p style={{marginBottom: '20px'}}>
         Effective date: October 24, 2026.
       </p>
       <p style={{marginBottom: '20px'}}>
-        {APP_NAME} is a PDF reader for the Mac. This page says what the app does with your information.
+        {app.name} is a PDF reader for the Mac. This page says what the app does with your information.
       </p>
 
       <h3 id="collected">Information the app collects</h3>
       <p style={{marginBottom: '20px'}}>
-        {APP_NAME} does not collect personal information. There is no account, no analytics, no tracking, and no ads. I am the developer, and I do not collect data from the app.
+        {app.name} does not collect personal information. There is no account, no analytics, no tracking, and no ads. I am the developer, and I do not collect data from the app.
       </p>
 
       <h3 id="stored">Where highlights, notes, and settings are stored</h3>
@@ -38,7 +41,7 @@ export default function PrivacyPolicy() {
 
       <h3 id="children">Children&apos;s privacy</h3>
       <p style={{marginBottom: '20px'}}>
-        {APP_NAME} is not directed at children under 13. It does not knowingly collect personal information from anyone, including children.
+        {app.name} is not directed at children under 13. It does not knowingly collect personal information from anyone, including children.
       </p>
 
       <h3 id="changes">Changes to this policy</h3>
@@ -48,10 +51,10 @@ export default function PrivacyPolicy() {
 
       <h3 id="contact">Contact</h3>
       <p style={{marginBottom: '20px'}}>
-        Questions about this policy: <SupportEmail />.
+        Questions about this policy: <SupportEmail email={app.email} />.
       </p>
       <p style={{marginBottom: '20px'}}>
-        <a href={supportPath}>Support</a>
+        <a href={app.supportPath}>Support</a>
       </p>
     </AppDocLayout>
   );

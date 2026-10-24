@@ -1,5 +1,5 @@
 import WritingLayout from '../components/WritingLayout';
-import { APP_NAME, privacyPath, supportPath } from '@/lib/mac-app.mjs';
+import { APPS } from '@/lib/mac-app.mjs';
 
 export default function Tools() {
   return (
@@ -16,7 +16,15 @@ export default function Tools() {
         in a folder next to each book, with their own history, search index,
         and export, and sync between Macs through iCloud. The first working
         version took one day. <a href="https://github.com/elparko/fa-reader">Source on GitHub</a>.{' '}
-        <a href={privacyPath}>Privacy policy</a> and <a href={supportPath}>support</a> for {APP_NAME}.
+        <a href={APPS.rowlight.privacyPath}>Privacy policy</a> and <a href={APPS.rowlight.supportPath}>support</a> for {APPS.rowlight.name}.
+      </p>
+
+      <h3 id="pcalc">pcalc</h3>
+      <p style={{marginBottom: '20px'}}>
+        {APPS.quillmath.name} is a LaTeX math scratchpad and calculator for the Mac, with graphing.
+        It is a Tauri app. Documents are stored locally. There is no account, no analytics,
+        and no network data collection.{' '}
+        <a href={APPS.quillmath.privacyPath}>Privacy policy</a> and <a href={APPS.quillmath.supportPath}>support</a>.
       </p>
 
       <h3 id="writing-program">Writing program</h3>

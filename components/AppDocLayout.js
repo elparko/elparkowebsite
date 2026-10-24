@@ -2,9 +2,8 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import styles from '@/styles/Writing.module.css';
 import { AREAS, PAGES, SITE_URL } from '@/lib/pages.mjs';
-import { APP_NAME } from '@/lib/mac-app.mjs';
 
-export default function AppDocLayout({ title, description, path, children }) {
+export default function AppDocLayout({ title, description, path, appName, children }) {
   const [showArrow, setShowArrow] = useState(false);
 
   useEffect(() => {
@@ -63,7 +62,7 @@ export default function AppDocLayout({ title, description, path, children }) {
 
       <section style={{padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto'}}>
         <h1 className={styles.sectionTitle} style={{textAlign: 'center'}}>{title}</h1>
-        <p className={styles.pageMeta}>{APP_NAME} · Mac app</p>
+        <p className={styles.pageMeta}>{appName} · Mac app</p>
 
         <div className={styles.content} style={{textAlign: 'justify', lineHeight: '1.8', maxWidth: '100%', wordWrap: 'break-word'}}>
           {children}

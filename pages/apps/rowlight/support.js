@@ -1,22 +1,25 @@
 import AppDocLayout from '@/components/AppDocLayout';
 import SupportEmail from '@/components/SupportEmail';
-import { APP_NAME, privacyPath, supportPath } from '@/lib/mac-app.mjs';
+import { APPS } from '@/lib/mac-app.mjs';
+
+const app = APPS.rowlight;
 
 export default function Support() {
   return (
     <AppDocLayout
-      title={`${APP_NAME} Support`}
-      description={`Support for ${APP_NAME}, a Mac PDF reader. Where highlights are stored, and how to move them between Macs.`}
-      path={supportPath}
+      appName={app.name}
+      title={`${app.name} Support`}
+      description={`Support for ${app.name}, a Mac PDF reader. Where highlights are stored, and how to move them between Macs.`}
+      path={app.supportPath}
     >
-      <h3 id="what">What {APP_NAME} is</h3>
+      <h3 id="what">What {app.name} is</h3>
       <p style={{marginBottom: '20px'}}>
-        {APP_NAME} is a native Mac app for reading PDFs. You can highlight text and write notes. It does not need an account.
+        {app.name} is a native Mac app for reading PDFs. You can highlight text and write notes. It does not need an account.
       </p>
 
       <h3 id="contact">Contact</h3>
       <p style={{marginBottom: '20px'}}>
-        <SupportEmail />
+        <SupportEmail email={app.email} />
       </p>
 
       <h3 id="stored">Where are my highlights stored?</h3>
@@ -24,7 +27,7 @@ export default function Support() {
         On your Mac. Highlights and notes live in a folder next to each PDF. Settings are stored on your Mac as well. If you use iCloud, those files are also in your iCloud account. I cannot see them.
       </p>
 
-      <h3 id="pdf">Does {APP_NAME} change my PDF?</h3>
+      <h3 id="pdf">Does {app.name} change my PDF?</h3>
       <p style={{marginBottom: '20px'}}>
         No. The app reads the PDF and does not write to it. Highlights and notes stay outside the file.
       </p>
@@ -35,7 +38,7 @@ export default function Support() {
       </p>
 
       <p style={{marginBottom: '20px'}}>
-        <a href={privacyPath}>Privacy policy</a>
+        <a href={app.privacyPath}>Privacy policy</a>
       </p>
     </AppDocLayout>
   );

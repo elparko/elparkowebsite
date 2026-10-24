@@ -1,5 +1,3 @@
-import { SUPPORT_EMAIL } from '@/lib/mac-app.mjs';
-
-export default function SupportEmail() {
-  return <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>;
+export default function SupportEmail({ email }) {
+  return <a href={`mailto:${email}`}>{email}</a>;
 }

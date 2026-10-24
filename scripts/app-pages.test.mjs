@@ -4,44 +4,70 @@ import { existsSync, readFileSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('Mac app name, contact, and stable URLs live in one module', async () => {
-  const app = await import('../lib/mac-app.mjs');
-  assert.equal(typeof app.APP_NAME, 'string');
-  assert.ok(app.APP_NAME.trim().length > 0);
-  assert.equal(app.APP_SLUG, 'rowlight');
-  assert.equal(app.privacyPath, '/apps/rowlight/privacy');
-  assert.equal(app.supportPath, '/apps/rowlight/support');
-  assert.equal(app.SUPPORT_EMAIL, 'rowlight@proton.me');
-  assert.equal(app.isContactEmailReady('TODO'), false);
-  assert.equal(app.isContactEmailReady(app.SUPPORT_EMAIL), true);
+test('each Mac app has its own name, slug, and email', async () => {
+  const { APPS, isContactEmailReady } = await import('../lib/mac-app.mjs');
+
+  assert.deepEqual(APPS.rowlight, {
+    name: 'Rowlight',
+    slug: 'rowlight',
+    email: 'rowlight@proton.me',
+    privacyPath: '/apps/rowlight/privacy',
+    supportPath: '/apps/rowlight/support',
+  });
+  assert.deepEqual(APPS.quillmath, {
+    name: 'Quill Math',
+    slug: 'quillmath',
+    email: 'quillmath@proton.me',
+    privacyPath: '/apps/quillmath/privacy',
+    supportPath: '/apps/quillmath/support',
+  });
+
+  for (const app of Object.values(APPS)) {
+    assert.equal(isContactEmailReady(app.email), true);
+  }
+  assert.equal(isContactEmailReady('TODO'), false);
   assert.doesNotMatch(read('lib/mac-app.mjs'), /TODO/);
   assert.doesNotMatch(read('components/SupportEmail.js'), /TODO/);
-  assert.doesNotMatch(read('pages/apps/rowlight/privacy.js'), /TODO/);
-  assert.doesNotMatch(read('pages/apps/rowlight/support.js'), /TODO/);
 });
 
-test('privacy and support pages use the shared name and cover the required facts', async () => {
-  const { APP_SLUG } = await import('../lib/mac-app.mjs');
-  const privacyFile = `pages/apps/${APP_SLUG}/privacy.js`;
-  const supportFile = `pages/apps/${APP_SLUG}/support.js`;
-  assert.equal(existsSync(new URL(`../${privacyFile}`, import.meta.url)), true);
-  assert.equal(existsSync(new URL(`../${supportFile}`, import.meta.url)), true);
+test('privacy and support pages use that app config', async () => {
+  const { APPS } = await import('../lib/mac-app.mjs');
 
-  const privacy = read(privacyFile);
-  const support = read(supportFile);
-  for (const source of [privacy, support]) {
-    assert.match(source, /APP_NAME/);
-    assert.doesNotMatch(source, /Rowlight|FA Reader/);
-    assert.match(source, /SUPPORT_EMAIL|SupportEmail/);
+  for (const app of Object.values(APPS)) {
+    const privacyFile = `pages/apps/${app.slug}/privacy.js`;
+    const supportFile = `pages/apps/${app.slug}/support.js`;
+    assert.equal(existsSync(new URL(`../${privacyFile}`, import.meta.url)), true);
+    assert.equal(existsSync(new URL(`../${supportFile}`, import.meta.url)), true);
+
+    const privacy = read(privacyFile);
+    const support = read(supportFile);
+    for (const source of [privacy, support]) {
+      assert.match(source, new RegExp(`APPS\\.${app.slug}`));
+      assert.match(source, /SupportEmail/);
+      assert.doesNotMatch(source, /TODO/);
+      assert.doesNotMatch(source, new RegExp(app.email.replace('.', '\\.')));
+      assert.doesNotMatch(source, new RegExp(app.name));
+    }
+    assert.match(privacy, /October 24, 2026/);
+    assert.match(privacy, /children/i);
   }
 
-  assert.match(privacy, /October 24, 2026/);
-  for (const fact of [/account/i, /analytics/i, /tracking/i, /ads/i, /iCloud/, /children/i, /image/i]) {
-    assert.match(privacy, fact);
+  const rowlightPrivacy = read('pages/apps/rowlight/privacy.js');
+  for (const fact of [/account/i, /analytics/i, /tracking/i, /ads/i, /iCloud/, /image/i]) {
+    assert.match(rowlightPrivacy, fact);
   }
-
+  const rowlightSupport = read('pages/apps/rowlight/support.js');
   for (const fact of [/highlight/i, /PDF/, /iCloud/, /Mac/]) {
-    assert.match(support, fact);
+    assert.match(rowlightSupport, fact);
+  }
+
+  const quillPrivacy = read('pages/apps/quillmath/privacy.js');
+  for (const fact of [/account/i, /analytics/i, /network/i, /local/i, /LaTeX/, /graphing/]) {
+    assert.match(quillPrivacy, fact);
+  }
+  const quillSupport = read('pages/apps/quillmath/support.js');
+  for (const fact of [/LaTeX/, /graph/, /document/i, /account/i, /analytics/i, /network/i]) {
+    assert.match(quillSupport, fact);
   }
 });
 
@@ -50,9 +76,12 @@ test('app pages stay off the homepage nav and are linked from the tools page', (
   const tools = read('pages/tools.js');
   const pages = read('lib/pages.mjs');
   assert.doesNotMatch(home, /\/apps\//);
-  assert.doesNotMatch(pages, /privacyPath|supportPath|\/apps\/rowlight/);
+  assert.doesNotMatch(pages, /\/apps\/rowlight|\/apps\/quillmath/);
   assert.match(tools, /mac-app/);
-  assert.match(tools, /privacyPath/);
-  assert.match(tools, /supportPath/);
-  assert.match(tools, /APP_NAME/);
+  assert.match(tools, /APPS\.rowlight\.privacyPath/);
+  assert.match(tools, /APPS\.rowlight\.supportPath/);
+  assert.match(tools, /id="pcalc"/);
+  assert.match(tools, /APPS\.quillmath\.privacyPath/);
+  assert.match(tools, /APPS\.quillmath\.supportPath/);
+  assert.match(tools, /APPS\.quillmath\.name/);
 });
