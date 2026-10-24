@@ -1,4 +1,5 @@
 import WritingLayout from '../components/WritingLayout';
+import { APP_NAME, privacyPath, supportPath } from '@/lib/mac-app.mjs';
 
 export default function Tools() {
   return (
@@ -14,7 +15,8 @@ export default function Tools() {
         for USMLE Step 1. It never writes to the PDF. Highlights and notes live
         in a folder next to each book, with their own history, search index,
         and export, and sync between Macs through iCloud. The first working
-        version took one day. <a href="https://github.com/elparko/fa-reader">Source on GitHub</a>.
+        version took one day. <a href="https://github.com/elparko/fa-reader">Source on GitHub</a>.{' '}
+        <a href={privacyPath}>Privacy policy</a> and <a href={supportPath}>support</a> for {APP_NAME}.
       </p>
 
       <h3 id="writing-program">Writing program</h3>

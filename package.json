@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "node --test scripts/app-pages.test.mjs",
     "export": "next build && next export",
     "deploy": "npm run export && touch out/.nojekyll"
   },
