@@ -11,10 +11,13 @@ test('Mac app name, contact, and stable URLs live in one module', async () => {
   assert.equal(app.APP_SLUG, 'rowlight');
   assert.equal(app.privacyPath, '/apps/rowlight/privacy');
   assert.equal(app.supportPath, '/apps/rowlight/support');
+  assert.equal(app.SUPPORT_EMAIL, 'rowlight@proton.me');
   assert.equal(app.isContactEmailReady('TODO'), false);
-  assert.equal(app.isContactEmailReady('person@example.com'), true);
-  assert.equal(app.isContactEmailReady(app.SUPPORT_EMAIL), false);
-  assert.match(read('lib/mac-app.mjs'), /TODO/);
+  assert.equal(app.isContactEmailReady(app.SUPPORT_EMAIL), true);
+  assert.doesNotMatch(read('lib/mac-app.mjs'), /TODO/);
+  assert.doesNotMatch(read('components/SupportEmail.js'), /TODO/);
+  assert.doesNotMatch(read('pages/apps/rowlight/privacy.js'), /TODO/);
+  assert.doesNotMatch(read('pages/apps/rowlight/support.js'), /TODO/);
 });
 
 test('privacy and support pages use the shared name and cover the required facts', async () => {
