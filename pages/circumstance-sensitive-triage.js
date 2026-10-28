@@ -1,0 +1,311 @@
+import WritingLayout from '../components/WritingLayout';
+import TriageChat from '../components/TriageChat';
+
+const eyebrowStyle = {
+  fontSize: '0.7rem',
+  letterSpacing: '0.18em',
+  textTransform: 'uppercase',
+  opacity: 0.6,
+  marginTop: '2.6em',
+  marginBottom: '0.3em',
+  textAlign: 'left',
+};
+const headingStyle = {
+  marginTop: 0,
+  marginBottom: '0.7em',
+  paddingTop: '0.4em',
+  borderTop: '1.5px solid #000000',
+  textAlign: 'left',
+  fontSize: '1.25rem',
+};
+const listStyle = { marginTop: '12px', marginBottom: '20px', marginLeft: '20px', lineHeight: '1.7' };
+const itemStyle = { marginBottom: '0.7em' };
+const figureStyle = { margin: '24px 0 28px' };
+const imageStyle = { display: 'block', width: '100%', height: 'auto', background: '#ffffff', border: '1px solid rgba(0, 0, 0, 0.15)' };
+const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
+const tableWrapStyle = { overflowX: 'auto', margin: '16px 0 8px' };
+const tableStyle = { borderCollapse: 'collapse', width: '100%', fontSize: '0.85rem', lineHeight: '1.45', textAlign: 'left' };
+const thStyle = { verticalAlign: 'top', padding: '6px 28px 6px 0', borderBottom: '1.5px solid #000000' };
+const tdStyle = { verticalAlign: 'top', padding: '6px 28px 6px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)' };
+const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
+
+function Section({ eyebrow, title, children }) {
+  return (
+    <>
+      <p style={eyebrowStyle}>{eyebrow}</p>
+      <h3 style={headingStyle}>{title}</h3>
+      {children}
+    </>
+  );
+}
+
+function Figure({ src, alt, children }) {
+  return (
+    <figure style={figureStyle}>
+      <img src={src} alt={alt} style={imageStyle} />
+      <figcaption style={captionStyle}>{children}</figcaption>
+    </figure>
+  );
+}
+
+function Table({ head, rows, minWidth, widths = [] }) {
+  return (
+    <div style={tableWrapStyle}>
+      <table style={{ ...tableStyle, minWidth }}>
+        <thead>
+          <tr>{head.map((h, i) => <th key={h} style={{ ...thStyle, width: widths[i] }}>{h}</th>)}</tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r[0]}>{r.map((c, i) => <td key={i} style={tdStyle}>{c}</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default function CircumstanceSensitiveTriage() {
+  return (
+    <WritingLayout>
+      <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
+        How one sentence about a rural patient&apos;s life shifts emergency advice in small chat models.
+      </p>
+      <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
+        Preliminary research note, 27 October 2026. One day of experiments on two 4-billion-parameter open models,
+        with author-written vignettes and AI-coded replies. No clinician labels yet. Shared to invite scrutiny.
+        Not medical advice.
+      </p>
+      <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75 }}>
+        Parker Smith. Medical student, LSU Health Shreveport. Founder and CEO, <a href="/pereste-health">Pereste Health</a>.
+        <br />
+        pjs002@lsuhs.edu · ORCID 0000-0003-0993-3459
+      </p>
+
+      <Section eyebrow="Summary" title="One sentence about the patient's circumstances changes the advice">
+        <p>
+          Two small open chat models (Qwen3.5-4B and Gemma-3-4b-it) read messages like the ones older rural patients
+          with chronic illness write. We added one sentence about the person&apos;s circumstances and measured what
+          changed. Then we looked inside one model for the units that respond to those sentences, tried to switch
+          them off, and tested a first fix. The chat window shows the real messages and the real replies. Pick a
+          patient, a model and the added sentence. The added sentence is highlighted. Replies were generated to a
+          fixed length, so some stop mid-sentence.
+        </p>
+        <TriageChat />
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>A sentence about money lowers the emergency instruction.</b> With &quot;no insurance, money is
+            tight&quot;, 7 of 16 Qwen emergency replies drop &quot;call 911&quot; and tell a confused diabetic, a
+            stroke patient or a septic 80-year-old to get to the ER on their own. On Gemma the same sentence halves the
+            &quot;call EMS&quot; replies and three of sixteen say wait at home. Wording matters: &quot;I pay for every
+            visit myself&quot; changes nothing, and naming the ambulance cost outright makes the model argue it down
+            and say &quot;call 911&quot; first every time.
+          </li>
+          <li style={itemStyle}>
+            <b>Distance lowers it in proportion to the distance.</b> From 30 minutes to four hours from the hospital,
+            both models say &quot;call 911&quot; less at every step on true emergencies (Gemma: -0.4 to -1.9
+            log-odds). An ambulance is the one thing that solves distance; the models treat it as a reason to call
+            less. On routine complaints the same sentences raise the alarm.
+          </li>
+          <li style={itemStyle}>
+            <b>A sentence of reluctance lowers it on Qwen and raises urgency on routine complaints.</b> &quot;Probably
+            just my age&quot;, &quot;I&apos;m not one to make a fuss&quot; and &quot;I&apos;ll talk it over with my
+            son&quot; soften the first instruction in emergencies (8 to 10 of 16 replies open with &quot;call
+            911&quot;, against 13 of 16 with a neutral sentence) and make the model sterner. On routine complaints they
+            make it rate a rash or a refill as more serious. On Gemma only the family sentence moves the advice.
+          </li>
+          <li style={itemStyle}>
+            <b>A message typed by a family member is rated as more urgent</b> than the same words from the patient.
+            Largest single effect on the urgency reading; it needs its own study.
+          </li>
+          <li style={itemStyle}>
+            <b>The model infers traits of the person that the message did not state.</b> &quot;No insurance&quot;
+            makes it infer low income and distrust of doctors; a far hospital, rural; &quot;nobody can take me&quot;,
+            lives alone with no car. Every constraint also makes it infer frailty and poor reading, though no sentence
+            said so.
+          </li>
+          <li style={itemStyle}>
+            <b>After the model has advised 911, objections do not change the advice.</b> Objections sent as a second
+            message are argued down. The weak moment is the first reply.
+          </li>
+          <li style={itemStyle}>
+            <b>Specific neurons respond to the facts of rural life, and switching them off does not change the
+            advice.</b> Housing loss, money strain, the payer&apos;s name, no coverage, medicine supply, living alone,
+            transport, trust in doctors, &quot;a reason not to comply&quot;: one patient sentence drives each to 10 to
+            30 times its normal level. Switching them off changes nothing. The advice change is spread across the
+            model; one direction in its working memory moved it.
+          </li>
+          <li style={itemStyle}>
+            <b>A one-line system instruction restores the emergency advice and over-escalates borderline cases.</b>{' '}
+            &quot;Decide from the symptoms alone whether this needs 911&quot; restores &quot;call 911&quot; in 16 of 16
+            emergencies under every sentence, and sends one routine patient in eight and up to two thirds of same-day
+            cases to 911 when they mention a barrier. Fixes have to be scored on harm.
+          </li>
+        </ul>
+        <p>
+          For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for one who
+          also states a barrier or a reluctance, and the direction of the error depends on how sick the person is. Test
+          deployments with these sentences, and test fixes on borderline cases, not only on emergencies.
+        </p>
+      </Section>
+
+      <Section eyebrow="Method" title="What we did">
+        <p>
+          Thirty-two scenarios in two arms (16 textbook emergencies, 16 clearly routine complaints) plus 16 same-day
+          cases, in the voice of patients aged 65 to 88 with heart failure, COPD, diabetes, atrial fibrillation, kidney
+          disease or recent surgery. Each cue is one sentence inserted before the final question, paired against a
+          weather sentence of the same length. Readouts: the model&apos;s next-word probabilities after a fixed prefill
+          (High or Low urgency; Yes or No to &quot;call 911 now&quot;; ambulance or drive), and free replies coded by
+          two independent AI coders (kappa 0.77 to 1.0). Paired tests within scenario, bootstrap intervals, Holm
+          correction. Mechanism: every neuron read at the reply opener and over the cue, trigger sweeps over 474 bank
+          texts with falsifier pairs, ablation and steering against random-unit controls, a residual-stream direction
+          against a random direction. Cue families: distance, transport, clinic hours, insurance, cost wording, stance,
+          caregiver voice, graded doses, and sentences from a literature sweep on rural life.
+        </p>
+        <Table
+          widths={['22%', '46%', '32%']}
+          head={['Design element', 'Choice', 'Why']}
+          rows={[
+            ['Models', 'Qwen3.5-4B (mechanism and behaviour), Gemma-3-4b-it (behaviour replication)', 'both run locally; two training lineages'],
+            ['Control', 'a token-matched weather sentence, plus 16 one-feature control sentences', 'separates the barrier from "an added sentence"'],
+            ['Primary measure', 'the first instruction in the free reply, coded by two coders', 'next-word labels move for many non-barrier sentences'],
+            ['Negatives reported', 'four interventions that did nothing, with their controls', 'a claimed mechanism must survive its controls'],
+          ]}
+        />
+      </Section>
+
+      <Section eyebrow="Findings" title="Money and the emergency instruction">
+        <Figure src="/rural-triage/fig1-first-advice.png" alt="Stacked bars of the first advice in 16 emergency scenarios, one pair of bars per added sentence.">
+          Figure 1. What the reply tells an emergency patient to do first, by added sentence. Qwen3.5-4B, 16 scenarios
+          per bar, two coders side by side. The no-insurance sentence moves 7 and 6 of 16 replies from &quot;call
+          911&quot; to &quot;go to the ER yourself&quot;; the clinic-closed sentence moves two. No other sentence moves any.
+        </Figure>
+        <Table
+          minWidth="640px"
+          head={['Gemma-3-4b-it, first advice in emergencies (of 16)', 'none', 'weather', 'far hospital', 'clinic closed', 'no ride', 'uninsured']}
+          rows={[
+            ['call EMS now (coder 1 / coder 2)', '14 / 14', '13 / 13', '14 / 14', '15 / 13', '15 / 14', '8 / 8'],
+            ['go to the ER yourself', '0', '0', '0', '0', '0', '3 / 3'],
+            ['home care or wait', '1 / 0', '1 / 0', '2 / 1', '0 / 2', '1 / 2', '3 / 3'],
+          ]}
+        />
+        <p style={captionStyle}>Table 1. The same test on the second model family. The cost effect replicates and is larger.</p>
+      </Section>
+
+      <Section eyebrow="Findings" title="Distance, step by step">
+        <Figure src="/rural-triage/fig2-dose.png" alt="Six line charts of three readouts against hospital distance and against the size of a past bill.">
+          Figure 2. Graded cues on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away, and a past bill of 200 to
+          20,000 dollars. Top row: distance; bottom row: the bill. Orange: emergencies; blue: routine complaints. Bands
+          are 95% intervals. On emergencies the &quot;call 911&quot; reading falls with each step of distance and the
+          &quot;ambulance&quot; reading falls overall; on routine complaints the alarm rises. Gemma shows the same slope,
+          steeper.
+        </Figure>
+      </Section>
+
+      <Section eyebrow="Findings" title="Reluctance, in both directions">
+        <Figure src="/rural-triage/fig3-stance.png" alt="Two bar charts of the emergency and routine readouts for each reluctance sentence.">
+          Figure 3. One sentence of reluctance on Qwen3.5-4B. Left: share of emergency replies that open with
+          &quot;call 911&quot;. Orange bars are the stance sentences. Black is the weather sentence. Blue is a
+          smoking-history fact. Gray is no sentence, and a neutral self-description. Right: probability of a High
+          urgency label on routine complaints.
+        </Figure>
+      </Section>
+
+      <Section eyebrow="Findings" title="What the model assumes about the person">
+        <Figure src="/rural-triage/fig4-persona.png" alt="Heat map of ten inferred traits against four added sentences.">
+          Figure 4. Yes/no questions put to the model after each message (&quot;Based only on this message, does this
+          person live in a rural area?&quot;). Cells: the shift in log-odds of Yes when one sentence is added, against
+          the weather sentence. Every constraint raises &quot;low health literacy&quot; and &quot;frail&quot;.
+        </Figure>
+      </Section>
+
+      <Section eyebrow="Inside the model" title="The rural-life units, and what moves the advice">
+        <p>
+          Forty-four paired test sentences settled the labels of the strongest units. Housing loss fires at 26 on
+          &quot;sleeping in my car&quot; and under 1 on &quot;I sleep in my own bed&quot;. Money strain fires at 10 on
+          &quot;money is tight&quot;, 4 on &quot;my schedule is tight&quot;, 0.6 on &quot;tight-knit family&quot;. The
+          reason-not-to-comply unit fires on &quot;I milk the cows at five&quot;, &quot;nobody can watch the kids&quot;
+          and &quot;I do not trust doctors&quot;, and not on &quot;I cannot name the capital of France&quot;. The payer
+          unit fires at 17 to 20 on Medicare and Medicaid and near zero on &quot;my plan&quot;. The no-coverage unit
+          fires alike on &quot;I cannot afford insurance&quot; and &quot;I came to this country without papers&quot;.
+          Three labels failed their own test and were dropped.
+        </p>
+        <Figure src="/rural-triage/fig5-atlas.png" alt="Heat map of sixteen named units against thirteen kinds of text.">
+          Figure 5. The sixteen most selective units, named by what they respond to, against the kinds of text in the
+          bank. Each cell is the unit&apos;s mean activation on that kind of text, in multiples of its largest
+          activation on ordinary web text. Clinical notes are the average of four cases in twelve document formats.
+        </Figure>
+        <p>
+          Four interventions did nothing against random controls: switching off the twenty units that read the
+          insurance sentence (everywhere, or only on the sentence), pushing the units that shift at the reply opener,
+          and pushing the atlas units themselves. The fifth worked: removing one direction from the model&apos;s working
+          memory, the average difference the money sentence makes at layer 20, cut the routine over-escalation by a
+          third and most of the same-day &quot;call 911&quot; rise, while a random direction did nothing. The units show
+          what the model has read; the advice change travels along a direction spread across many of them.
+        </p>
+        <Figure src="/rural-triage/fig6-intervention.png" alt="Three dot plots of the no-insurance shift under no ablation, twenty units zeroed, and two random unit sets.">
+          Figure 6. Switching off the twenty insurance-reading units everywhere (orange) leaves the cost effect in
+          place, and so do two random sets of units (gray). Three arms, three readouts, 16 scenarios each.
+        </Figure>
+      </Section>
+
+      <Section eyebrow="Fix" title="One line of instruction, and its price">
+        <Table
+          widths={['24%', '38%', '38%']}
+          head={['Set', 'Benefit: emergency replies that open with "call 911"', 'Harm: non-emergencies sent to 911']}
+          rows={[
+            ['Main set, 6 cues', '0.62 to 0.81 before; 16 of 16 after, every cue', '12 of 96 routine replies after (2 to 3 before)'],
+            ['Stance set, 9 cues', '0.50 to 0.88 before; 16 of 16 after, every sentence', 'not measured on this set'],
+            ['Same-day cases', 'not applicable', '0.00 to 0.12 before; 0.38 to 0.62 after under barrier sentences; 0.12 with "I have good insurance"'],
+          ]}
+        />
+        <p style={captionStyle}>
+          Table 2. The system line &quot;decide from the symptoms alone whether this needs 911, before weighing
+          circumstances&quot; repairs the emergency instruction and moves the same error onto borderline patients,
+          concentrated among those with the least access. A softer line, a small fine-tune and the direction are under
+          test.
+        </p>
+      </Section>
+
+      <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
+        <p>
+          Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
+          Louisiana Medicaid, Medicare ambulance cover, the insulin cap, nurse lines, 988 from a landline, text-to-911,
+          dialysis in a hurricane, insulin without power, the stroke window, home INR checks, 340B. Two answers fully
+          correct, seven mostly correct, five wrong or missing a key fact, two unsafe: the model says Louisiana never
+          expanded Medicaid (it did, in 2016) and that texting 911 beats calling (it works only where supported). A
+          model that argues a cost barrier down with the wrong facts resolves it badly.
+        </p>
+      </Section>
+
+      <Section eyebrow="Limits and next steps" title="What this does not show">
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            One day, two 4-billion-parameter models, author-written vignettes, AI-coded replies. No clinician has
+            labelled a case; seven close calls are flagged.
+          </li>
+          <li style={itemStyle}>
+            Many next-word label shifts also appear for control sentences that state no barrier: a sentence about where
+            the pills are kept raises routine urgency more than any access cue. The barrier-specific evidence is the
+            coded replies, the graded distance curve, the caregiver effect and the insured-against-uninsured pair.
+          </li>
+          <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
+          <li style={itemStyle}>
+            Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
+            and on frontier models through their APIs; fixes scored as benefit and harm on three arms (system line,
+            direction, fine-tune); a carbon-monoxide set, since a generator in the carport rarely produced a
+            carbon-monoxide warning; the caregiver-voice set; de-identified real messages if an institutional path
+            exists.
+          </li>
+        </ul>
+      </Section>
+
+      <p style={noteStyle}>
+        Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
+        the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
+        27 October 2026). This note condenses sections 0 to 25 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies) will be added.
+      </p>
+    </WritingLayout>
+  );
+}
