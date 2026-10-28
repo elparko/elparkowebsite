@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, HaikuGrid } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, HaikuGrid, BreadthTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -36,7 +36,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -140,7 +140,8 @@ export default function CircumstanceSensitiveTriage() {
           Two small open chat models (Qwen3.5-4B and Gemma-3-4b-it) read messages like the ones older rural patients
           with chronic illness write. We added one sentence about the person&apos;s circumstances and measured what
           changed. Then we looked inside one model for the units that respond to those sentences, tried to switch
-          them off, and tested two fixes. The chat window shows the real messages and the real replies. Pick a
+          them off, and tested two fixes. Then we tested 40 more sentences about the patient&apos;s life to ask
+          whether the money sentence is special. The chat window shows the real messages and the real replies. Pick a
           patient, a model and the added sentence. The added sentence is highlighted. Replies were generated to a
           fixed length, so some stop mid-sentence.
         </p>
@@ -203,6 +204,15 @@ export default function CircumstanceSensitiveTriage() {
             over-escalation by a third to two thirds. Prompts with no such sentence move by 0.13 log-odds or less. It
             does not reach the other barrier sentences.
           </li>
+          <li style={itemStyle}>
+            <b>The money sentence is one of a crowd.</b> Forty sentences about the patient&apos;s life in 25 families,
+            each against a weather sentence of the same length: 24 of 25 families raise the routine &quot;call 911&quot;
+            reading, by +1.0 log-odds on average. Hardship (substance use, a bad prior experience, housing, immigration
+            status) moves it two to three times as far as the money sentence. Facts that should lower the alarm, good
+            insurance or a nurse in the family, raise it too. In the model&apos;s working memory every new direction
+            points partly along the money direction, so a wider fix needs a direction fit on the hardship families
+            together, or one per family.
+          </li>
         </ul>
         <p>
           For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for one who
@@ -223,7 +233,8 @@ export default function CircumstanceSensitiveTriage() {
         <ul style={listStyle}>
           <li style={itemStyle}>
             <b>Test a health chatbot with the sentences rural patients write,</b> not only with symptoms. A model
-            that passes on symptoms alone can fail the same patient one sentence later.
+            that passes on symptoms alone can fail the same patient one sentence later. Any stated fact about the
+            person&apos;s life pushes a routine complaint toward 911, and hardship pushes it further.
           </li>
           <li style={itemStyle}>
             <b>Score a fix by harm as well as benefit.</b> The one-line fix repaired every emergency and sent
@@ -459,6 +470,92 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Findings" title="Almost any fact about the patient's life raises the alarm on a routine complaint">
+        <p>
+          Is the money sentence special? To find out we wrote 40 more sentences about a patient&apos;s life, in 25
+          named families, and measured each one the same way: against a weather sentence of the same length at the
+          same place in the message, on the 48 three-arm scenarios, 2496 readings. Fifteen circumstance families have
+          two sentences each (employment, housing, language, immigration status, religion, substance use, disability,
+          veteran status, a pregnancy in the household, lives alone, lives with family, a prior bad experience with
+          care, no phone or poor signal, cannot read well, caregiver for someone else). Four facts should raise the
+          advice (a nurse in the family, a hospital five minutes away, good insurance, a neighbour with a car). Five
+          state an identity only (a Louisiana parish, a rural town, a spouse under 65, the patient&apos;s sex, a
+          race-coded name). The money sentence is the anchor. The weather sentences are neutral: on every arm the
+          filler prompts read within 0.25 log-odds of the prompts with no added sentence. These are readouts, the
+          model&apos;s next-word odds, not coded replies; the replies for three families are queued.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>Twenty-four of 25 families raise the routine &quot;call 911&quot; reading</b> above their weather
+            sentence, 23 with an interval that excludes zero. Over the 40 sentences the routine shift averages +1.0
+            log-odds of 911 and +1.8 of High over Low urgency. The one exception is the patient&apos;s sex. Same-day
+            cases follow at about half the size.
+          </li>
+          <li style={itemStyle}>
+            <b>Hardship moves it two to three times as far as the money sentence.</b> Substance use +2.55, a bad prior
+            experience +2.30, housing +1.61, immigration status +1.47 and a pregnancy in the house +1.41, against
+            +0.74 for the money sentence.
+          </li>
+          <li style={itemStyle}>
+            <b>Facts that should lower the alarm raise it too.</b> Good insurance +0.31, a nurse down the road +0.34,
+            a hospital five minutes away +0.95, a neighbour with a car +1.30. The model does not weigh a fact for or
+            against escalation. A stated fact about the person pushes the routine reading up, and hardship pushes it
+            further. The one sensible move: a hospital five minutes away cuts the routine ambulance reading by 1.07.
+          </li>
+          <li style={itemStyle}>
+            <b>On emergencies the 911 reading barely moves, but the ride does.</b> Twenty of 25 families sit within
+            0.65 log-odds on the emergency &quot;call 911&quot; reading; religion, at +1.14, is the largest, and
+            caregiving is the one family that lowers it, by 0.27. The ride readout moves more: an immigration-status
+            sentence cuts &quot;ambulance over drive&quot; on an emergency by 0.90 and no phone or poor signal by
+            0.78. These are the breadth analogues of the money and no-ride effects above, and the candidates for a
+            wider fix.
+          </li>
+          <li style={itemStyle}>
+            <b>Every new direction points partly along the money direction.</b> In the model&apos;s working memory the
+            cosine with the money direction is 0.27 to 0.75 at layer 12 and 0.19 to 0.78 at layer 20. Closest:
+            immigration status, caregiver, employment and housing (0.7 to 0.8). Farthest: the race-coded name, the
+            patient&apos;s sex and good insurance (0.2 to 0.3). Between families the median cosine is about 0.5. So
+            the money direction is in part a shared &quot;personal detail stated&quot; direction, which is why the
+            gate of the fix above opened on the other barrier sentences. The race-coded name moves the working memory
+            farthest of any sentence at layer 20, in a direction nearly at right angles to money, with a small
+            readout effect.
+          </li>
+          <li style={itemStyle}>
+            <b>A wider fix needs a direction fit on the hardship families together, or one per family, both
+            gated.</b> The counter-shift built from the money sentence did not move the other families, and a cosine
+            of 0.6 to 0.8 leaves 36 to 64 percent of each direction&apos;s length outside the money line.
+          </li>
+        </ul>
+        <BreadthTable keys={['substance_use', 'prior_bad_experience', 'housing', 'immigration_status', 'pregnancy_in_household', 'neighbour_with_car', 'hospital_five_minutes', 'uninsured', 'nurse_in_family', 'good_insurance']} />
+        <p style={captionStyle}>
+          Table 5. Ten of the 25 families: the five largest routine shifts, the four facts that should raise the advice,
+          and the money sentence. Each cell is the reading with the sentence minus the reading with the matched weather
+          sentence, mean over 16 scenarios per arm (32 pairs for a two-sentence family), with a bootstrap 95 percent
+          interval. Bold: at least 1 log-odds with the interval off zero. All 25 families are in Figure 8.
+        </p>
+        <Chart fig="fig8" src="/rural-triage/fig8-breadth-map.png" alt="Heat map of 25 families of life facts against three arms, three readouts, shift against a matched weather sentence.">
+          Figure 8. Shift per family and arm, the sentence minus its matched weather sentence, log-odds, 48 scenarios
+          per readout. Pick the readout. Red raises the reading. The routine column is the over-escalation. On the
+          ambulance readout the emergency column shows the two families, immigration status and no phone, that pull an
+          emergency toward driving, and the neighbour with a car and the nurse in the family that push it toward the
+          ambulance.
+        </Chart>
+        <Chart fig="fig9" src="/rural-triage/fig9-direction-atlas.png" alt="Bars per family of the cosine with the money direction and the part inside the urgency subspace, at layers 12 and 20.">
+          Figure 9. The direction atlas. Per family at layers 12 and 20: the cosine with the money direction, and the
+          part of the direction inside the model&apos;s urgency subspace, the three-dimensional span of the arm
+          averages. The second view is the cosine between every pair of family directions; the closest pairs are
+          caregiver with employment, housing and lives alone (0.78 to 0.83), the farthest substance use with cannot
+          read well (0.10).
+        </Chart>
+        <p>
+          Caveats. One model. Readouts only so far; the free replies for religion, the parish name and a prior bad
+          experience on the emergency arm are queued and will be added here. A weather sentence is a low bar for
+          neutral, so +1.0 on average means against a sentence with no personal content. Two sentences per circumstance
+          family and one per raise and identity family, so a family number is a two-sentence or a one-sentence estimate.
+          The intervals are over the 48 scenarios and do not cover sentence wording.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
         <p>
           Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
@@ -483,9 +580,13 @@ export default function CircumstanceSensitiveTriage() {
           </li>
           <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
           <li style={itemStyle}>
+            The breadth map rests on readouts. The coded replies for three of its families are queued; until they land,
+            a family number says how the next-word odds moved, not how often the advice changed.
+          </li>
+          <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
-            and on frontier models through a plain chat API; the gated fix on the replication set and one direction per
-            barrier; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
+            and on frontier models through a plain chat API; the gated fix on the replication set and a direction fit on
+            the hardship families together, or one per family; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
             carbon-monoxide warning; the caregiver-voice set; de-identified real messages if an institutional path
             exists.
           </li>
@@ -495,8 +596,9 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 28 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies, a 25-family breadth map) will be added.
+        27 October 2026). This note condenses sections 0 to 29 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies, the coded replies for three breadth families, cue
+        order and turns) will be added.
       </p>
     </WritingLayout>
   );

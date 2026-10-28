@@ -683,3 +683,245 @@ export function Fig7({ src, alt }) {
     </div>
   );
 }
+
+// Figure 8: the family-by-arm map, 25 families of life facts against matched weather sentences
+const ARM8 = { emergency: 'Emergencies', urgent: 'Same-day cases', routine: 'Routine complaints' };
+const ARM8_SHORT = { emergency: 'Emergency', urgent: 'Same-day', routine: 'Routine' };
+const GROUP8 = { circumstance: C.black, raise: C.green, identity: C.orange, anchor: C.blue };
+const GROUP8_LABEL = { circumstance: 'circumstance', raise: 'should raise the advice', identity: 'identity only', anchor: 'the money sentence' };
+
+function Sentences8({ fam }) {
+  return fam.sentences.map((s) => (
+    <div key={s.cue} style={{ marginTop: 4 }}>
+      <div>“{s.cue}”</div>
+      <div style={{ opacity: 0.6 }}>against “{s.filler}” ({s.tokens} tokens each)</div>
+    </div>
+  ));
+}
+
+function GroupDots8() {
+  return (
+    <div style={legendRow}>
+      {Object.keys(GROUP8).map((g) => (
+        <span key={g} style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: GROUP8[g], display: 'inline-block' }} />{GROUP8_LABEL[g]}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export function Fig8({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [readout, setReadout] = useState('ems2');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig8;
+  const label = f.readouts.find((r) => r.key === readout).label;
+  const max = Math.max(...f.families.flatMap((fam) => f.arms.map((a) => Math.abs(f.map[readout][fam.key][a][0]))));
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}>
+        <span style={small}>Readout</span>
+        {f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 14em) repeat(${f.arms.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.72rem' }}>
+        <div />
+        {f.arms.map((a) => <div key={a} style={{ textAlign: 'center', padding: '0 2px 4px', lineHeight: 1.2 }}>{ARM8_SHORT[a]}</div>)}
+        {f.families.map((fam) => (
+          <Fragment key={fam.key}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, paddingRight: 6, lineHeight: 1.15, hyphens: 'none', fontWeight: fam.group === 'anchor' ? 'bold' : 'normal' }}>
+              <span style={{ width: 8, height: 8, borderRadius: 4, background: GROUP8[fam.group], flex: 'none' }} />
+              <span>{fam.label}</span>
+            </div>
+            {f.arms.map((a) => {
+              const [v, lo, hi] = f.map[readout][fam.key][a];
+              const node = (
+                <div>
+                  <div><b>{fam.label}</b> · {fam.groupLabel} · {ARM8[a].toLowerCase()}</div>
+                  <div style={{ marginTop: 3 }}>{label}: {fmt(v)} log-odds [{fmt(lo)}, {fmt(hi)}], {fam.pairs} paired prompts</div>
+                  <Sentences8 fam={fam} />
+                </div>
+              );
+              return (
+                <div key={a} {...mark(show, hide, node)}
+                  style={{ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '6px 2px', cursor: 'default' }}>{fmt(v)}</div>
+              );
+            })}
+          </Fragment>
+        ))}
+      </div>
+      <div style={{ ...legendRow, alignItems: 'center' }}>
+        <span>−{max.toFixed(1)}</span>
+        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
+        <span>+{max.toFixed(1)}</span>
+        <span style={{ opacity: 0.6 }}>{label}, shift in log-odds. Red raises the reading, blue lowers it.</span>
+      </div>
+      <GroupDots8 />
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the axes are.</div>
+        <div style={{ marginLeft: 12 }}>
+          Rows: 25 families of sentences about the patient&apos;s life, in the order of the routine &quot;call 911&quot;
+          shift, largest first. Fifteen circumstance families have two sentences each; the others have one.
+        </div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Columns: the three arms of 16 scenarios, by how sick the patient is.</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>
+          Cells: the reading with the sentence minus the reading with a weather sentence of the same length at the
+          same place in the message, paired over the scenarios of that arm.
+        </div>
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 5: ten families from the map, four readings each
+export function BreadthTable({ keys }) {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig8;
+  const byKey = Object.fromEntries(f.families.map((x) => [x.key, x]));
+  const cols = [['ems2', 'routine', 'routine, call 911'], ['urgency2', 'routine', 'routine, High over Low'], ['ems2', 'emergency', 'emergency, call 911'], ['ride2', 'emergency', 'emergency, ambulance over drive']];
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>shift, log-odds [95% interval]</th>
+            {cols.map((c) => <th key={c[2]} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c[2]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {keys.map((k) => {
+            const fam = byKey[k];
+            return (
+              <tr key={k}>
+                <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: fam.group === 'anchor' ? 'bold' : 'normal' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 4, background: GROUP8[fam.group], display: 'inline-block', marginRight: 6 }} />{fam.label}
+                </td>
+                {cols.map((c) => {
+                  const [v, lo, hi] = f.map[c[0]][k][c[1]];
+                  const off = lo > 0 || hi < 0;
+                  return (
+                    <td key={c[2]} style={{ ...cell, fontWeight: off && Math.abs(v) >= 1 ? 'bold' : 'normal' }}>
+                      {fmt(v)}
+                      <div style={{ fontSize: '0.68rem', opacity: 0.55 }}>[{fmt(lo)}, {fmt(hi)}]</div>
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <GroupDots8 />
+    </div>
+  );
+}
+
+// Figure 9: the direction atlas, each family's direction against the money direction, and between families
+function Bar9({ top, width, color }) {
+  return <div style={{ position: 'absolute', left: 0, top, height: 6, width: `${Math.max(0, width) * 100}%`, background: color }} />;
+}
+
+export function Fig9({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [layer, setLayer] = useState('20');
+  const [view, setView] = useState('money');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig8;
+  const fams = [...f.families].sort((a, b) => f.atlas[b.key][layer].cos - f.atlas[a.key][layer].cos);
+  const idx = Object.fromEntries(f.cosine[layer].families.map((k, i) => [k, i]));
+  const M = f.cosine[layer].matrix;
+  const track = { position: 'relative', height: 18, alignSelf: 'center', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)', cursor: 'default' };
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}>
+        <span style={small}>View</span>
+        <button type="button" aria-pressed={view === 'money'} style={chip(view === 'money')} onClick={() => setView('money')}>Against the money direction</button>
+        <button type="button" aria-pressed={view === 'between'} style={chip(view === 'between')} onClick={() => setView('between')}>Between families</button>
+        <span style={{ ...small, marginLeft: 8 }}>Layer</span>
+        {f.layers.map((L) => <button key={L} type="button" aria-pressed={L === layer} style={chip(L === layer)} onClick={() => setLayer(L)}>{L}</button>)}
+      </div>
+      {view === 'money' ? (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(7.5em, 14em) minmax(0, 1fr) 3.8em 3.8em', gap: '3px 8px', fontSize: '0.72rem' }}>
+            <div />
+            <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}><span>0</span><span>0.5</span><span>1</span></div>
+            <div style={{ textAlign: 'right', color: C.blue }}>cosine</div>
+            <div style={{ textAlign: 'right', color: C.orange }}>part</div>
+            {fams.map((fam) => {
+              const a = f.atlas[fam.key][layer];
+              const node = (
+                <div>
+                  <div><b>{fam.label}</b> · {fam.groupLabel} · layer {layer}</div>
+                  <div style={{ marginTop: 3 }}>cosine with the money direction {a.cos.toFixed(2)}; part inside the urgency subspace {a.part.toFixed(2)}; length {a.norm.toFixed(2)}</div>
+                  <Sentences8 fam={fam} />
+                </div>
+              );
+              return (
+                <Fragment key={fam.key}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, paddingRight: 2, lineHeight: 1.15, hyphens: 'none', fontWeight: fam.group === 'anchor' ? 'bold' : 'normal' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 4, background: GROUP8[fam.group], flex: 'none' }} />
+                    <span>{fam.label}</span>
+                  </div>
+                  <div style={track} {...mark(show, hide, node)}>
+                    <Bar9 top={2} width={a.cos} color={C.blue} />
+                    <Bar9 top={10} width={a.part} color={C.orange} />
+                  </div>
+                  <div style={{ textAlign: 'right', alignSelf: 'center' }}>{a.cos.toFixed(2)}</div>
+                  <div style={{ textAlign: 'right', alignSelf: 'center' }}>{a.part.toFixed(2)}</div>
+                </Fragment>
+              );
+            })}
+          </div>
+          <div style={legendRow}>
+            <Swatch color={C.blue} label="cosine with the money direction: 1 is the same direction, 0 is at right angles" />
+            <Swatch color={C.orange} label="part of the direction's length inside the model's urgency subspace" />
+          </div>
+          <GroupDots8 />
+          <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+            <div style={{ marginBottom: 4 }}>What the bars are.</div>
+            <div style={{ marginLeft: 12 }}>
+              Each family&apos;s direction is the average difference its sentence makes to the model&apos;s working
+              memory at the start of the reply, against its matched weather sentence, over 48 scenarios.
+            </div>
+            <div style={{ marginLeft: 12, marginTop: 3 }}>
+              Rows are in the order of the cosine at the chosen layer. The money sentence sits at 1 by definition.
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={{ overflowX: 'auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `12em repeat(${f.families.length}, minmax(18px, 1fr))`, gridAutoRows: '18px', gap: 1, fontSize: '0.64rem', minWidth: 600, paddingRight: '2.5em' }}>
+              <div style={{ gridRow: '1 / span 6' }} />
+              {f.families.map((fam) => <div key={fam.key} style={{ gridRow: '1 / span 6', position: 'relative', overflow: 'visible' }}><span style={{ position: 'absolute', left: '50%', bottom: 2, transformOrigin: 'left bottom', transform: 'rotate(-60deg)', whiteSpace: 'nowrap' }}>{fam.label}</span></div>)}
+              {f.families.map((a) => (
+                <Fragment key={a.key}>
+                  <div style={{ textAlign: 'right', paddingRight: 6, alignSelf: 'center', whiteSpace: 'nowrap' }}>{a.label}</div>
+                  {f.families.map((b) => {
+                    const v = M[idx[a.key]][idx[b.key]];
+                    const node = <div><b>{a.label}</b> and <b>{b.label}</b>, layer {layer}: cosine {v.toFixed(2)}</div>;
+                    return <div key={b.key} {...mark(show, hide, node)} style={{ background: sequential(v, 1), cursor: 'default' }} />;
+                  })}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+          <div style={{ ...legendRow, alignItems: 'center' }}>
+            <span>0</span>
+            <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${sequential(0, 1)}, ${sequential(0.5, 1)}, ${sequential(1, 1)})`, display: 'inline-block' }} />
+            <span>1</span>
+            <span style={{ opacity: 0.6 }}>cosine between the two family directions at layer {layer}; median {f.medianCos[layer].toFixed(2)}</span>
+          </div>
+        </>
+      )}
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
