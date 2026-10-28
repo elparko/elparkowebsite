@@ -231,7 +231,11 @@ export default function CircumstanceSensitiveTriage() {
           Where this aims to go: a benchmark that any chatbot can be scored on before it is offered to rural
           patients, fixes that keep the emergency instruction without sending the worried well to 911, and, with
           clinician labels, a way to say which replies would have caused harm.
-          {/* TODO(human): one or two sentences, in your words, on the future you want this to reach for a rural patient with a chronic condition. */}
+        </p>
+        <p>
+          The aim is that a woman with heart failure four hours from the nearest hospital gets the same first
+          instruction as a patient who lives next door to one. She gets it in the first reply, in words that fit her
+          life. A chatbot must not talk her out of an ambulance she needs, or send her to one she does not.
         </p>
       </Section>
 
