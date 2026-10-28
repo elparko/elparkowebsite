@@ -124,9 +124,11 @@ export default function TriageChat() {
   if (!data) return <div style={frame}><div style={bar}><span>patient</span><span>loading</span></div><div style={thread}>Loading the example conversations.</div></div>;
 
   const allowed = data.modelCues?.[modelKey];
-  const cues = allowed ? data.cues.filter((c) => allowed.includes(c.key)) : data.cues;
-  const conv = data.conversations[modelKey]?.[sid]?.[cue];
+  const saved = data.conversations[modelKey]?.[sid] || {};
+  const cues = data.cues.filter((c) => (allowed ? allowed.includes(c.key) : true) && (c.key === 'none' || saved[c.key]));
+  const conv = saved[cue];
   const cueInfo = data.cues.find((c) => c.key === cue);
+  if (!conv && cues.length && !cues.some((c) => c.key === cue)) setCue(cues[0].key);
   const scenario = data.scenarios.find((s) => s.id === sid);
 
   return (

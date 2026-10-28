@@ -1353,3 +1353,31 @@ export function ConditionReplies() {
     </div>
   );
 }
+
+// Table 5b: the coded replies for the three largest-shift breadth families
+export function BreadthReplies() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const r = d.fig8.replies;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 720 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, coder 1 / coder 2</th>
+            {r.cues.map((c) => <th key={c.key} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {r.rows.map((x) => (
+            <tr key={x.label}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
+              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

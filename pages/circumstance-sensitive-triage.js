@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, HaikuGrid, BreadthTable, OrderTable, RealismTable, ConditionTable, ConditionReplies } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -508,7 +508,8 @@ export default function CircumstanceSensitiveTriage() {
           state an identity only (a Louisiana parish, a rural town, a spouse under 65, the patient&apos;s sex, a
           race-coded name). The money sentence is the anchor. The weather sentences are neutral: on every arm the
           filler prompts read within 0.25 log-odds of the prompts with no added sentence. These are readouts, the
-          model&apos;s next-word odds, not coded replies; the replies for three families are queued.
+          model&apos;s next-word odds. For the three families with the largest emergency shift, 128 free replies were
+          coded blind by two coders; those conversations are in the chat window at the top under the five sentences.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
@@ -537,6 +538,19 @@ export default function CircumstanceSensitiveTriage() {
             wider fix.
           </li>
           <li style={itemStyle}>
+            <b>In free replies, only a prior bad experience moves the first advice.</b> The religion and parish-name
+            readout shifts of +0.9 to +1.1 log-odds do not reach the replies: 16 of 16 open with &quot;call 911&quot;
+            under the faith sentence and the parish name, the same as the weather sentences. A prior bad experience
+            with care moves three of 32 openings from &quot;call 911&quot; to &quot;go to the ER yourself&quot;, against
+            zero of 48 under weather, on the two anticoagulated emergencies: the warfarin patient with black stool and
+            the warfarin patient who hit the back of the head. This is the main set&apos;s pattern at a smaller size,
+            and it matches the drop on &quot;ambulance over drive&quot; for these families (religion and prior bad
+            experience -0.43 each), not the 911 readout, which rose. Two replies under &quot;our church doesn&apos;t
+            hold with a lot of medicine&quot; are cut off before the first step by a long explanation. Both coders note
+            that three replies use the hallway sentence as a reason to escalate, and that no reply names the church
+            sentence. Cost is mentioned in none of the 128.
+          </li>
+          <li style={itemStyle}>
             <b>Every new direction points partly along the money direction.</b> In the model&apos;s working memory the
             cosine with the money direction is 0.27 to 0.75 at layer 12 and 0.19 to 0.78 at layer 20. Closest:
             immigration status, caregiver, employment and housing (0.7 to 0.8). Farthest: the race-coded name, the
@@ -559,6 +573,13 @@ export default function CircumstanceSensitiveTriage() {
           sentence, mean over 16 scenarios per arm (32 pairs for a two-sentence family), with a bootstrap 95 percent
           interval. Bold: at least 1 log-odds with the interval off zero. All 25 families are in Figure 8.
         </p>
+        <BreadthReplies />
+        <p style={captionStyle}>
+          Table 5b. First advice in the 128 emergency replies for the three largest-shift families, 16 per sentence,
+          coded blind by two coders (kappa 1.00 on first advice, EMS anywhere and cost; 0.97 on how the reply handles
+          the stated fact). Pooled: 75 of 80 life-fact replies and 47 of 48 weather replies open with &quot;call
+          911&quot;. The three &quot;unclear&quot; are replies cut before their first step.
+        </p>
         <Chart fig="fig8" src="/rural-triage/fig8-breadth-map.png" alt="Heat map of 25 families of life facts against three arms, three readouts, shift against a matched weather sentence.">
           Figure 8. Shift per family and arm, the sentence minus its matched weather sentence, log-odds, 48 scenarios
           per readout. Pick the readout. Red raises the reading. The routine column is the over-escalation. On the
@@ -574,8 +595,8 @@ export default function CircumstanceSensitiveTriage() {
           read well (0.10).
         </Chart>
         <p>
-          Caveats. One model. Readouts only so far; the free replies for religion, the parish name and a prior bad
-          experience on the emergency arm are queued and will be added here. A weather sentence is a low bar for
+          Caveats. One model. Readouts for 22 of the 25 families; coded replies for three, with 16 scenarios per
+          sentence, so the reply counts are small. A weather sentence is a low bar for
           neutral, so +1.0 on average means against a sentence with no personal content. Two sentences per circumstance
           family and one per raise and identity family, so a family number is a two-sentence or a one-sentence estimate.
           The intervals are over the 48 scenarios and do not cover sentence wording.
@@ -833,8 +854,8 @@ export default function CircumstanceSensitiveTriage() {
           </li>
           <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
           <li style={itemStyle}>
-            The breadth map rests on readouts. The coded replies for three of its families are queued; until they land,
-            a family number says how the next-word odds moved, not how often the advice changed.
+            The breadth map rests on readouts for 22 of its 25 families. For those, a family number says how the
+            next-word odds moved, not how often the advice changed.
           </li>
           <li style={itemStyle}>
             The position test is readouts only, with one wording for the acknowledged earlier turn. The gated fix was
@@ -862,8 +883,7 @@ export default function CircumstanceSensitiveTriage() {
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
         27 October 2026). This note condenses sections 0 to 32 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies, the coded replies for three breadth families) will be
-        added.
+        independent replication set, control-sentence replies) will be added.
       </p>
     </WritingLayout>
   );
