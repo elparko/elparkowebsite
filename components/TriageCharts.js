@@ -187,7 +187,7 @@ function niceTicks(lo, hi, n = 5) {
   return out;
 }
 
-function LinePanel({ title, steps, series, sentences, onTip, onHide }) {
+function LinePanel({ title, steps, series, sentences, question, onTip, onHide }) {
   const W = 320, H = 230, L = 46, R = 12, T = 14, B = 48;
   const all = series.flatMap((s) => s.values.flatMap((v) => [v[1], v[2]])).concat([0]);
   let lo = Math.min(...all), hi = Math.max(...all);
@@ -206,8 +206,9 @@ function LinePanel({ title, steps, series, sentences, onTip, onHide }) {
     onTip(e, (
       <div>
         <div><b>{steps[i]}</b>{sentences?.[i] ? <span> · “{sentences[i]}”</span> : null}</div>
+        {question && <div style={{ marginTop: 3 }}>Question after the message: “{question.question}” Read as {question.first} over {question.second}.</div>}
         {series.map((s) => <div key={s.label} style={{ marginTop: 3 }}><Swatch color={s.color} label={`${s.label}: ${fmt(s.values[i][0])}  [${fmt(s.values[i][1])}, ${fmt(s.values[i][2])}]`} /></div>)}
-        <div style={{ opacity: 0.6, marginTop: 3 }}>mean and 95% interval, cue minus weather sentence, 16 scenarios</div>
+        <div style={{ opacity: 0.6, marginTop: 3 }}>change in log-odds of {question ? question.first : 'the first answer'}, this sentence minus the weather sentence, mean and 95% interval over 16 scenarios</div>
       </div>
     ));
   };
@@ -251,11 +252,20 @@ export function Fig2({ src, alt }) {
       <ModelToggle models={d.models} value={model} onChange={setModel} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px 16px' }}>
         {Object.keys(f.series).map((s) => f.metrics.map((met) => (
-          <LinePanel key={s + met.key} title={`${s}: ${met.label}`} steps={f.series[s]} sentences={f.sentences[s]} onTip={show} onHide={hide}
+          <LinePanel key={s + met.key} title={`${s}: ${met.label}`} steps={f.series[s]} sentences={f.sentences[s]} question={met} onTip={show} onHide={hide}
             series={[{ label: 'emergency', color: C.orange, values: m[s][met.key].emergency }, { label: 'routine', color: C.blue, values: m[s][met.key].routine }]} />
         )))}
       </div>
       <div style={legendRow}><Swatch color={C.orange} label="emergencies" /><Swatch color={C.blue} label="routine complaints" /><span style={{ opacity: 0.6 }}>bands: 95% intervals</span></div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the y axis is. Each column is one question put to the model after the patient message, answered by its first word:</div>
+        {f.metrics.map((m) => <div key={m.key} style={{ marginLeft: 12 }}>“{m.question}” read as {m.first} over {m.second}.</div>)}
+        <div style={{ marginTop: 4 }}>
+          The y value is the change in log-odds of the first answer when the sentence replaces the weather sentence in
+          the same message, averaged over the 16 scenarios in that arm. Zero is no change. About -0.7 halves the odds.
+          About +0.7 doubles them.
+        </div>
+      </div>
       <Hint />
       <Tip tip={tip} />
     </div>
