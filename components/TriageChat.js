@@ -134,7 +134,7 @@ export default function TriageChat() {
   return (
     <div style={frame}>
       <div style={bar}>
-        <span>patient · {scenario.arm}</span>
+        <span>patient · {scenario.arm === 'emergency' ? 'emergency case' : 'routine case'}</span>
         <span>{data.models[modelKey]}</span>
       </div>
       <div style={controls}>
@@ -154,7 +154,7 @@ export default function TriageChat() {
           {cues.map((c) => (
             <button key={c.key} type="button" style={chip(c.key === cue)} onClick={() => setCue(c.key)}>{c.label}</button>
           ))}
-          {allowed && <span style={{ fontSize: '0.72rem', opacity: 0.65 }}>The fix acts only after the money sentence, so only that sentence has fixed replies.</span>}
+          {allowed && allowed.length === 1 && <span style={{ fontSize: '0.72rem', opacity: 0.65 }}>The fixed models have saved replies only for the no-insurance sentence.</span>}
         </div>
       </div>
       {conv ? (
@@ -171,7 +171,7 @@ export default function TriageChat() {
           </div>
           {conv.coded.length > 0 && (
             <div style={coded}>
-              First advice, as coded: {conv.coded.map((c, i) => `coder ${i + 1}: ${c}`).join(' · ')}
+              First advice from two readers: {conv.coded.map((c, i) => `reader ${i + 1}: ${c}`).join(' · ')}
             </div>
           )}
         </>

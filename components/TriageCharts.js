@@ -106,7 +106,7 @@ function SampleMessage({ prompt, sentence, label, longest }) {
       </div>
       <div style={{ fontSize: '0.72rem', opacity: 0.65 }}>
         {sentence ? 'The highlighted sentence is the one added.' : 'No sentence added, the control message as written.'} Select a
-        bar to change it. The same swap was made in all 16 messages.
+        bar to change it. We made the same swap in all 16 messages.
       </div>
     </div>
   );
@@ -144,7 +144,7 @@ export function Fig1({ src, alt }) {
                       if (!n) return null;
                       const node = (
                         <div>
-                          <div><b>{cat.label}</b>: {n} of 16 replies · coder {k + 1} · {cue.label}</div>
+                          <div><b>{cat.label}</b>: {n} of 16 replies · reader {k + 1} · {cue.label}</div>
                           {f.sentences[cue.key] && <div style={{ marginTop: 4 }}>Added sentence: “{f.sentences[cue.key]}”</div>}
                           {ex[cue.key]?.[cat.key] && <div style={{ marginTop: 4, opacity: 0.8 }}>Reply opens: “{ex[cue.key][cat.key]}”</div>}
                         </div>
@@ -168,7 +168,7 @@ export function Fig1({ src, alt }) {
       </div>
       <div style={legendRow}>
         {f.cats.filter((c) => coders.some((counts) => counts.some((x) => x[c.key] > 0))).map((c) => <Swatch key={c.key} color={CAT[c.key]} label={c.label} />)}
-        <span style={{ opacity: 0.6 }}>left bar coder 1, right bar coder 2</span>
+        <span style={{ opacity: 0.6 }}>left bar reader 1, right bar reader 2</span>
       </div>
       <Hint />
       <Tip tip={tip} />
@@ -176,7 +176,7 @@ export function Fig1({ src, alt }) {
   );
 }
 
-// Haiku grid: two arms, six sentences, counts of 16 (coder 1 / coder 2)
+// Haiku grid: two arms, six sentences, counts of 16 (reader 1 / reader 2)
 export function HaikuGrid() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
@@ -187,7 +187,7 @@ export function HaikuGrid() {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, coder 1 / coder 2</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
             {h.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000' }}>{c}</th>)}
           </tr>
         </thead>
@@ -291,11 +291,11 @@ export function Fig2({ src, alt }) {
       </div>
       <div style={legendRow}><Swatch color={C.orange} label="emergencies" /><Swatch color={C.blue} label="routine complaints" /><span style={{ opacity: 0.6 }}>bands: 95% intervals</span></div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
-        <div style={{ marginBottom: 4 }}>What the y axis is. Each column is one question put to the model after the patient message, answered by its first word:</div>
+        <div style={{ marginBottom: 4 }}>What the y axis is. Each column is one question that we ask the model after the patient message. The model answers with its first word:</div>
         {f.metrics.map((m) => <div key={m.key} style={{ marginLeft: 12 }}>“{m.question}” read as {m.first} over {m.second}.</div>)}
         <div style={{ marginTop: 4 }}>
           The y value is the change in log-odds of the first answer when the sentence replaces the weather sentence in
-          the same message, averaged over the 16 scenarios in that arm. Zero is no change. About -0.7 halves the odds.
+          the same message. It is the mean over the 16 scenarios in that group of cases. Zero is no change. About -0.7 halves the odds.
           About +0.7 doubles them.
         </div>
       </div>
@@ -353,7 +353,7 @@ export function Fig3({ src, alt }) {
     const c = f.cues[i];
     show(e, (
       <div>
-        <div><b>{c.label}</b>: the model starts its reply with a {pct[i].toFixed(0)}% chance of calling the case High urgency (weather sentence: {pct[1].toFixed(0)}%), mean of 16 routine complaints</div>
+        <div><b>{c.label}</b>: after a fixed opening, the next word is High with a {pct[i].toFixed(0)}% chance (weather sentence: {pct[1].toFixed(0)}%), mean of 16 routine complaints</div>
         {f.sentences[c.key] && <div style={{ marginTop: 4 }}>Added sentence: “{f.sentences[c.key]}”</div>}
       </div>
     ));
@@ -369,9 +369,9 @@ export function Fig3({ src, alt }) {
       <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} longest={longestOf(f.prompts, f.cues)} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px 24px' }}>
         <HBars title="Emergencies: how many of 16 replies open with call 911" cues={f.cues} values={counts} max={16} format={(v) => `${v} / 16`} baseline={1} tipFor={tipEm} selected={sel} onSelect={setSel} />
-        <HBars title="Routine complaints: how likely the model is to call the case High urgency" cues={f.cues} values={pct} max={Math.max(...pct) * 1.1} format={(v) => `${v.toFixed(0)}%`} baseline={1} tipFor={tipPh} selected={sel} onSelect={setSel} />
+        <HBars title="Routine complaints: chance that the first word of the reply is High urgency" cues={f.cues} values={pct} max={Math.max(...pct) * 1.1} format={(v) => `${v.toFixed(0)}%`} baseline={1} tipFor={tipPh} selected={sel} onSelect={setSel} />
       </div>
-      <div style={legendRow}><Swatch color={C.orange} label="a sentence of reluctance" /><Swatch color={C.blue} label="a smoking history, a medical fact for comparison" /><Swatch color={C.dark} label="controls" /><Swatch color={C.black} label="the weather sentence" /></div>
+      <div style={legendRow}><Swatch color={C.orange} label="a sentence of reluctance" /><Swatch color={C.blue} label="a fact about past smoking, for comparison" /><Swatch color={C.dark} label="controls" /><Swatch color={C.black} label="the weather sentence" /></div>
       <Hint />
       <Tip tip={tip} />
     </div>
@@ -415,7 +415,7 @@ export function Fig4({ src, alt }) {
                   <div><b>{q}</b> · {c}: {fmt(v)} log-odds of Yes</div>
                   <div style={{ marginTop: 4 }}>Question put to the model: “{f.questionText[i]}”</div>
                   <div style={{ marginTop: 4 }}>Added sentence: “{f.sentences[j]}”</div>
-                  <div style={{ opacity: 0.6, marginTop: 3 }}>shift against the weather sentence, mean of 32 scenarios</div>
+                  <div style={{ opacity: 0.6, marginTop: 3 }}>change against the weather sentence, mean of 32 scenarios</div>
                 </div>
               );
               return (
@@ -430,7 +430,7 @@ export function Fig4({ src, alt }) {
         <span>−{max.toFixed(1)}</span>
         <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
-        <span style={{ opacity: 0.6 }}>shift in log-odds of Yes</span>
+        <span style={{ opacity: 0.6 }}>change in log-odds of Yes</span>
       </div>
       <Hint />
       <Tip tip={tip} />
@@ -460,8 +460,8 @@ export function Fig5({ src, alt }) {
                 const v = f.M[i][j];
                 const node = (
                   <div>
-                    <div><b>{u.name}</b> ({u.layer} {u.neuron}) on {c}: {v.toFixed(1)}× its largest activation on ordinary web text ({u.web})</div>
-                    <div style={{ marginTop: 4, opacity: 0.8 }}>Texts that fire it most, with activation:</div>
+                    <div><b>{u.name}</b> ({u.layer} {u.neuron}) on {c}: {v.toFixed(1)}× its largest activity on ordinary web text ({u.web})</div>
+                    <div style={{ marginTop: 4, opacity: 0.8 }}>Texts that fire it most, with their activity:</div>
                     {u.examples.map((x) => <div key={x.text} style={{ marginTop: 2 }}>{x.score} · {x.category} · “{x.text}”</div>)}
                   </div>
                 );
@@ -478,20 +478,20 @@ export function Fig5({ src, alt }) {
         <span>0</span>
         <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${sequential(0, vmax)}, ${sequential(1.5, vmax)}, ${sequential(3, vmax)})`, display: 'inline-block' }} />
         <span>3 and above</span>
-        <span style={{ opacity: 0.6 }}>mean activation, in multiples of the unit&apos;s largest activation on ordinary web text</span>
+        <span style={{ opacity: 0.6 }}>mean activity, in multiples of the unit&apos;s largest activity on ordinary web text</span>
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
         <div style={{ marginBottom: 4 }}>What the axes are.</div>
         <div style={{ marginLeft: 12 }}>
-          Rows: 16 single neurons inside Qwen3.5-4B, each with its layer and index. The name says what the neuron
-          responds to. Each name was tested with paired sentences, one that fires the neuron and one that does not.
+          Rows: 16 single units (neurons) inside Qwen3.5-4B, each with its layer and unit number. The name says what the
+          unit responds to. We tested each name with paired sentences, one that fires the unit and one that does not.
         </div>
         <div style={{ marginLeft: 12, marginTop: 3 }}>
-          Columns: 13 kinds of text from a bank of 474 test texts fed to the model while every neuron was recorded,
-          grouped by what the text is about.
+          Columns: 13 kinds of text from a bank of 474 test texts, grouped by what the text is about. We fed the texts
+          to the model and recorded every unit.
         </div>
         <div style={{ marginLeft: 12, marginTop: 3 }}>
-          Cells: how strongly the neuron fired on average on that kind of text, divided by its largest activation on
+          Cells: how strongly the unit fired on average on that kind of text, divided by its largest activity on
           ordinary web text. 1.0 is as strong as it ever gets on normal text. 10.5 is ten times that.
         </div>
       </div>
@@ -556,7 +556,7 @@ export function Fig6({ src, alt }) {
         {f.metrics.map((m) => <DotPanel key={m.key} title={m.label} arms={f.arms} armLabels={f.armLabels} groups={groups} values={f.values[m.key]} n={f.n} onTip={show} onHide={hide} />)}
       </div>
       <div style={legendRow}>
-        <Swatch color={C.black} label="no ablation" /><Swatch color={C.orange} label="20 units zeroed" /><Swatch color={C.dark} label="random set 0 (filled)" /><Swatch color="#f5f5dc" label="random set 1 (hollow)" />
+        <Swatch color={C.black} label="no units switched off" /><Swatch color={C.orange} label="20 units switched off" /><Swatch color={C.dark} label="random set A (filled)" /><Swatch color="#f5f5dc" label="random set B (hollow)" />
         <span style={{ opacity: 0.6 }}>vertical lines: 95% intervals</span>
       </div>
       <Hint />
@@ -568,20 +568,20 @@ export function Fig6({ src, alt }) {
 // Figure 7: the gated circumstance-direction fix and its controls
 const COND = {
   none: { label: 'No change', color: C.black, filled: true, text: 'The model as shipped.' },
-  full_direction: { label: 'Direction removed, all prompts', color: C.blue, filled: false, text: 'The money direction is projected out of the model’s working memory at this layer and every later one, on every prompt.' },
-  gated_full: { label: 'Direction removed, gated', color: C.blue, filled: true, text: 'The same removal, only when the gate says the model has read a money sentence.' },
-  subspace: { label: 'Urgency part removed, all prompts', color: C.orange, filled: false, text: 'Only the part of the money direction that lies inside the model’s urgency subspace is projected out, on every prompt.' },
-  gated_subspace: { label: 'Urgency part removed, gated', color: C.orange, filled: true, text: 'The same removal, only when the gate opens. At layer 12 this removes the emergency signal itself.' },
-  gated_shift_d: { label: 'Counter-shift, direction, gated', color: C.green, filled: true, text: 'When the gate opens, the average displacement the money sentence causes is subtracted at this layer, at the reply opener and at every token the model writes. The layer-20 fix.' },
-  gated_shift_u: { label: 'Counter-shift, urgency part, gated', color: '#66c2a5', filled: true, text: 'The same counter-shift, with only the part inside the urgency subspace. The layer-12 fix.' },
-  random: { label: 'Random direction, all prompts', color: C.dark, filled: false, text: 'A random unit vector projected out of the same layers. The control.' },
+  full_direction: { label: 'Direction removed, all messages', color: C.blue, filled: false, text: 'We remove the no-insurance direction from the model’s internal state at this layer and every later one, on every message.' },
+  gated_full: { label: 'Direction removed, with the switch', color: C.blue, filled: true, text: 'The same removal, only when the switch says the model has read a no-insurance sentence.' },
+  subspace: { label: 'Urgency part removed, all messages', color: C.orange, filled: false, text: 'We remove only the part of the no-insurance direction that lies inside the model’s urgency subspace, on every message.' },
+  gated_subspace: { label: 'Urgency part removed, with the switch', color: C.orange, filled: true, text: 'The same removal, only when the switch is on. At layer 12 this removes the emergency signal itself.' },
+  gated_shift_d: { label: 'Subtract the push, full direction, with the switch', color: C.green, filled: true, text: 'When the switch is on, the fix subtracts the average push that the no-insurance sentence causes. It subtracts at this layer, at the start of the reply, and at every word the model writes. The layer-20 fix.' },
+  gated_shift_u: { label: 'Subtract the push, urgency part, with the switch', color: '#66c2a5', filled: true, text: 'The same subtraction, with only the part inside the urgency subspace. The layer-12 fix.' },
+  random: { label: 'Random direction, all messages', color: C.dark, filled: false, text: 'A random direction removed from the same layers. The control.' },
 };
 const ARM7 = { emergency: 'Emergencies', urgent: 'Same-day cases', routine: 'Routine complaints' };
-const CUE7 = { uninsured: 'no insurance, money tight', distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight' };
+const CUE7 = { uninsured: 'no insurance', distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight' };
 const VIEWS7 = [
-  { key: 'shift', label: 'Money prompts: what survives', note: 'Each mark is the shift the money sentence still causes under that condition: money sentence minus weather sentence, paired, 16 scenarios per arm. The dashed line is the shift with no change. A mark on zero means the fix landed the money prompt on the weather prompt’s answer.' },
-  { key: 'drift', label: 'Prompts with no money sentence', note: 'What each condition does to prompts the fix must leave alone: the condition minus no change on the same prompt, 32 prompts per arm (no sentence, and the weather sentence). A mark on zero means the condition did not touch them.' },
-  { key: 'main', label: 'Other sentences, main set', note: 'The gated counter-shift was built from the money sentence. These marks are the shift each of four sentences causes on the main set before (black, hollow) and after (green) the fix. The fix does not repair the other three barriers.' },
+  { key: 'shift', label: 'No-insurance messages: what survives', note: 'Each mark is the change that the no-insurance sentence still causes under that condition. It is the no-insurance sentence minus the weather sentence, paired, over 16 scenarios per group of cases. The dashed line is the change with no fix. A mark on zero means the fix landed the no-insurance message on the weather message’s answer.' },
+  { key: 'drift', label: 'Messages with no such sentence', note: 'This view shows what each condition does to messages that the fix must leave alone. Each value is the condition minus no fix on the same message, over 32 messages per group of cases (no extra sentence, and the weather sentence). A mark on zero means the condition did not touch them.' },
+  { key: 'main', label: 'Other sentences, main set', note: 'We built the fix with the switch from the no-insurance sentence. These marks are the change each of four sentences causes on the main set before (black, hollow) and after (green) the fix. The fix does not repair the other three sentences.' },
 ];
 const MAIN7 = [{ key: 'none', color: C.black, filled: false, label: 'before the fix' }, { key: 'gated_shift_d', color: C.green, filled: true, label: 'after the fix, full direction' }, { key: 'gated_shift_u', color: '#66c2a5', filled: true, label: 'after the fix, urgency part' }];
 const strip7 = { width: '100%', height: 30, display: 'block', overflow: 'visible' };
@@ -624,8 +624,8 @@ export function Fig7({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <div style={row}><span style={small}>Layer</span>{f.layers.map((l) => <button key={l} type="button" aria-pressed={l === layer} style={chip(l === layer)} onClick={() => setLayer(l)}>{l}</button>)}</div>
-      <div style={row}><span style={small}>Readout</span>{f.metrics.map((m) => <button key={m.key} type="button" aria-pressed={m.key === metric} style={chip(m.key === metric)} onClick={() => setMetric(m.key)}>{m.label}</button>)}</div>
-      <div style={row}><span style={small}>Prompts</span>{VIEWS7.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
+      <div style={row}><span style={small}>Model&apos;s answer</span>{f.metrics.map((m) => <button key={m.key} type="button" aria-pressed={m.key === metric} style={chip(m.key === metric)} onClick={() => setMetric(m.key)}>{m.label}</button>)}</div>
+      <div style={row}><span style={small}>Messages</span>{VIEWS7.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
       <p style={{ fontSize: '0.76rem', margin: '4px 0 10px', opacity: 0.85 }}>{viewNote}</p>
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: cols, columnGap: 26, minWidth: 540, alignItems: 'center' }}>
@@ -671,12 +671,12 @@ export function Fig7({ src, alt }) {
       </div>
       <div style={legendRow}>
         <span>{metricLabel}, log-odds. Horizontal lines: 95% intervals.</span>
-        {view === 'shift' && <span>Dashed line: the shift with no change.</span>}
-        {view !== 'main' && <span>Black: no change. Hollow: applied to every prompt. Filled: only when the gate opens.</span>}
+        {view === 'shift' && <span>Dashed line: the change with no fix.</span>}
+        {view !== 'main' && <span>Black: no fix. Hollow: applied to every message. Filled: only when the switch is on.</span>}
         {view === 'main' && MAIN7.map((m) => <Swatch key={m.key} color={m.filled ? m.color : '#f5f5dc'} label={m.label} />)}
       </div>
       <div style={{ ...hint, opacity: 0.8 }}>
-        Gate open at layer {layer}: money prompts {pct(g.emergency.uninsured)} / {pct(g.urgent.uninsured)} / {pct(g.routine.uninsured)} percent (emergency / same-day / routine); prompts without one {pct(g.emergency.none)} / {pct(g.urgent.none)} / {pct(g.routine.none)} percent.
+        Switch on at layer {layer}: no-insurance messages {pct(g.emergency.uninsured)} / {pct(g.urgent.uninsured)} / {pct(g.routine.uninsured)} percent (emergency / same-day / routine); messages without one {pct(g.emergency.none)} / {pct(g.urgent.none)} / {pct(g.routine.none)} percent.
       </div>
       <Hint />
       <Tip tip={tip} />
@@ -688,13 +688,13 @@ export function Fig7({ src, alt }) {
 const ARM8 = { emergency: 'Emergencies', urgent: 'Same-day cases', routine: 'Routine complaints' };
 const ARM8_SHORT = { emergency: 'Emergency', urgent: 'Same-day', routine: 'Routine' };
 const GROUP8 = { circumstance: C.black, raise: C.green, identity: C.orange, anchor: C.blue };
-const GROUP8_LABEL = { circumstance: 'circumstance', raise: 'should raise the advice', identity: 'identity only', anchor: 'the money sentence' };
+const GROUP8_LABEL = { circumstance: 'circumstance', raise: 'should raise the advice', identity: 'identity only', anchor: 'the no-insurance sentence' };
 
 function Sentences8({ fam }) {
   return fam.sentences.map((s) => (
     <div key={s.cue} style={{ marginTop: 4 }}>
       <div>“{s.cue}”</div>
-      <div style={{ opacity: 0.6 }}>against “{s.filler}” ({s.tokens} tokens each)</div>
+      <div style={{ opacity: 0.6 }}>against “{s.filler}” ({s.tokens} word pieces each)</div>
     </div>
   ));
 }
@@ -722,7 +722,7 @@ export function Fig8({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <div style={row}>
-        <span style={small}>Readout</span>
+        <span style={small}>Model&apos;s answer</span>
         {f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 14em) repeat(${f.arms.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.72rem' }}>
@@ -739,7 +739,7 @@ export function Fig8({ src, alt }) {
               const node = (
                 <div>
                   <div><b>{fam.label}</b> · {fam.groupLabel} · {ARM8[a].toLowerCase()}</div>
-                  <div style={{ marginTop: 3 }}>{label}: {fmt(v)} log-odds [{fmt(lo)}, {fmt(hi)}], {fam.pairs} paired prompts</div>
+                  <div style={{ marginTop: 3 }}>{label}: {fmt(v)} log-odds [{fmt(lo)}, {fmt(hi)}], {fam.pairs} paired messages</div>
                   <Sentences8 fam={fam} />
                 </div>
               );
@@ -755,19 +755,19 @@ export function Fig8({ src, alt }) {
         <span>−{max.toFixed(1)}</span>
         <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
-        <span style={{ opacity: 0.6 }}>{label}, shift in log-odds. Red raises the reading, blue lowers it.</span>
+        <span style={{ opacity: 0.6 }}>{label}, change in log-odds. Red: more likely to give that answer. Blue: less likely.</span>
       </div>
       <GroupDots8 />
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
         <div style={{ marginBottom: 4 }}>What the axes are.</div>
         <div style={{ marginLeft: 12 }}>
           Rows: 25 families of sentences about the patient&apos;s life, in the order of the routine &quot;call 911&quot;
-          shift, largest first. Fifteen circumstance families have two sentences each; the others have one.
+          change, largest first. Fifteen circumstance families have two sentences each; the others have one.
         </div>
-        <div style={{ marginLeft: 12, marginTop: 3 }}>Columns: the three arms of 16 scenarios, by how sick the patient is.</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Columns: the three groups of 16 cases, by how sick the patient is.</div>
         <div style={{ marginLeft: 12, marginTop: 3 }}>
-          Cells: the reading with the sentence minus the reading with a weather sentence of the same length at the
-          same place in the message, paired over the scenarios of that arm.
+          Cells: the model&apos;s lean with the sentence minus its lean with a weather sentence of the same length at the
+          same place in the message, paired over the scenarios of that group.
         </div>
       </div>
       <Hint />
@@ -782,14 +782,14 @@ export function BreadthTable({ keys }) {
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig8;
   const byKey = Object.fromEntries(f.families.map((x) => [x.key, x]));
-  const cols = [['ems2', 'routine', 'routine, call 911'], ['urgency2', 'routine', 'routine, High over Low'], ['ems2', 'emergency', 'emergency, call 911'], ['ride2', 'emergency', 'emergency, ambulance over drive']];
+  const cols = [['ems2', 'routine', 'routine, call 911'], ['urgency2', 'routine', "routine, lean toward 'High' urgency"], ['ems2', 'emergency', 'emergency, call 911'], ['ride2', 'emergency', "emergency, 'Ambulance' over driving"]];
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>shift, log-odds [95% interval]</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>change, log-odds [95% interval]</th>
             {cols.map((c) => <th key={c[2]} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c[2]}</th>)}
           </tr>
         </thead>
@@ -841,7 +841,7 @@ export function Fig9({ src, alt }) {
     <div style={wrap} ref={ref}>
       <div style={row}>
         <span style={small}>View</span>
-        <button type="button" aria-pressed={view === 'money'} style={chip(view === 'money')} onClick={() => setView('money')}>Against the money direction</button>
+        <button type="button" aria-pressed={view === 'money'} style={chip(view === 'money')} onClick={() => setView('money')}>Against the no-insurance direction</button>
         <button type="button" aria-pressed={view === 'between'} style={chip(view === 'between')} onClick={() => setView('between')}>Between families</button>
         <span style={{ ...small, marginLeft: 8 }}>Layer</span>
         {f.layers.map((L) => <button key={L} type="button" aria-pressed={L === layer} style={chip(L === layer)} onClick={() => setLayer(L)}>{L}</button>)}
@@ -858,7 +858,7 @@ export function Fig9({ src, alt }) {
               const node = (
                 <div>
                   <div><b>{fam.label}</b> · {fam.groupLabel} · layer {layer}</div>
-                  <div style={{ marginTop: 3 }}>cosine with the money direction {a.cos.toFixed(2)}; part inside the urgency subspace {a.part.toFixed(2)}; length {a.norm.toFixed(2)}</div>
+                  <div style={{ marginTop: 3 }}>cosine with the no-insurance direction {a.cos.toFixed(2)}; part inside the urgency subspace {a.part.toFixed(2)}; length {a.norm.toFixed(2)}</div>
                   <Sentences8 fam={fam} />
                 </div>
               );
@@ -879,18 +879,18 @@ export function Fig9({ src, alt }) {
             })}
           </div>
           <div style={legendRow}>
-            <Swatch color={C.blue} label="cosine with the money direction: 1 is the same direction, 0 is at right angles" />
-            <Swatch color={C.orange} label="part of the direction's length inside the model's urgency subspace" />
+            <Swatch color={C.blue} label="cosine with the no-insurance direction: 1 is the same direction, 0 is at right angles" />
+            <Swatch color={C.orange} label="part of the direction's length inside the urgency subspace (the directions the model uses to rate urgency)" />
           </div>
           <GroupDots8 />
           <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
             <div style={{ marginBottom: 4 }}>What the bars are.</div>
             <div style={{ marginLeft: 12 }}>
-              Each family&apos;s direction is the average difference its sentence makes to the model&apos;s working
-              memory at the start of the reply, against its matched weather sentence, over 48 scenarios.
+              Each family&apos;s direction is the average difference that its sentence makes to the model&apos;s internal
+              state at the start of the reply. We compare it with its matched weather sentence, over 48 scenarios.
             </div>
             <div style={{ marginLeft: 12, marginTop: 3 }}>
-              Rows are in the order of the cosine at the chosen layer. The money sentence sits at 1 by definition.
+              Rows are in the order of the cosine at the chosen layer. The no-insurance sentence sits at 1 by definition.
             </div>
           </div>
         </>
@@ -927,7 +927,7 @@ export function Fig9({ src, alt }) {
 }
 
 // Figure 10: the same sentence in three places
-const POS10 = { before: { label: 'Before the question', short: 'before the question', color: C.blue }, start: { label: 'First sentence', short: 'first sentence of the message', color: C.orange }, prior: { label: 'Prior turn, acknowledged', short: 'an earlier turn, acknowledged', color: C.green } };
+const POS10 = { before: { label: 'Before the question', short: 'before the question', color: C.blue }, start: { label: 'First sentence', short: 'first sentence of the message', color: C.orange }, prior: { label: 'Earlier chat turn, acknowledged', short: 'an earlier turn, acknowledged', color: C.green } };
 const ARM10 = { emergency: 'Emergencies', routine: 'Routine complaints' };
 const AGAINST10 = [{ key: 'filler', label: 'the weather sentence in the same place' }, { key: 'none', label: 'the message with no added sentence' }];
 const miniBubble = { padding: '7px 10px', background: '#e6e6d2', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '12px 12px 3px 12px', fontSize: '0.7rem', lineHeight: 1.45, hyphens: 'none', marginBottom: 5 };
@@ -968,10 +968,10 @@ export function Fig10({ src, alt }) {
       <div style={row}><span style={small}>Sentence</span>{f.cues.map((c) => <button key={c} type="button" aria-pressed={c === cue} style={chip(c === cue)} onClick={() => setCue(c)}>{f.sample.cueLabels[c]}</button>)}</div>
       <Positions10 s={{ ...f.sample, ack: f.ack }} cue={cue} />
       <div style={{ fontSize: '0.72rem', opacity: 0.65, marginBottom: 12 }}>
-        One patient message ({f.sample.label}) with the selected sentence in each of the three places. The same move was made in
+        One patient message ({f.sample.label}) with the selected sentence in each of the three places. We made the same move in
         all 32 messages. In the third shape the weather sentence is also a prior turn, so the pair stays matched.
       </div>
-      <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
+      <div style={row}><span style={small}>Model&apos;s answer</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
       <div style={row}><span style={small}>Against</span>{AGAINST10.map((v) => <button key={v.key} type="button" aria-pressed={v.key === against} style={chip(v.key === against)} onClick={() => setAgainst(v.key)}>{v.label}</button>)}</div>
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
@@ -1009,14 +1009,14 @@ export function Fig10({ src, alt }) {
       </div>
       <div style={legendRow}>
         {f.positions.map((p) => <Swatch key={p.key} color={POS10[p.key].color} label={POS10[p.key].label.toLowerCase()} />)}
-        <span>{label}, log-odds. Horizontal lines: 95% intervals. Dark line: no shift.</span>
+        <span>{label}, log-odds. Horizontal lines: 95% intervals. Dark line: no change.</span>
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
         <div style={{ marginBottom: 4 }}>What the axes are.</div>
-        <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences{against === 'none' ? ', and the weather sentence' : ''}. Columns: the two arms, 16 scenarios each.</div>
+        <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences{against === 'none' ? ', and the weather sentence' : ''}. Columns: the two groups of cases, 16 scenarios each.</div>
         <div style={{ marginLeft: 12, marginTop: 3 }}>
-          Marks: the reading with the sentence minus the reading against {AGAINST10.find((x) => x.key === against).label}, one mark per
-          place the sentence sits. Right of the dark line raises the reading.
+          Marks: the model&apos;s lean with the sentence minus its lean against {AGAINST10.find((x) => x.key === against).label}, one mark per
+          place the sentence sits. Right of the dark line raises the lean toward the named answer.
         </div>
       </div>
       <Hint />
@@ -1036,7 +1036,7 @@ export function OrderTable({ rows }) {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>shift, log-odds [95% interval]</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds [95% interval]</th>
             {f.positions.map((p) => <th key={p.key} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: POS10[p.key].color }}>{POS10[p.key].label.toLowerCase()}</th>)}
           </tr>
         </thead>
@@ -1063,7 +1063,7 @@ export function OrderTable({ rows }) {
 }
 
 // Figure 11: message realism, the same sentence under typing errors, lower case and a longer message
-const TR11 = { clean: { color: C.black, short: 'clean text' }, typos: { color: C.blue, short: 'typing errors' }, lower: { color: C.orange, short: 'lower case, no punctuation' }, long: { color: C.green, short: 'two sentences of daily detail first' } };
+const TR11 = { clean: { color: C.black, short: 'clean text' }, typos: { color: C.blue, short: 'typos' }, lower: { color: C.orange, short: 'lower case, no punctuation' }, long: { color: C.green, short: 'two sentences of daily detail first' } };
 const VIEWS11 = [{ key: 'effect', label: 'The sentence, under each transform' }, { key: 'alone', label: 'The writing alone, no sentence' }];
 
 function Samples11({ s, cue }) {
@@ -1107,12 +1107,12 @@ export function Fig11({ src, alt }) {
       <div style={row}><span style={small}>Sentence</span>{f.cues.map((c) => <button key={c} type="button" aria-pressed={c === cue} style={chip(c === cue)} onClick={() => setCue(c)}>{f.sample.cueLabels[c]}</button>)}</div>
       <Samples11 s={f.sample} cue={cue} />
       <div style={{ fontSize: '0.72rem', opacity: 0.65, marginBottom: 12 }}>
-        One patient message ({f.sample.label}) with the selected sentence, as the four runs saw it. Typing errors by rule, one word
+        One patient message ({f.sample.label}) with the selected sentence, as the four runs saw it. Typos by rule, one word
         in twelve, in the message and the sentence. Lower case removes every punctuation mark. The daily-detail sentences come
-        from a pool of twelve, chosen per scenario. The same transform was made in all 32 messages.
+        from a pool of twelve, chosen per scenario. We made the same change in all 32 messages.
       </div>
       <div style={row}><span style={small}>Show</span>{VIEWS11.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
-      {view === 'effect' && <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>}
+      {view === 'effect' && <div style={row}><span style={small}>Model&apos;s answer</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>}
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
           <div />
@@ -1160,23 +1160,23 @@ export function Fig11({ src, alt }) {
       </div>
       <div style={legendRow}>
         {keys.map((k) => <Swatch key={k} color={TR11[k].color} label={TR11[k].short} />)}
-        <span>{view === 'effect' ? label : 'Each readout'}, log-odds. Horizontal lines: 95% intervals. Dark line: no shift.</span>
+        <span>{view === 'effect' ? label : 'Each answer'}, log-odds. Horizontal lines: 95% intervals. Dark line: no change.</span>
       </div>
       {view === 'effect' && (
         <div style={{ ...hint, opacity: 0.8 }}>
-          Mean size of the sentence effect over the eight arm-by-sentence cells: {Object.keys(TR11).map((k) => `${TR11[k].short} ${f.meanAbs[readout][k].toFixed(2)}`).join('; ')}.
+          Mean size of the sentence effect over the eight cells (two groups of cases by four sentences): {Object.keys(TR11).map((k) => `${TR11[k].short} ${f.meanAbs[readout][k].toFixed(2)}`).join('; ')}.
         </div>
       )}
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
         <div style={{ marginBottom: 4 }}>What the axes are.</div>
         {view === 'effect' ? (
           <>
-            <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences. Columns: the two arms, 16 scenarios each.</div>
-            <div style={{ marginLeft: 12, marginTop: 3 }}>Marks: the reading with the sentence minus the reading with the weather sentence, both in the same run, one mark per run.</div>
+            <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences. Columns: the two groups of cases, 16 scenarios each.</div>
+            <div style={{ marginLeft: 12, marginTop: 3 }}>Marks: the model&apos;s lean with the sentence minus its lean with the weather sentence, both in the same run, one mark per run.</div>
           </>
         ) : (
           <>
-            <div style={{ marginLeft: 12 }}>Rows: the three readouts. Columns: the two arms, 16 scenarios each.</div>
+            <div style={{ marginLeft: 12 }}>Rows: the three answers. Columns: the two groups of cases, 16 scenarios each.</div>
             <div style={{ marginLeft: 12, marginTop: 3 }}>Marks: the message with no added sentence after the transform minus the same message typed cleanly. Right of the dark line reads as more urgent.</div>
           </>
         )}
@@ -1199,7 +1199,7 @@ export function RealismTable({ rows }) {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>no added sentence; shift, log-odds [95% interval]</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>no added sentence; change, log-odds [95% interval]</th>
             <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal' }}>clean level</th>
             {keys.map((k) => <th key={k} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: TR11[k].color }}>{TR11[k].short}</th>)}
           </tr>
@@ -1228,8 +1228,8 @@ export function RealismTable({ rows }) {
 }
 
 // Figure 12: the four main sentences on six chronic conditions
-const ARM12 = { emergency: 'Emergency', urgent: 'Same-day case', routine: 'Routine question' };
-const CUE12 = { distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight', uninsured: 'no insurance, money tight' };
+const ARM12 = { emergency: 'Emergency cases', urgent: 'Same-day cases', routine: 'Routine questions' };
+const CUE12 = { distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight', uninsured: 'no insurance' };
 const CUE12_SHORT = { distance: '90 min away', clinic_closed: 'clinic closed', no_transport: 'no ride', uninsured: 'no insurance' };
 
 export function Fig12({ src, alt }) {
@@ -1245,8 +1245,8 @@ export function Fig12({ src, alt }) {
   const cellStyle = (v) => ({ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '8px 2px', cursor: 'default' });
   return (
     <div style={wrap} ref={ref}>
-      <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
-      <div style={row}><span style={small}>Arm</span>{f.arms.map((a) => <button key={a} type="button" aria-pressed={a === arm} style={chip(a === arm)} onClick={() => setArm(a)}>{ARM12[a]}</button>)}</div>
+      <div style={row}><span style={small}>Model&apos;s answer</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
+      <div style={row}><span style={small}>Cases</span>{f.arms.map((a) => <button key={a} type="button" aria-pressed={a === arm} style={chip(a === arm)} onClick={() => setArm(a)}>{ARM12[a]}</button>)}</div>
       <div style={{ display: 'grid', gridTemplateColumns: `minmax(7.5em, 10em) repeat(${f.cues.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.72rem' }}>
         <div />
         {f.cues.map((q) => <div key={q} style={{ textAlign: 'center', padding: '0 2px 4px', lineHeight: 1.2 }}>{CUE12_SHORT[q]}</div>)}
@@ -1272,7 +1272,7 @@ export function Fig12({ src, alt }) {
         <div style={{ alignSelf: 'center', lineHeight: 1.15, paddingRight: 6, fontWeight: 'bold', borderTop: '1.5px solid #000', paddingTop: 4, marginTop: 2 }}>pooled, six conditions</div>
         {f.cues.map((q) => {
           const [v, lo, hi] = f.pooled[readout][arm][q];
-          const node = <div><div><b>Pooled over the six conditions</b>, {ARM12[arm].toLowerCase()} · {CUE12[q]}: {fmt(v)} [{fmt(lo)}, {fmt(hi)}]</div><div style={{ opacity: 0.6, marginTop: 3 }}>{label}, mean and bootstrap 95% interval over the six conditions</div></div>;
+          const node = <div><div><b>Pooled over the six conditions</b>, {ARM12[arm].toLowerCase()} · {CUE12[q]}: {fmt(v)} [{fmt(lo)}, {fmt(hi)}]</div><div style={{ opacity: 0.6, marginTop: 3 }}>{label}, mean and 95% interval from resampling the six conditions</div></div>;
           return <div key={q} {...mark(show, hide, node)} style={{ ...cellStyle(v), fontWeight: 'bold', marginTop: 2 }}>{fmt(v)}</div>;
         })}
       </div>
@@ -1280,12 +1280,12 @@ export function Fig12({ src, alt }) {
         <span>−{max.toFixed(1)}</span>
         <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
-        <span style={{ opacity: 0.6 }}>{label}, the sentence minus the weather sentence, log-odds. Red raises the reading, blue lowers it.</span>
+        <span style={{ opacity: 0.6 }}>{label}, the sentence minus the weather sentence, log-odds. Red raises the lean toward the named answer, blue lowers it.</span>
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
         <div style={{ marginBottom: 4 }}>What the axes are.</div>
-        <div style={{ marginLeft: 12 }}>Rows: six chronic conditions, one scenario each per arm, and the mean over the six. Columns: the four barrier sentences.</div>
-        <div style={{ marginLeft: 12, marginTop: 3 }}>Cells: the reading with the sentence minus the reading with the weather sentence on the same scenario. One scenario per cell, so a cell has no interval; the pooled row has one.</div>
+        <div style={{ marginLeft: 12 }}>Rows: six chronic conditions, one scenario each per group of cases, and the mean over the six. Columns: the four barrier sentences.</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Cells: the model&apos;s lean with the sentence minus its lean with the weather sentence on the same scenario. One scenario per cell, so a cell has no interval; the pooled row has one.</div>
       </div>
       <Hint />
       <Tip tip={tip} />
@@ -1304,7 +1304,7 @@ export function ConditionTable({ cols }) {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 520 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>shift, log-odds</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds</th>
             {cols.map((c) => <th key={c.label} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c.label}</th>)}
           </tr>
         </thead>
@@ -1337,7 +1337,7 @@ export function ConditionReplies() {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, coder 1 / coder 2</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
             {r.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal' }}>{names[c]}</th>)}
           </tr>
         </thead>
@@ -1365,7 +1365,7 @@ export function BreadthReplies() {
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 720 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, coder 1 / coder 2</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
             {r.cues.map((c) => <th key={c.key} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c.label}</th>)}
           </tr>
         </thead>
@@ -1375,6 +1375,138 @@ export function BreadthReplies() {
               <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
               {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
             </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Figure 13: the fine-tuned fix, replies that open with call 911, per set and model
+const MODEL13 = { base: C.dark, system: C.orange, lora: C.blue };
+const GOOD13 = { emergency: 'a higher share is good', routine: 'a higher share is a false alarm', urgent: 'a higher share is a false alarm' };
+function round13(x) {
+  const f = Math.floor(x);
+  if (x - f !== 0.5) return Math.round(x);
+  return f % 2 === 0 ? f : f + 1;
+}
+function totals13(m) {
+  return [0, 1].map((k) => Object.values(m.perCue).reduce((a, v) => a + v[k], 0));
+}
+function count13(m) {
+  return `${round13(m.count)} of ${m.of}`;
+}
+export function Fig13({ src, alt }) {
+  const d = useCharts();
+  const [sel, setSel] = useState('main_emergency');
+  const { ref, tip, show, hide } = useTip();
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig13;
+  const set = f.sets.find((x) => x.key === sel);
+  const models = f.models.filter((m) => set.models[m.key]);
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(9em, 14em) minmax(0, 1fr)', gap: '4px 10px', fontSize: '0.74rem', alignItems: 'center' }}>
+        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of replies that open with “call 911”, mean of two readers</div>
+        <div />
+        <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}><span>0%</span><span>50%</span><span>100%</span></div>
+        {f.sets.map((x) => (
+          <Fragment key={x.key}>
+            <div onClick={() => setSel(x.key)} style={{ cursor: 'pointer', lineHeight: 1.2, hyphens: 'none', fontWeight: x.key === sel ? 'bold' : 'normal', paddingRight: 4 }}>
+              <div>{x.label}</div>
+              <div style={{ opacity: 0.6, fontWeight: 'normal' }}>{GOOD13[x.arm]}</div>
+            </div>
+            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid #000', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)' }}>
+              {f.models.map((m) => {
+                const v = x.models[m.key];
+                if (!v) {
+                  const why = m.key === 'system' && x.key === 'urgent' ? `${m.label}: ${f.systemSameDay}, see Table 2` : `${m.label}: not run on this set`;
+                  return <div key={m.key} {...mark(show, hide, <div>{why}</div>)} style={{ height: 14, fontSize: '0.66rem', opacity: 0.55, paddingLeft: 4, lineHeight: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.key === 'system' && x.key === 'urgent' ? 'word rule only' : 'not run'}</div>;
+                }
+                const node = (
+                  <div>
+                    <div><b>{m.label}</b> · {x.label}</div>
+                    <div style={{ marginTop: 3 }}>{count13(v)} replies open with “call 911”, mean of two readers ({(v.share * 100).toFixed(0)} percent): reader 1 {totals13(v)[0]}, reader 2 {totals13(v)[1]}. In this set, {GOOD13[x.arm]}.</div>
+                  </div>
+                );
+                return (
+                  <div key={m.key} {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
+                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL13[m.key], outline: x.key === sel ? '1px solid #000' : 'none' }} />
+                    {v.share > 0.7
+                      ? <span style={{ position: 'absolute', right: `calc(${100 - v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#fff' }}>{count13(v)}</span>
+                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#000' }}>{count13(v)}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </Fragment>
+        ))}
+      </div>
+      <div style={legendRow}>
+        {f.models.map((m) => <Swatch key={m.key} color={MODEL13[m.key]} label={m.label} />)}
+      </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the bars are. Each bar is the share of replies in that set whose first concrete advice is “call 911 now”, mean of two readers. Select a set to see the count under each sentence.</div>
+      </div>
+      <div style={{ ...small, marginTop: 12 }}>{set.label}, by sentence (reader 1 / reader 2, of {set.per})</div>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 420, marginTop: 4 }}>
+          <thead>
+            <tr>
+              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>model</th>
+              {set.cues.map((q) => {
+                const node = <div><div><b>{f.cueLabels[q]}</b></div>{f.sentences[q] ? <div style={{ marginTop: 3 }}>“{f.sentences[q]}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}</div>;
+                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {models.map((m) => (
+              <tr key={m.key}>
+                <td style={{ padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}><Swatch color={MODEL13[m.key]} label={m.label} /></td>
+                {set.cues.map((q) => {
+                  const v = set.models[m.key].perCue[q];
+                  const full = v[0] >= set.per && v[1] >= set.per;
+                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid rgba(0,0,0,0.15)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 10: the fine-tuned fix, benefit rows then harm rows
+export function LoraTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig13;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>set and cases; replies that open with “call 911”</th>
+            {f.models.map((m) => <th key={m.key} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{m.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {f.sets.map((x, i) => (
+            <Fragment key={x.key}>
+              {(i === 0 || i === 2) && <tr><td colSpan={4} style={{ ...small, padding: '12px 0 4px', textAlign: 'left' }}>{i === 0 ? 'benefit: emergency cases, a higher share is good' : 'harm: routine and same-day cases, a higher share is a false alarm'}</td></tr>}
+              <tr>
+                <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
+                {f.models.map((m) => {
+                  const v = x.models[m.key];
+                  return <td key={m.key} style={{ ...cell, opacity: v ? 1 : 0.55, whiteSpace: v ? 'nowrap' : 'normal', fontSize: v ? 'inherit' : '0.7rem' }}>{v ? <>{count13(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55 }}>{totals13(v)[0] === totals13(v)[1] ? 'both readers' : `readers ${totals13(v)[0]} / ${totals13(v)[1]}`}</div></> : m.key === 'system' && x.key === 'urgent' ? f.systemSameDay : 'not run'}</td>;
+                })}
+              </tr>
+            </Fragment>
           ))}
         </tbody>
       </table>

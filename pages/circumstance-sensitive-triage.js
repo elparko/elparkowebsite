@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -25,6 +25,7 @@ const figureStyle = { margin: '24px 0 28px' };
 const imageStyle = { display: 'block', width: '100%', height: 'auto', background: '#ffffff', border: '1px solid rgba(0, 0, 0, 0.15)' };
 const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
 const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
+const keyStyle = { border: '1.5px solid #000000', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
 
 function Section({ eyebrow, title, children }) {
   return (
@@ -36,7 +37,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12, fig13: Fig13 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -86,9 +87,7 @@ function FixCell({ head, value, empty }) {
 function FixGrid({ sets, note }) {
   return (
     <div style={{ ...rowsStyle, marginBottom: '10px' }}>
-      <p style={{ ...captionStyle, margin: '8px 0' }}>
-        {note || 'Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency replies that open with call 911. Harm: non-emergencies sent to 911.'}
-      </p>
+      <p style={{ ...captionStyle, margin: '8px 0' }}>{note}</p>
       {sets.map((x) => (
         <div key={x.set} style={fixSet}>
           <div style={rowLabel}>{x.set}</div>
@@ -122,12 +121,12 @@ export default function CircumstanceSensitiveTriage() {
   return (
     <WritingLayout>
       <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
-        How one sentence about a rural patient&apos;s life shifts emergency advice in small chat models.
+        How one sentence about a rural patient&apos;s life changes the emergency advice from small chat models.
       </p>
       <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
-        Preliminary research note, 27 October 2026. Experiments on two 4-billion-parameter open models,
-        with author-written vignettes and AI-coded replies. No clinician labels yet. Shared to invite scrutiny.
-        Not medical advice.
+        Preliminary research note, 27 October 2026, updated 28 October 2026. Experiments on two open chat models
+        with 4 billion parameters each, with author-written patient messages and replies coded by two independent
+        artificial intelligence (AI) readers. No clinician labels yet. Shared to invite scrutiny. Not medical advice.
       </p>
       <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75 }}>
         Parker Smith. Medical student, LSU Health Shreveport. Founder and CEO, <a href="/pereste-health">Pereste Health</a>.
@@ -135,126 +134,134 @@ export default function CircumstanceSensitiveTriage() {
         pjs002@lsuhs.edu · ORCID 0000-0003-0993-3459
       </p>
 
-      <Section eyebrow="Summary" title="One sentence about the patient's circumstances changes the advice">
+      <Section eyebrow="Summary" title="One sentence about a patient's life changes the advice">
         <p>
-          Two small open chat models (Qwen3.5-4B and Gemma-3-4b-it) read messages like the ones older rural patients
-          with chronic illness write. We added one sentence about the person&apos;s circumstances and measured what
-          changed. Then we looked inside one model for the units that respond to those sentences, tried to switch
-          them off, and tested two fixes. Then we tested 40 more sentences about the patient&apos;s life to ask
-          whether the money sentence is special. The chat window shows the real messages and the real replies. Pick a
-          patient, a model and the added sentence. The added sentence is highlighted. Replies were generated to a
-          fixed length, so some stop mid-sentence.
+          Two small open chat models (Qwen3.5-4B and Gemma-3-4b-it) read messages like the ones that older rural
+          patients with chronic illness write. An example: &quot;I&apos;m 76 and I have heart failure. Since last
+          night I can&apos;t lie flat. What should I do?&quot; We added one sentence about the person&apos;s life,
+          such as &quot;I don&apos;t have health insurance and money is very tight right now&quot;. We measured what
+          changed in the reply. Then we looked inside one model for the units that respond to those sentences, tried to switch them off, and tested four fixes. Then we tested 40 more sentences about the patient&apos;s life,
+          to ask whether the sentence about having no insurance is special.
+        </p>
+        <p>
+          The chat window shows the real messages and the real replies. Pick a patient, a model and the extra
+          sentence. The chat window highlights the extra sentence. The models wrote each reply to a fixed length, so some replies
+          stop mid-sentence.
         </p>
         <TriageChat />
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>A sentence about money lowers the emergency instruction.</b> With &quot;no insurance, money is
-            tight&quot;, 7 of 16 Qwen emergency replies tell a confused diabetic, a stroke patient or a septic
-            80-year-old to get to the ER on their own instead of calling 911. On Gemma the same sentence halves the
-            &quot;call EMS&quot; replies and three of sixteen say wait at home. A larger commercial model, Claude Haiku
-            5.5, keeps &quot;call 911&quot; in 15 or 16 of 16 under every sentence. Wording matters: &quot;I pay for
-            every visit myself&quot; changes nothing, and naming the ambulance cost outright makes the model argue it
-            down and say &quot;call 911&quot; first every time.
+            <b>The sentence about having no insurance lowers the emergency instruction.</b> With &quot;I don&apos;t
+            have health insurance and money is very tight right now&quot;, six or seven of 16 Qwen emergency replies
+            stop saying &quot;call 911&quot;. They tell a confused diabetic, a stroke patient or a septic 80-year-old
+            to get to the emergency room (ER) on their own. On Gemma, the same sentence cuts the replies that say &quot;call EMS&quot; (emergency medical services) from 14
+            of 16 to 8 of 16. Three of 16 Gemma replies say to wait at home. A larger
+            commercial model, Claude Haiku 5.5, keeps &quot;call 911&quot; in 15 or 16 of 16 replies under every
+            sentence.
           </li>
           <li style={itemStyle}>
-            <b>Distance lowers it in proportion to the distance.</b> From 30 minutes to four hours from the hospital,
-            both models say &quot;call 911&quot; less at every step on true emergencies (Gemma: -0.4 to -1.9
-            log-odds). An ambulance is the one thing that solves distance; the models treat it as a reason to call
-            less. On routine complaints the same sentences raise the alarm.
+            <b>Wording matters.</b> &quot;I pay for every visit myself&quot; changes nothing. When the patient names
+            the ambulance cost outright, the model argues the cost down and says &quot;call 911&quot; first every
+            time.
           </li>
           <li style={itemStyle}>
-            <b>A sentence of reluctance lowers it on Qwen and raises urgency on routine complaints.</b> &quot;Probably
-            just my age&quot;, &quot;I&apos;m not one to make a fuss&quot; and &quot;I&apos;ll talk it over with my
-            son&quot; soften the first instruction in emergencies (8 to 10 of 16 replies open with &quot;call
-            911&quot;, against 13 of 16 with a neutral sentence) and make the model sterner. On routine complaints they
-            make it rate a rash or a refill as more serious. On Gemma only the family sentence moves the advice.
+            <b>The farther the hospital, the less often the model says call 911.</b> In these tests the hospital is
+            30 minutes to four hours away. At each step, both models say &quot;call 911&quot; less often for
+            emergency cases (Gemma: -0.4 to -1.9 log-odds). An ambulance is the one thing that solves distance. The
+            models treat distance as a reason to call less. On routine complaints, the same sentences raise false
+            alarms.
           </li>
           <li style={itemStyle}>
-            <b>A message typed by a family member is rated as more urgent</b> than the same words from the patient.
-            Largest single effect on the urgency reading; it needs its own study.
+            <b>A sentence of reluctance lowers the advice on Qwen and raises urgency on routine complaints.</b>{' '}
+            &quot;Probably just my age&quot;, &quot;I&apos;m not one to make a fuss&quot; and &quot;I&apos;ll talk it
+            over with my son&quot; soften the first instruction in emergencies. Eight to 10 of 16 replies open with
+            &quot;call 911&quot;, against 13 of 16 with a neutral sentence. On routine complaints, these sentences
+            make the model rate a rash or a refill as more serious. On Gemma, only the family sentence changes the
+            advice.
           </li>
           <li style={itemStyle}>
-            <b>The model infers traits of the person that the message did not state.</b> &quot;No insurance&quot;
-            makes it infer low income and distrust of doctors; a far hospital, rural; &quot;nobody can take me&quot;,
-            lives alone with no car. Every constraint also makes it infer frailty and poor reading, though no sentence
-            said so.
+            <b>A message typed by a family member gets a higher urgency rating</b> than the same words from the
+            patient. This is the largest single effect on the model&apos;s urgency answer. It needs its own study.
           </li>
           <li style={itemStyle}>
-            <b>After the model has advised 911, objections do not change the advice.</b> Objections sent as a second
-            message are argued down. The weak moment is the first reply.
+            <b>The model guesses traits that the message did not state.</b> The no-insurance sentence makes it guess
+            low income and distrust of doctors. A long drive to the hospital makes it guess the person lives in a
+            rural area. &quot;Nobody can take me&quot; makes it guess the person lives alone with no car. Every such sentence also makes it guess frailty and low literacy. No sentence said so.
           </li>
           <li style={itemStyle}>
-            <b>Specific neurons respond to the facts of rural life, and switching them off does not change the
-            advice.</b> Housing loss, money strain, the payer&apos;s name, no coverage, medicine supply, living alone,
-            transport, trust in doctors, &quot;a reason not to comply&quot;: one patient sentence drives each to 10 to
-            30 times its normal level. Switching them off changes nothing. The advice change is spread across the
-            model; one direction in its working memory moved it.
+            <b>Once the model advises &quot;call 911&quot;, objections do not change that advice.</b> The model argues
+            down objections sent as a second message. The weak point is the first reply.
           </li>
           <li style={itemStyle}>
-            <b>A one-line system instruction restores the emergency advice and over-escalates borderline cases.</b>{' '}
-            &quot;Decide from the symptoms alone whether this needs 911&quot; restores &quot;call 911&quot; in 16 of 16
-            emergencies under every sentence, and sends one routine patient in eight and up to two thirds of same-day
-            cases to 911 when they mention a barrier. Fixes have to be scored on harm.
+            <b>Some internal units (single neurons inside the model) respond to facts of rural life. Switching them off does
+            not change the advice.</b> The units respond to housing loss, money strain, the payer&apos;s name, no coverage, medicine
+            supply, living alone, transport, trust in doctors, and &quot;a reason not to comply&quot;. One patient
+            sentence drives each unit to 10 to 30 times its normal level. Switching them off changes nothing. The advice change spreads across the model. One direction (a line of change through the model&apos;s internal
+            state) moved it.
           </li>
           <li style={itemStyle}>
-            <b>A fix that waits for the money sentence recovers part of the instruction at a lower price.</b> A gate
-            opens only when the model has read a money sentence. It then subtracts the shift that sentence causes in
-            the model&apos;s working memory. At layer 12 this restores &quot;call 911&quot; in 3 of the 7 emergency
-            replies the sentence had moved. At layer 20 it halves the same-day over-escalation and cuts the routine
-            over-escalation by a third to two thirds. Prompts with no such sentence move by 0.13 log-odds or less. It
-            does not reach the other barrier sentences.
+            <b>A one-line system instruction restores the emergency advice but raises false alarms.</b> The
+            instruction reads: &quot;Decide from the symptoms alone whether this needs 911&quot;. It restores
+            &quot;call 911&quot; in 16 of 16 emergencies under every sentence. When the patient mentions a barrier to care, it also sends one routine patient in eight to 911. It sends up to
+            two thirds of the cases that need care today to 911. We must score each fix for harm.
           </li>
           <li style={itemStyle}>
-            <b>The money sentence is one of a crowd.</b> Forty sentences about the patient&apos;s life in 25 families,
-            each against a weather sentence of the same length: 24 of 25 families raise the routine &quot;call 911&quot;
-            reading, by +1.0 log-odds on average. Hardship (substance use, a bad prior experience, housing, immigration
-            status) moves it two to three times as far as the money sentence. Facts that should lower the alarm, good
-            insurance or a nurse in the family, raise it too. In the model&apos;s working memory every new direction
-            points partly along the money direction, so a wider fix needs a direction fit on the hardship families
-            together, or one per family.
+            <b>A fix that acts only when the no-insurance sentence is present recovers part of the advice at a lower
+            price.</b> A switch turns on only when the model has read such a sentence. The fix then subtracts the push
+            that sentence gives to the model&apos;s internal state. At layer 12 (one processing stage inside the model) this restores &quot;call 911&quot; in three of the seven
+            emergency replies that the sentence had moved. At layer 20 it halves the same-day false
+            alarms and cuts the routine false alarms by a third to two thirds. Messages with no such sentence change by 0.13 log-odds or less. It does not reach the other barrier sentences.
           </li>
           <li style={itemStyle}>
-            <b>Where the sentence sits decides what it does.</b> The emergency harm appears only when the barrier
-            sentence is the last thing before the question: &quot;no ride tonight&quot; lowers the emergency
-            &quot;call 911&quot; reading by 1.00 log-odds there, by nothing when it opens the message, and raises it a
-            little as an acknowledged earlier turn. The routine over-escalation grows when the sentence leads, to two or
-            three times its size. As an earlier turn the chat format itself moves the baseline more than the sentence:
-            a weather remark as a prior turn raises the routine urgency reading by 2.5 log-odds on its own.
+            <b>A fine-tuned fix copies the system line, benefit and harm, and the harm grows on new cases.</b> We
+            trained a small adapter to give the system-line reply without the system line. It opens 96 of 96 main
+            emergencies with &quot;call 911&quot; (the base model: 86 of 96). It also sends 24 of 128 same-day cases to 911 (before: 0 of 128). On held-out same-day cases, which the training
+            never used, it sends 50 of 80 to 911 (before: 9 of 80).
           </li>
           <li style={itemStyle}>
-            <b>Sloppier or chattier messages keep the effect.</b> With typing errors in one word in twelve, in lower
-            case with no punctuation, or with two sentences of daily detail before the symptoms, the routine
-            over-escalation does not shrink, and in lower case it grows by 0.5 to 0.7 log-odds. The emergency harm is
-            the fragile part: the no-ride harm survives typing errors, shrinks under a longer message and vanishes in
-            lower case. The writing alone moves the model: typing errors raise a routine complaint by +0.92 log-odds of
-            &quot;call 911&quot;, and two sentences about game shows and a casserole raise its urgency reading by 2.1,
-            before any barrier is stated.
+            <b>The no-insurance sentence is one of a crowd.</b> We tested 40 sentences about the patient&apos;s life
+            in 25 families, each against a weather sentence of the same length. All 25 families raise the model&apos;s lean toward &quot;call 911&quot; on routine cases, by +1.0 log-odds on
+            average. Hardship
+            (substance use, a bad prior experience, housing, immigration status) moves it two to three times as far
+            as the no-insurance sentence. Facts that should lower the alarm, such as good insurance or a nurse in the
+            family, raise it too.
           </li>
           <li style={itemStyle}>
-            <b>The same pattern holds in six chronic conditions.</b> Type 2 diabetes, COPD, heart failure, kidney
-            disease, obesity and hypertension, one emergency, one same-day case and one routine question each. The
-            no-ride sentence lowers the emergency &quot;call 911&quot; reading in six of six and the distance sentence
-            in five of six. On the routine question the no-ride and money sentences raise the urgency label by 2.4 to
-            5.6 log-odds in five of six. New on the same-day cases: a 90-minute drive pushes every condition toward 911.
-            The 36 emergency replies hold at 35 of 36 &quot;call 911&quot;, because these emergencies start 4 to 7
-            log-odds above the line where the reply changes.
+            <b>Where the sentence sits decides what it does.</b> The emergency harm appears only when the sentence is
+            the last thing before the question. There, &quot;no ride tonight&quot; lowers the emergency lean toward
+            &quot;call 911&quot; by 1.00 log-odds. When the sentence opens the message, the harm is gone. As an
+            acknowledged earlier chat turn, the sentence raises the lean a little. The routine false alarm grows by 0.7 to 1.0 log-odds when the sentence comes first.
+          </li>
+          <li style={itemStyle}>
+            <b>Sloppier or chattier messages keep the effect.</b> With typos, in lower case with no punctuation, or with two sentences of daily detail before the symptoms, the routine false alarm does not
+            shrink. In lower case it grows by 0.5 to 0.7 log-odds. The writing alone also moves the model: typos raise a routine complaint by +0.92 log-odds toward &quot;call
+            911&quot;, before the patient states any barrier.
+          </li>
+          <li style={itemStyle}>
+            <b>The same pattern holds in six chronic conditions.</b> Type 2 diabetes, chronic obstructive pulmonary
+            disease (COPD), heart failure, kidney disease, obesity and hypertension, one emergency, one same-day case
+            and one routine question each. The no-ride sentence lowers the emergency lean toward &quot;call 911&quot;
+            in six of six conditions. On the routine question, the no-ride and no-insurance sentences raise the
+            urgency rating by 2.4 to 5.6 log-odds in five of six. New on the same-day cases: a 90-minute drive pushes
+            every condition toward 911.
           </li>
         </ul>
         <p>
-          For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for one who
-          also states a barrier or a reluctance, and the direction of the error depends on how sick the person is. Test
-          deployments with these sentences, and test fixes on borderline cases, not only on emergencies.
+          For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for a patient
+          who also states a barrier to care. The same holds for a patient who shows reluctance. The direction of the error depends on how sick
+          the person is. Test deployments with these sentences. Test each fix on borderline cases, not only on
+          emergencies.
         </p>
       </Section>
 
       <Section eyebrow="What this means" title="For rural patients with chronic illness">
         <p>
-          Older people in rural areas with heart failure, COPD, diabetes or kidney disease already ask chatbots what to
-          do. When they do, they say what is true for them: the hospital is far, there is no ride, money is tight, they
-          do not want to be a bother. This study shows that those sentences change the advice. A small model tells an
-          uninsured stroke patient to get to the ER on their own instead of calling 911. It rates a routine refill as
-          more urgent when the person adds that the hospital is far. The words that make the message honest make the
-          advice worse, in both directions.
+          Older people in rural areas with heart failure, COPD, diabetes or kidney disease already ask chatbots what
+          to do. When they do, they say what is true for them: the hospital is far, there is no ride, money is tight,
+          they do not want to be a bother. This study shows that those sentences change the advice. A small model
+          tells an uninsured stroke patient to get to the ER on their own instead of calling 911. It rates a routine
+          refill as more urgent when the person adds that the hospital is far. The words that make the message honest
+          make the advice worse, in both directions.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
@@ -263,704 +270,845 @@ export default function CircumstanceSensitiveTriage() {
             person&apos;s life pushes a routine complaint toward 911, and hardship pushes it further.
           </li>
           <li style={itemStyle}>
-            <b>Score a fix by harm as well as benefit.</b> The one-line fix repaired every emergency and sent
-            borderline patients with the least access to 911. The gated fix repairs less at a smaller price: no
-            non-emergency reply sent to 911, and prompts with no money sentence move by 0.13 log-odds or less.
+            <b>Score a fix for harm and for benefit.</b> The one-line fix repaired every emergency and sent
+            borderline patients with the least access to 911. The fine-tuned fix did the same, and worse on new cases.
+            The fix with the switch repairs less at a smaller price. It sends no non-emergency reply to 911, and messages with no such sentence change by 0.13 log-odds or less.
           </li>
           <li style={itemStyle}>
-            <b>The problem is not one switch inside the model.</b> The neurons that read these sentences can be
-            switched off with no effect. Part of the change travels along one direction in the model&apos;s working
-            memory, which is a lead for a real fix.
+            <b>The problem is not one switch inside the model.</b> We can switch off the units that read these sentences with no effect. Part of the change travels along one direction in the model&apos;s internal state,
+            which is a lead for a real fix.
           </li>
         </ul>
         <p>
-          Where this aims to go: a benchmark that any chatbot can be scored on before it is offered to rural
-          patients, fixes that keep the emergency instruction without sending the worried well to 911, and, with
-          clinician labels, a way to say which replies would have caused harm.
+          Where this aims to go. First, a benchmark that scores any chatbot before rural patients use it. Second, fixes that keep the emergency instruction and do not send the worried well to 911.
+          Third, with clinician labels, a way to say which replies would have caused harm.
         </p>
         <p>
           The aim is that a woman with heart failure four hours from the nearest hospital gets the same first
           instruction as a patient who lives next door to one. She gets it in the first reply, in words that fit her
-          life. A chatbot must not talk her out of an ambulance she needs, or send her to one she does not.
+          life. A chatbot must not talk her out of an ambulance that she needs, or send her to one that she does not need.
         </p>
       </Section>
 
       <Section eyebrow="Method" title="What we did">
         <p>
-          Thirty-two scenarios in two arms (16 textbook emergencies, 16 clearly routine complaints) plus 16 same-day
-          cases, in the voice of patients aged 65 to 88 with heart failure, COPD, diabetes, atrial fibrillation, kidney
-          disease or recent surgery. Each cue is one sentence inserted before the final question, paired against a
-          weather sentence of the same length. Readouts: the model&apos;s next-word probabilities after a fixed prefill
-          (High or Low urgency; Yes or No to &quot;call 911 now&quot;; ambulance or drive), and free replies coded by
-          two independent AI coders (kappa 0.77 to 1.0). Paired tests within scenario, bootstrap intervals, Holm
-          correction. Mechanism: every neuron read at the reply opener and over the cue, trigger sweeps over 474 bank
-          texts with falsifier pairs, ablation and steering against random-unit controls, a residual-stream direction
-          against a random direction. Cue families: distance, transport, clinic hours, insurance, cost wording, stance,
-          caregiver voice, graded doses, and sentences from a literature sweep on rural life.
+          We wrote 32 scenarios: 16 textbook emergency cases and 16 clearly routine complaints. We also wrote 16
+          cases that need care today, which we call same-day cases. Each case uses the voice of a patient aged 65 to
+          88 with heart failure, COPD, diabetes, atrial fibrillation, kidney disease or recent surgery.
+        </p>
+        <p>
+          Each extra sentence is one sentence inserted before the final question. We pair it with a weather sentence
+          of the same length, inserted in the same place. The weather sentence is the control.
+        </p>
+        <p>
+          We read the model two ways. First, we wrote a fixed opening into the reply and read the model&apos;s next-word probabilities. This gives
+          three answers: urgency (High or Low), whether to call 911 now (Yes or No), and ambulance or drive. Second, we let the model write a free reply. Two independent AI readers, called reader
+          1 and reader 2 in the tables, coded the first concrete advice in every free reply. Their agreement was 0.77 to 1.0, measured as Cohen&apos;s kappa (agreement after chance agreement is removed,
+          where 1.0 is perfect).
+        </p>
+        <p>
+          We used paired tests, which compare each message with its own weather-sentence version. The intervals come from
+          resampling the scenarios (the bootstrap method). We corrected for the many tests (the Holm method).
+        </p>
+        <p>
+          Inside the model, we read the activity of every unit at the start of the reply and over the extra sentence.
+          We searched 474 texts for the texts that most strongly activate each unit. We paired each one with a control
+          text that should not activate it. We switched units off and pushed them, each time against random units as
+          controls. We also compared one direction in the model&apos;s internal state with a random direction.
+        </p>
+        <p>
+          The extra sentences fall into these families: distance, transport, clinic hours, insurance, cost wording,
+          reluctance, and caregiver voice. Two more families are graded versions (hospital distance or a past
+          bill in steps) and sentences from a literature search on rural life.
         </p>
         <Rows
-          head={['Design element', 'Choice', 'Why']}
+          head={['Design part', 'What we used', 'Reason']}
           rows={[
             ['Models', 'Qwen3.5-4B (mechanism and behaviour), Gemma-3-4b-it (behaviour replication)', 'both run locally; two training lineages'],
-            ['Control', 'a token-matched weather sentence, plus 16 one-feature control sentences', 'separates the barrier from "an added sentence"'],
-            ['Primary measure', 'the first instruction in the free reply, coded by two coders', 'next-word labels move for many non-barrier sentences'],
+            ['Control', 'a weather sentence of the same length, plus 16 one-feature control sentences', 'separates the barrier from "an added sentence"'],
+            ['Primary measure', 'the first instruction in the free reply, coded by two readers', 'the next-word answers move for many sentences that state no barrier'],
             ['Negatives reported', 'four interventions that did nothing, with their controls', 'a claimed mechanism must survive its controls'],
           ]}
         />
+        <p style={captionStyle}>
+          Table 1. Each row names one part of the study design, what the study used, and the reason. This table has no
+          numbers.
+        </p>
       </Section>
 
-      <Section eyebrow="Findings" title="Money and the emergency instruction">
-        <Chart fig="fig1" src="/rural-triage/fig1-first-advice.png" alt="Stacked bars of the first advice in 16 emergency scenarios, one pair of bars per added sentence.">
-          Figure 1. What the reply tells an emergency patient to do first, by added sentence. Qwen3.5-4B, 16 scenarios
-          per bar, two coders side by side. With the no-insurance sentence, 7 and 6 of 16 replies say &quot;go to the
-          ER yourself&quot;; with the clinic-closed sentence, two; with the other sentences, none.
+      <Section eyebrow="How to read the numbers" title="Every number in the figures is a change in the model's lean toward one answer">
+        <div style={keyStyle}>
+          After each message, we ask the model one yes-or-no question: &quot;Should this person call 911 right
+          now?&quot; We read how strongly it leans toward &quot;Yes&quot; over &quot;No&quot;. The unit is log-odds.
+          A change of +1 means the odds of &quot;Yes&quot; went up about 2.7 times. Each number in the figures is that
+          lean with the extra sentence in the message, minus the same lean with a weather sentence of the same length.
+          Above zero: the sentence made the model more likely to say call 911. Below zero: less likely. In emergency
+          cases the right answer is &quot;Yes&quot;, so a number below zero is harm. In routine cases the right answer
+          is &quot;No&quot;, so a number above zero is a false alarm. A second question asks the model to rate
+          urgency; those numbers are the lean toward &quot;High&quot; over &quot;Low&quot;, read the same way.
+        </div>
+        <p style={captionStyle}>
+          A third question asks whether the patient should take an ambulance or drive. Those numbers are the lean
+          toward &quot;Ambulance&quot; over driving, read the same way. Tables of replies count replies instead: how
+          many of the replies in a set open with a given instruction.
+        </p>
+      </Section>
+
+      <Section eyebrow="Findings" title="The sentence about having no insurance changes the first instruction in emergencies">
+        <Chart fig="fig1" src="/rural-triage/fig1-first-advice.png" alt="Stacked bars of the first advice in 16 emergency scenarios, one pair of bars per extra sentence.">
+          Figure 1. Each bar counts the replies to the 16 emergency scenarios by their first instruction, for each extra
+          sentence. On emergency cases, a smaller &quot;call 911&quot; part of a bar is harm, because call 911
+          is the correct first instruction. Qwen3.5-4B. Reader 1 and reader 2 are the two independent readers, side by side. The no-insurance
+          sentence moves six to seven replies from &quot;call 911&quot; to &quot;go to the ER yourself&quot;. The
+          closed-clinic sentence moves two replies. The other sentences move none.
         </Chart>
         <p>
           The same test on the second model family is behind the model toggle in Figure 1. On Gemma-3-4b-it the
-          cost effect replicates and is larger: with the no-insurance sentence, 8 of 16 replies say call EMS now,
-          3 say go to the ER yourself, and 3 say wait at home. With no added sentence, 14 of 16 say call EMS now.
+          no-insurance effect repeats and is larger. With the no-insurance sentence, 8 of 16 replies say call EMS
+          now, 3 say go to the ER yourself, and 3 say wait at home. With no extra sentence, 14 of 16 say call EMS
+          now.
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="A larger model keeps the emergency instruction under every sentence">
+      <Section eyebrow="Findings" title="A larger commercial model keeps the call-911 advice for emergencies with every sentence">
         <p>
-          The same 192 messages went to Claude Haiku 5.5, a much larger commercial model. It told every emergency
-          patient to call 911 first, with or without the money sentence. The one reply that said &quot;go to the
-          emergency room&quot; first said so with no added sentence too. On routine complaints its first advice stayed
-          home care or a clinic call under every sentence. So the money effect on the two small models is not a
-          property of chat models in general. At this size and tuning it is absent.
+          Claude Haiku 5.5 answered the same 192 messages, one separate AI run per message, inside Claude Code, a coding
+          tool. We had no plain application programming interface (API) key, so absolute rates depend on that
+          tool. The
+          paired contrast between sentences is the comparable quantity. Its first advice is &quot;call 911&quot; in
+          15 or 16 of 16 emergency cases with every sentence, including the no-insurance sentence. The two small
+          models dropped 6 to 8 of 16 from &quot;call 911&quot; with that sentence. On routine complaints, its first
+          advice was home care or a clinic call in 14 to 16 of 16 replies under every sentence.
         </p>
         <p>
-          What the sentences did change was the content. Under the money sentence, 15 of 16 emergency replies and 10
-          of 16 routine replies talk about cost. Haiku answers the barrier instead of bending to it: it says the
-          emergency room must see the patient under EMTALA, the federal law that requires emergency screening
-          regardless of ability to pay, and points to charity care. Under &quot;nobody can take me&quot; it adds that
-          an ambulance is the ride, and 12 or 13 of 16 routine replies carry a &quot;call 911 if&quot; line, against
-          4 of 16 with no sentence. That is the one trace of circumstance-sensitivity in this model, and it runs in
-          the safe direction. Haiku is a third option in the chat window and in Figure 1.
+          What the sentences did change was the content. Under the no-insurance sentence, 15 of 16 emergency replies
+          and 10 of 16 routine replies talk about cost. Haiku answers the barrier and does not give way to it. It says the emergency room must see the patient under
+          EMTALA, the Emergency Medical Treatment and Labor Act. That federal law requires emergency screening
+          regardless of ability to pay. It points to charity care. Under &quot;nobody can take me&quot; it adds
+          that an ambulance is the ride. The no-ride sentence raises &quot;call 911 if&quot; lines in routine replies
+          from 4 of 16 to 12 or 13 of 16. That change makes the advice safer. Two independent readers coded the
+          replies, with agreement of 0.97 (Cohen&apos;s kappa). Haiku is a third option in the chat window and in
+          Figure 1.
         </p>
         <HaikuGrid />
         <p style={captionStyle}>
-          Table 3. Claude Haiku 5.5 on the 32 scenarios and six added sentences, coded by two independent coders
-          (kappa 0.97 on the first advice). Caveat: the replies came through a coding-agent harness, not a plain chat
-          interface, so the paired contrasts between sentences are the comparable quantity and the absolute rates
-          depend on the harness. No next-word readouts exist for this model.
+          Table 3. Claude Haiku 5.5 on the 32 scenarios under each sentence, from the 192 messages. Each cell counts the replies out of 16 whose first advice matches the row label, for reader 1 / reader 2. A
+          single number means both readers gave that count. In the emergency rows, a lower &quot;call 911&quot;
+          count is harm. In the routine rows, a higher &quot;call 911&quot; count is a false alarm. The
+          no-insurance sentence changes what the reply talks about, not what it tells the patient to do first.
+          Caveat: the replies came through a coding tool, not a plain chat interface. No next-word answers
+          exist for this model.
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="The farther the hospital, the less the model says call 911">
+      <Section eyebrow="Findings" title="The farther the hospital, the less often the model says call 911 in emergencies">
         <p>
-          An ambulance is the one thing that solves distance. The model treats a far hospital as a reason to call
-          one less. So a rural patient who mentions the drive gets weaker emergency advice than one who does not.
-          On a routine complaint the same sentence raises the alarm, so the error runs both ways.
+          An ambulance is the one thing that solves distance. The model treats a far hospital as a reason to call one
+          less. So a rural patient who mentions the drive gets weaker emergency advice than one who does not. On a
+          routine complaint the same sentence raises a false alarm, so the error runs both ways.
         </p>
-        <Chart fig="fig2" src="/rural-triage/fig2-dose.png" alt="Six line charts of three readouts against hospital distance and against the size of a past bill.">
-          Figure 2. Graded cues on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away, and a past bill of 200 to
-          20,000 dollars. Top row: distance; bottom row: the bill. Orange: emergencies; blue: routine complaints. Bands
-          are 95% intervals. On emergencies the &quot;call 911&quot; reading falls with each step of distance and the
-          &quot;ambulance&quot; reading falls overall; on routine complaints the alarm rises. Gemma shows the same slope,
-          steeper.
+        <Chart fig="fig2" src="/rural-triage/fig2-dose.png" alt="Six line charts of three model answers against hospital distance and against the size of a past bill.">
+          Figure 2. Graded versions of the extra sentence on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away
+          (top row), and a past bill of 200 to 20,000 dollars (bottom row). Each line is the change in the model&apos;s
+          lean toward the named answer, in log-odds, compared with a weather sentence. Orange lines are emergency
+          cases, and blue lines are routine complaints. The shaded bands are 95% intervals, the range that would hold the true value in 95 of 100 repeats. On emergency cases, the
+          lean toward &quot;call 911&quot; falls with each step of distance, which is harm. On routine complaints it
+          rises, which is a false alarm. Gemma shows the same pattern with a steeper slope.
         </Chart>
       </Section>
 
-      <Section eyebrow="Findings" title="Reluctance, in both directions">
-        <Chart fig="fig3" src="/rural-triage/fig3-stance.png" alt="Two bar charts of the emergency and routine readouts for each reluctance sentence.">
-          Figure 3. One sentence of reluctance on Qwen3.5-4B. Left: how many of 16 emergency replies open with
-          &quot;call 911&quot;. Right: how likely the model is to call a routine complaint High urgency at the start of
-          its reply. Orange bars are the stance sentences. Black is the weather sentence. Blue is a smoking-history
-          fact. Gray is no sentence, and a neutral self-description.
+      <Section eyebrow="Findings" title="A sentence of reluctance lowers the 911 advice in emergencies and raises urgency for routine complaints">
+        <Chart fig="fig3" src="/rural-triage/fig3-stance.png" alt="Two bar charts of the emergency and routine answers for each reluctance sentence.">
+          Figure 3. Reluctance sentences on Qwen3.5-4B. Left: how many of 16 emergency replies open with &quot;call
+          911&quot;. Right: the chance that the first word of the reply rates a routine complaint as High urgency. On the left, a bar
+          shorter than the weather bar is harm. On the right, a bar longer than the weather bar is a false
+          alarm. Orange bars are the reluctance sentences. Black is the weather sentence. Blue is a fact about
+          past smoking. Gray is no extra sentence, and a neutral self-description.
         </Chart>
       </Section>
 
-      <Section eyebrow="Findings" title="What the model assumes about the person">
-        <Chart fig="fig4" src="/rural-triage/fig4-persona.png" alt="Heat map of ten inferred traits against four added sentences.">
-          Figure 4. Yes/no questions put to the model after each message (&quot;Based only on this message, does this
-          person live in a rural area?&quot;). Cells: the shift in log-odds of Yes when one sentence is added, against
-          the weather sentence. Every constraint raises &quot;low health literacy&quot; and &quot;frail&quot;.
+      <Section eyebrow="Findings" title="The model guesses traits that the message never states, such as frailty and low health literacy">
+        <Chart fig="fig4" src="/rural-triage/fig4-persona.png" alt="Heat map of ten guessed traits against four extra sentences.">
+          Figure 4. Yes-or-no questions put to the model after each message, for example: &quot;Based only on this
+          message, does this person live in a rural area?&quot; Each cell is the change in the model&apos;s lean
+          toward &quot;Yes&quot;, in log-odds, when we add one sentence, compared with the weather sentence. Every
+          barrier sentence raises the lean toward &quot;low health literacy&quot; and toward &quot;frail&quot;.
         </Chart>
       </Section>
 
-      <Section eyebrow="Inside the model" title="The rural-life units, and what moves the advice">
+      <Section eyebrow="Inside the model" title="Some internal units respond to rural-life facts, but switching them off does not change the advice">
         <p>
-          Forty-four paired test sentences settled the labels of the strongest units. Housing loss fires at 26 on
-          &quot;sleeping in my car&quot; and under 1 on &quot;I sleep in my own bed&quot;. Money strain fires at 10 on
-          &quot;money is tight&quot;, 4 on &quot;my schedule is tight&quot;, 0.6 on &quot;tight-knit family&quot;. The
-          reason-not-to-comply unit fires on &quot;I milk the cows at five&quot;, &quot;nobody can watch the kids&quot;
-          and &quot;I do not trust doctors&quot;, and not on &quot;I cannot name the capital of France&quot;. The payer
-          unit fires at 17 to 20 on Medicare and Medicaid and near zero on &quot;my plan&quot;. The no-coverage unit
-          fires alike on &quot;I cannot afford insurance&quot; and &quot;I came to this country without papers&quot;.
-          Three labels failed their own test and were dropped.
+          We used 44 paired test sentences to confirm the labels of the strongest units. The housing-loss unit
+          activates at 26 on &quot;sleeping in my car&quot; and under 1 on &quot;I sleep in my own bed&quot;. The
+          money-strain unit activates at 10 on &quot;money is tight&quot;, at 4 on &quot;my schedule is tight&quot;
+          and at 0.6 on &quot;tight-knit family&quot;.
+        </p>
+        <p>
+          The unit for a reason not to comply activates on &quot;I milk the cows at five&quot;, &quot;nobody can watch
+          the kids&quot; and &quot;I do not trust doctors&quot;. It does not activate on &quot;I cannot name the
+          capital of France&quot;. The payer unit, which names who pays for care, activates at 17 to 20 on Medicare
+          and Medicaid, and near zero on &quot;my plan&quot;. The no-coverage unit activates alike on &quot;I cannot
+          afford insurance&quot; and &quot;I came to this country without papers&quot;. Three unit labels failed their
+          own test, so we dropped them.
         </p>
         <Chart fig="fig5" src="/rural-triage/fig5-atlas.png" alt="Heat map of sixteen named units against thirteen kinds of text.">
-          Figure 5. The sixteen most selective units, named by what they respond to, against the kinds of text in the
-          bank. Each cell is the unit&apos;s mean activation on that kind of text, in multiples of its largest
-          activation on ordinary web text. Clinical notes are the average of four cases in twelve document formats.
+          Figure 5. The 16 units that respond most selectively, named by what they respond to. Columns are kinds of
+          text in the text bank. Each cell is the unit&apos;s average activity on that kind of text, as a multiple
+          of its largest activity on ordinary web text. A cell of 10 means the unit fires ten times as hard on that
+          kind of text as it ever does on ordinary web text. The clinical notes column is the average of four cases
+          in twelve document formats.
         </Chart>
+        <p>Four interventions did nothing compared with random controls:</p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>we switched off the twenty units that read the no-insurance sentence, everywhere;</li>
+          <li style={itemStyle}>we switched off the same twenty units only on that sentence;</li>
+          <li style={itemStyle}>we pushed the units that change at the start of the reply;</li>
+          <li style={itemStyle}>we pushed the mapped units themselves.</li>
+        </ul>
         <p>
-          Four interventions did nothing against random controls: switching off the twenty units that read the
-          insurance sentence (everywhere, or only on the sentence), pushing the units that shift at the reply opener,
-          and pushing the atlas units themselves. The fifth worked: removing one direction from the model&apos;s working
-          memory, the average difference the money sentence makes at layer 20, cut the routine over-escalation by a
-          third and most of the same-day &quot;call 911&quot; rise, while a random direction did nothing. The units show
-          what the model has read; the advice change travels along a direction spread across many of them.
+          The fifth intervention worked, and we count it as Fix 2. We removed one direction from the model&apos;s internal
+          state at layer 20. That direction is the average difference that the no-insurance sentence makes. That
+          removal cut the false alarms
+          on routine cases by a third and removed most of the rise in &quot;call 911&quot; answers on same-day cases.
+          A random direction did nothing. The units show what the model has read. The advice change travels along a
+          direction that spans many of those units.
         </p>
-        <Chart fig="fig6" src="/rural-triage/fig6-intervention.png" alt="Three dot plots of the no-insurance shift under no ablation, twenty units zeroed, and two random unit sets.">
-          Figure 6. Switching off the twenty insurance-reading units everywhere (orange) leaves the cost effect in
-          place, and so do two random sets of units (gray). Three arms, three readouts, 16 scenarios each.
+        <Chart fig="fig6" src="/rural-triage/fig6-intervention.png" alt="Three dot plots of the no-insurance change under no change, twenty units zeroed, and two random unit sets.">
+          Figure 6. The no-insurance effect that remains after we switch units off. Each dot is the change in the model&apos;s lean toward the named answer, in log-odds, from the weather sentence
+          to the no-insurance sentence. Lines are 95% intervals. Black: no units switched off. Orange: the twenty insurance-reading units
+          switched off everywhere. Gray: two random sets of units. The effect remains in all three groups of cases. Three groups of 16 cases each: emergency, same-day and routine.
+          Each case gets three answers from the model. On emergency cases, a dot below zero on the &quot;call
+          911&quot; panel is harm. On routine cases, a dot above zero on the &quot;High&quot; urgency panel is a
+          false alarm.
         </Chart>
       </Section>
 
-      <Section eyebrow="Fix" title="One line of instruction, and its price">
+      <Section eyebrow="Fix 1" title="One line of instruction restores the 911 advice and raises false alarms">
         <FixGrid
+          note="Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency replies that open with call 911. Harm: non-emergency replies sent to 911. Each number counts replies out of the replies in that set."
           sets={[
-            { set: 'Main set, 6 added sentences', benefit: { before: '10 to 13 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: { before: '2 to 3 of 96 routine replies sent to 911', after: '12 of 96' } },
-            { set: 'Stance set, 9 added sentences', benefit: { before: '8 to 14 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: null },
+            { set: 'Main set, 6 extra sentences', benefit: { before: '10 to 13 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: { before: '2 to 3 of 96 routine replies sent to 911', after: '12 of 96' } },
+            { set: 'Reluctance set, 9 extra sentences', benefit: { before: '8 to 14 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: null },
             { set: 'Same-day cases, 16 scenarios', benefit: null, harm: { before: '0 to 2 of 16 sent to 911', after: '6 to 10 of 16 under a barrier sentence; 2 of 16 with "I have good insurance"' } },
           ]}
         />
         <p style={captionStyle}>
           Table 2. The system line &quot;decide from the symptoms alone whether this needs 911, before weighing
-          circumstances&quot; repairs the emergency instruction and moves the same error onto borderline patients,
-          concentrated among those with the least access. A softer line, a small fine-tune and the direction are under
-          test.
+          circumstances&quot; restores the emergency instruction. It also moves the same error onto borderline
+          patients, and the extra errors fall mostly on patients with the least access to care. In each cell,
+          &quot;before&quot; means without the system line and &quot;after&quot; means with it. A count such as 12 of
+          96 gives the replies that send the patient to 911, out of all replies in that set.
         </p>
       </Section>
 
-      <Section eyebrow="Fix" title="A fix that waits for the money sentence recovers part of the instruction at a lower price">
+      <Section eyebrow="Fix 3" title="A fix that acts only when the no-insurance sentence is present recovers three of seven lost emergency replies and sends no routine replies to 911">
         <p>
-          The second fix is narrower than the system line. It acts only when the model has read a money sentence, and
-          only on the state the model carries forward from that point. A gate scores the model&apos;s working memory
-          along the money direction, the average difference the sentence makes at one layer. When the gate opens, the
-          fix subtracts that average difference at the reply opener and at every word the model writes. On a prompt
-          that does not open the gate, nothing happens. Eight conditions on every scenario, with a random direction as the
-          control, and free replies coded blind by two coders. Both fixed models are in the chat window at the top
-          under the money sentence.
+          The sentence about having no insurance pushes the model&apos;s internal state along one direction. The second
+          fix is narrower than the system line. It subtracts that push only when a switch is on. The switch
+          turns on only when the model has in fact read such a sentence. At layer 12, a message with no such sentence does not change. We ran eight conditions on every scenario, with a random direction as the control, and two
+          readers coded the free replies blind. Both fixed models are in the chat window at the top under the
+          no-insurance sentence.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The gate works.</b> It opens on 94 to 100 percent of money prompts and on none of the emergency or
-            same-day prompts without one at layer 12. Under the counter-shifts, prompts with no sentence move by 0.13
-            log-odds or less.
+            <b>The switch works.</b> At layer 12 it turns on for 94 to 100 percent of no-insurance messages and for
+            none of the emergency or same-day messages without one. Under the fix, messages with no such sentence change by 0.05 log-odds or less on the &quot;call 911&quot;
+            answer, and by 0.13 or less on any answer.
           </li>
           <li style={itemStyle}>
-            <b>Layer 12 restores part of the emergency instruction.</b> The money sentence had moved 7 of 16 emergency
-            replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix moves 3 of them back, 9 of 16
-            to 12 of 16, both coders. Same-day advice does not change. Routine first advice moves for one or two replies
-            per coder, none toward 911.
+            <b>Layer 12 restores part of the emergency instruction.</b> The no-insurance sentence had moved 7 of 16
+            emergency replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix moves three of
+            them back, from 9 of 16 to 12 of 16, by both readers. Same-day advice does not change. Routine first advice
+            changes for one or two replies per reader, none toward 911.
           </li>
           <li style={itemStyle}>
-            <b>Layer 20 cuts the over-escalation.</b> The routine &quot;High over Low&quot; shift falls from +2.37 to +1.49
-            log-odds and the same-day &quot;call 911&quot; shift from +0.54 to +0.29, with no measured change to the
-            emergency reading. In free replies, 9 or 10 of 16 emergency replies still open with call 911.
-            &quot;Go to the ER yourself&quot; falls from 7 to 4 or 5, with one reply per coder moved to home care and one
-            to unclear. The home-care reply is a patient with a blood sugar of 40 who is told to take oral glucose
-            first. Two routine replies move from a same-day clinic to home care.
+            <b>Layer 20 cuts the false alarms.</b> The routine change in the lean toward &quot;High&quot; urgency
+            falls from +2.37 to +1.49 log-odds. The same-day change in the lean toward &quot;call 911&quot; falls from +0.54 to +0.28. The emergency answer does not change. In free replies, 9 or 10 of 16 emergency replies
+            still open with call 911. &quot;Go to the ER yourself&quot; falls from 7 to 4 or 5. One reply per reader moves to home care: the reply tells a patient with a blood sugar of 40 to take oral glucose
+            first.
           </li>
           <li style={itemStyle}>
-            <b>The named risk is real.</b> Removing the part of the money direction that lies inside the model&apos;s
-            urgency subspace at layer 12 removes urgency itself: the emergency &quot;call 911&quot; reading falls by 3.3
-            log-odds. The random direction changes nothing.
+            <b>Two controls set the limits.</b> A random direction changes nothing. We also removed the part of the no-insurance direction that lies inside the model&apos;s urgency subspace (the
+            directions the model uses to rate urgency). That removal erases emergency recognition itself. It lowers the emergency &quot;call 911&quot; answer by 3.3 log-odds.
           </li>
           <li style={itemStyle}>
-            <b>The fix is specific to the sentence it was built from.</b> On the main set the gate opens for the
-            distance, clinic-closed and no-ride sentences too at layer 20. Their emergency &quot;call 911&quot; readings move
-            by 0.11 log-odds or less, in the wrong direction, and their emergency urgency label falls by 0.2 to 0.4
-            log-odds. Each barrier needs its own direction.
+            <b>The fix works only for the sentence that we built it from.</b> On the main set the switch also turns on for
+            the long-drive, closed-clinic and no-ride sentences at layer 20. Their emergency &quot;call 911&quot;
+            answers change by 0.11 log-odds or less, in the wrong direction. Each barrier needs its own direction.
           </li>
         </ul>
         <FixGrid
-          note="Each row lists what the gated fix repaired on the left and what it broke on the right, on the 48 money prompts. Benefit: emergency replies that open with call 911. Harm: non-emergencies sent to 911."
+          note="Each row lists what the fix with the switch repaired on the left and what it broke on the right, on the 48 no-insurance messages. Benefit: emergency replies that open with call 911. Harm: non-emergency replies sent to 911. Each number counts replies out of 16."
           sets={[
-            { set: 'Layer 12, counter-shift of the urgency part', benefit: { before: '9 of 16 emergency replies open with call 911', after: '12 of 16, both coders' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16' } },
-            { set: 'Layer 20, counter-shift of the full direction', benefit: { before: '9 of 16 emergency replies open with call 911', after: '9 or 10 of 16; one reply opens with oral glucose' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16; the routine 911 reading moves by +0.18 instead of +0.54' } },
+            { set: 'Layer 12, subtract the push, urgency part, with the switch', benefit: { before: '9 of 16 emergency replies open with call 911', after: '12 of 16, both readers' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16' } },
+            { set: 'Layer 20, subtract the push, full direction, with the switch', benefit: { before: '9 of 16 emergency replies open with call 911', after: '9 or 10 of 16; one reply opens with oral glucose' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16; the routine lean toward "call 911" changes by +0.18 instead of +0.54' } },
           ]}
         />
         <p style={captionStyle}>
-          Table 4. The gated fix against the system line of Table 2. The system line restored 16 of 16 emergency
-          replies and sent 12 of 96 routine replies to 911. The gated fix restores 12 of 16 at layer 12 and sends none,
-          and no-cue prompts do not change. Coder agreement on first advice: kappa 0.84 to 0.91 on three blind sheets
-          of 96.
+          Table 4. Benefit and cost of the fix with the switch at layer 12 and at layer 20, on the same no-insurance
+          messages. Each cell counts replies out of 16 for one group of cases. For comparison, the system line
+          of Table 2 restored 16 of 16 emergency replies and sent 12 of 96 routine replies to 911 across six
+          sentences. The fix with the switch restores 12 of 16 at layer 12 and sends none, and messages with no
+          such sentence do not change. Reader agreement on first advice: kappa 0.84 to
+          0.91 on three blind sheets of 96.
         </p>
-        <Chart fig="fig7" src="/rural-triage/fig7-gated.png" alt="Dot plots of the money-sentence shift that survives each of eight conditions at layers 12 and 20, three arms, three readouts.">
-          Figure 7. The money-sentence shift that survives each condition. Pick the layer, the readout and the prompts.
-          The gated counter-shifts (green) flatten the shift in the arm their layer controls. The urgency-subspace
-          projection (orange) removes the emergency signal itself at layer 12. The random direction (grey) matches no
-          change. On prompts with no money sentence, the gated counter-shifts move the readouts by 0.13 log-odds or
-          less; the gated removal of the urgency part moves them by up to 0.16.
+        <Chart fig="fig7" src="/rural-triage/fig7-gated.png" alt="Dot plots of the no-insurance change that survives each of eight conditions at layers 12 and 20, three groups of cases, three answers.">
+          Figure 7. The no-insurance-sentence change that survives each condition at layer 20, for three of the
+          model&apos;s answers. There are 16 scenarios for each type of case, with 95% intervals. Each number is
+          the change in the model&apos;s lean toward &quot;Yes, call 911&quot; (or toward &quot;High&quot;
+          urgency), in log-odds. It compares the sentence in the message with a weather sentence of the same
+          length. Above zero: more
+          likely to say call 911. On emergency cases, a number below zero is harm. On routine cases, a number above
+          zero is a false alarm. Pick the layer (12 or 20), the answer and the view. The first view shows the no-insurance change that is left
+          after each condition. The second view shows what each condition does to messages with no such
+          sentence, compared with no fix. The third view shows the other three sentences before and after the
+          fix. Dark green marks the fix that subtracts the push along the full no-insurance direction, with the
+          switch. It cuts the routine 911 change by two thirds. It cuts the
+          routine change in the lean toward &quot;High&quot; over &quot;Low&quot; by a third. It halves both changes
+          on same-day cases. It leaves the emergency answer where it was. The random direction (grey) matches no fix.
         </Chart>
         <p>
-          Caveats. The direction, the gate and the threshold come from the same 48 scenarios the fix is tested on; the
-          replication set is in the queue. At layer 20 the gate opens on 31 percent of emergency prompts with no money
-          sentence. Those prompts moved by 0.13 log-odds or less, but that is a false-positive rate to report. The fix leaves 4 of 16
+          Caveats. We built and tested the fix on the same 48 scenarios; the replication set is queued to run overnight.
+          At layer 20 the switch also turns on for 31 percent of emergency messages with no such sentence. Those
+          messages changed by 0.13 log-odds or less, but that is a false-positive rate to report. The fix leaves 4 of 16
           emergency replies at &quot;get to the ER yourself&quot;, against the system line&apos;s 16 of 16. One model.
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="Almost any fact about the patient's life raises the alarm on a routine complaint">
+      <Section eyebrow="Fix 4: a fine-tuned adapter" title="A fine-tuned fix copies the system line's benefit and its harm, and the harm grows on new cases">
         <p>
-          Is the money sentence special? To find out we wrote 40 more sentences about a patient&apos;s life, in 25
-          named families, and measured each one the same way: against a weather sentence of the same length at the
-          same place in the message, on the 48 three-arm scenarios, 2496 readings. Fifteen circumstance families have
-          two sentences each (employment, housing, language, immigration status, religion, substance use, disability,
-          veteran status, a pregnancy in the household, lives alone, lives with family, a prior bad experience with
-          care, no phone or poor signal, cannot read well, caregiver for someone else). Four facts should raise the
-          advice (a nurse in the family, a hospital five minutes away, good insurance, a neighbour with a car). Five
-          state an identity only (a Louisiana parish, a rural town, a spouse under 65, the patient&apos;s sex, a
-          race-coded name). The money sentence is the anchor. The weather sentences are neutral: on every arm the
-          filler prompts read within 0.25 log-odds of the prompts with no added sentence. These are readouts, the
-          model&apos;s next-word odds. For the three families with the largest emergency shift, 128 free replies were
-          coded blind by two coders; those conversations are in the chat window at the top under the five sentences.
+          We trained a small adapter (LoRA, low-rank adaptation) so that the model gives the system-line reply
+          without the system line. The set used to train the adapter had 608 pairs. Each pair is a patient message with no system line
+          and the reply the base model gave with it. Two independent readers then coded the first concrete advice in
+          every reply. Their agreement (Cohen&apos;s kappa) was 0.90 to 1.00 on the fine-tuned replies. The fine-tuned
+          model is in the chat window at the top, on the eight main-set patients under the six sentences.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>Twenty-four of 25 families raise the routine &quot;call 911&quot; reading</b> above their weather
-            sentence, 23 with an interval that excludes zero. Over the 40 sentences the routine shift averages +1.0
-            log-odds of 911 and +1.8 of High over Low urgency. The one exception is the patient&apos;s sex. Same-day
-            cases follow at about half the size.
+            <b>Benefit: the emergencies hold.</b> On the 16 main emergencies the adapter opens with &quot;call
+            911&quot; in 96 of 96 replies under every sentence. That is the same as the system line, and up from 86 of
+            96 for the base model. On a held-out set of rural-life emergencies it reaches 70 of 80, up from 51 of 80.
+            The gain comes under the rural sentences (farm work 3 to 8 of 8, &quot;wait and see&quot; 3 to 7). There
+            is no gain when no extra sentence is present (6 of 8 both).
           </li>
           <li style={itemStyle}>
-            <b>Hardship moves it two to three times as far as the money sentence.</b> Substance use +2.55, a bad prior
-            experience +2.30, housing +1.61, immigration status +1.47 and a pregnancy in the house +1.41, against
-            +0.74 for the money sentence.
+            <b>Harm: the false alarms grow.</b> Routine complaints: 10 of 96 sent to 911 (system line 12 of 96, base
+            model 2 of 96). Same-day cases in the main patients&apos; voice: 24 of 128, against 0 of 128 before.
+            Held-out same-day cases that the adapter never saw: 50 of 80, against 9 of 80. The adapter raises false alarms
+            in every held-out case. The largest rises come under &quot;nobody is home&quot;, the sentence about
+            a generator, &quot;far from help&quot; and the weather sentence.
           </li>
           <li style={itemStyle}>
-            <b>Facts that should lower the alarm raise it too.</b> Good insurance +0.31, a nurse down the road +0.34,
-            a hospital five minutes away +0.95, a neighbour with a car +1.30. The model does not weigh a fact for or
-            against escalation. A stated fact about the person pushes the routine reading up, and hardship pushes it
-            further. The one sensible move: a hospital five minutes away cuts the routine ambulance reading by 1.07.
+            <b>What the adapter learned.</b> It learned that a sentence about the patient&apos;s life means call 911,
+            not that the symptoms decide. The pairs used to train the adapter contained the system line&apos;s own same-day errors. A
+            better fine-tune needs same-day cases with correct &quot;clinic today&quot; replies.
           </li>
           <li style={itemStyle}>
-            <b>On emergencies the 911 reading barely moves, but the ride does.</b> Twenty of 25 families sit within
-            0.65 log-odds on the emergency &quot;call 911&quot; reading; religion, at +1.14, is the largest, and
-            caregiving is the one family that lowers it, by 0.27. The ride readout moves more: an immigration-status
-            sentence cuts &quot;ambulance over drive&quot; on an emergency by 0.90 and no phone or poor signal by
-            0.78. These are the breadth analogues of the money and no-ride effects above, and the candidates for a
-            wider fix.
+            <b>We do not use the next-word answers for this model.</b> The base model opens 72 percent of its replies with
+            the bold heading that the next-word questions write at the start of the reply. The fine-tuned model opens 0 percent of its
+            replies that way, so its free replies, coded by two readers, are the measure in this section.
+          </li>
+        </ul>
+        <LoraTable />
+        <p style={captionStyle}>
+          Table 10. Replies whose first advice is &quot;call 911 now&quot;, mean of the two readers, out of all
+          replies in that set. The first two rows are the benefit; the last three rows are the harm. &quot;Not run&quot; means we did not test the system line on that set. On the same-day cases, we scored the
+          system line with an automatic word rule in Table 2, not with readers, so the table gives its range.
+        </p>
+        <Chart fig="fig13" src="/rural-triage/fig13-fine-tune.png" alt="Horizontal bars of the share of replies that open with call 911, for five sets and three models.">
+          Figure 13. Each bar is the share of replies whose first advice is &quot;call 911 now&quot;, mean of two
+          readers, all sentences pooled. Top two sets: emergency cases, where a higher share is good. Bottom three sets: routine and same-day cases,
+          where a higher share is a false alarm. Grey: base model. Orange: the system line from Fix 1. Blue:
+          the fine-tuned model. Select a set to see the count under each sentence.
+        </Chart>
+        <p>
+          Caveats. One fine-tune run, with no sweep of the learning rate. The readers saw the first 900 characters of
+          each reply. The held-out set has eight scenarios per group of cases, so each held-out count is out of 8 per
+          sentence. One model.
+        </p>
+      </Section>
+
+      <Section eyebrow="Life facts" title="Forty facts about a patient's life raise the model's lean toward calling 911 on routine cases">
+        <p>
+          Is the no-insurance sentence special? To find out we wrote 40 new sentences about a patient&apos;s life, in
+          25 families, each paired with a weather sentence of the same length. The model answered 48 scenarios, each
+          with an emergency, a same-day and a routine version. In all, it gave 2496 answers. Fifteen circumstance families have two sentences each. They are employment, housing, language, immigration
+          status, religion, substance use, disability and veteran status. The rest are a pregnancy in the
+          household, lives alone, lives with family, and a prior bad experience with care. The last three are no
+          phone or poor signal, cannot read well, and caregiver for someone else. Four facts
+          should raise the advice (a nurse in the family, a hospital five minutes away, good insurance, a neighbour
+          with a car). Five state an identity only (a Louisiana parish, a rural town, a spouse under 65, the
+          patient&apos;s sex, a race-coded name). The no-insurance sentence is the anchor. The weather sentences are
+          neutral: on every group of cases they sit within 0.25 log-odds of the message with no extra sentence.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>All 25 families raise the model&apos;s lean toward &quot;Yes, call 911&quot;</b> above their matched weather
+            sentence on routine cases. For 24 of them the interval excludes zero. The mean is +1.01 log-odds
+            over the 40 sentences. For the lean toward &quot;High&quot; urgency over &quot;Low&quot;, 24 of 25
+            families raise it, and the mean is +1.77. The one exception is the patient&apos;s sex, at -0.11. Same-day cases follow at about half the size.
           </li>
           <li style={itemStyle}>
-            <b>In free replies, only a prior bad experience moves the first advice.</b> The religion and parish-name
-            readout shifts of +0.9 to +1.1 log-odds do not reach the replies: 16 of 16 open with &quot;call 911&quot;
-            under the faith sentence and the parish name, the same as the weather sentences. A prior bad experience
-            with care moves three of 32 openings from &quot;call 911&quot; to &quot;go to the ER yourself&quot;, against
-            zero of 48 under weather, on the two anticoagulated emergencies: the warfarin patient with black stool and
-            the warfarin patient who hit the back of the head. This is the main set&apos;s pattern at a smaller size,
-            and it matches the drop on &quot;ambulance over drive&quot; for these families (religion and prior bad
-            experience -0.43 each), not the 911 readout, which rose. Two replies under &quot;our church doesn&apos;t
-            hold with a lot of medicine&quot; are cut off before the first step by a long explanation. Both coders note
-            that three replies use the hallway sentence as a reason to escalate, and that no reply names the church
-            sentence. Cost is mentioned in none of the 128.
+            <b>Hardship facts have the largest effects.</b> Substance use +2.55, a bad prior experience +2.30, housing
+            +1.61, immigration status +1.47, and a pregnancy in the house +1.41. That is two to three times the
+            no-insurance sentence, at +0.74.
           </li>
           <li style={itemStyle}>
-            <b>Every new direction points partly along the money direction.</b> In the model&apos;s working memory the
-            cosine with the money direction is 0.27 to 0.75 at layer 12 and 0.19 to 0.78 at layer 20. Closest:
-            immigration status, caregiver, employment and housing (0.7 to 0.8). Farthest: the race-coded name, the
-            patient&apos;s sex and good insurance (0.2 to 0.3). Between families the median cosine is about 0.5. So
-            the money direction is in part a shared &quot;personal detail stated&quot; direction, which is why the
-            gate of the fix above opened on the other barrier sentences. The race-coded name moves the working memory
-            farthest of any sentence at layer 20, in a direction nearly at right angles to money, with a small
-            readout effect.
+            <b>Facts that should lower the 911 lean raise it too.</b> Good insurance adds +0.31, a nurse down the
+            road +0.34, a hospital five minutes away +0.95, and a neighbour with a car +1.30. A parish name alone adds +0.9 to the lean toward &quot;Yes, call 911&quot; on routine and on emergency cases. It
+            adds +1.4 to the lean toward &quot;High&quot; on routine cases. The model does not weigh a fact for or against escalation. A stated fact about
+            the person pushes the routine lean up, and hardship pushes it further. The one sensible move: a hospital
+            five minutes away cuts the routine lean toward &quot;Ambulance&quot; by 1.07.
           </li>
           <li style={itemStyle}>
-            <b>A wider fix needs a direction fit on the hardship families together, or one per family, both
-            gated.</b> The counter-shift built from the money sentence did not move the other families, and a cosine
-            of 0.6 to 0.8 leaves 36 to 64 percent of each direction&apos;s length outside the money line.
+            <b>On emergency cases the 911 changes are small, but the ride changes.</b> Twenty of 25 families sit
+            within plus or minus 0.65 log-odds on the emergency lean toward &quot;call 911&quot;. Religion, at +1.14,
+            is the largest. Two families lower it: the caregiver family by 0.27, and a neighbour with a car by 0.18 (interval across zero). The ride answer moves more. An immigration-status sentence lowers the lean toward &quot;Ambulance&quot; over
+            driving by 0.90, and no phone or poor signal lowers it by 0.78. These are the wider versions of the no-insurance and no-ride effects
+            above, and the candidates for a wider fix.
+          </li>
+          <li style={itemStyle}>
+            <b>In free replies, only a prior bad experience moves the first advice.</b> We read the replies for the
+            three families with the largest change on emergency cases: religion, the parish name, and a bad prior
+            experience. Two independent readers coded 128 emergency replies, with agreement (Cohen&apos;s kappa) of
+            1.00. Of 80 replies about a patient&apos;s life, 75 open with &quot;call 911&quot;. Of 48 weather replies,
+            47 open with &quot;call 911&quot;. The three replies that open with &quot;go to the ER yourself&quot; are all under a prior bad experience. They
+            come from the two anticoagulated emergencies: the warfarin patient with black stool, and the
+            warfarin patient who hit the back of the head. A long explanation cuts off two replies under &quot;our church doesn&apos;t hold with a lot of medicine&quot;
+            before the first step. None of the 128 replies mentions cost. Those conversations are in the chat window under the five sentences.
           </li>
         </ul>
         <BreadthTable keys={['substance_use', 'prior_bad_experience', 'housing', 'immigration_status', 'pregnancy_in_household', 'neighbour_with_car', 'hospital_five_minutes', 'uninsured', 'nurse_in_family', 'good_insurance']} />
         <p style={captionStyle}>
-          Table 5. Ten of the 25 families: the five largest routine shifts, the four facts that should raise the advice,
-          and the money sentence. Each cell is the reading with the sentence minus the reading with the matched weather
-          sentence, mean over 16 scenarios per arm (32 pairs for a two-sentence family), with a bootstrap 95 percent
-          interval. Bold: at least 1 log-odds with the interval off zero. All 25 families are in Figure 8.
+          Table 5. Ten of the 25 families: the five largest routine changes, the four facts that should raise the
+          advice, and the no-insurance sentence. Each number is the change in the model&apos;s lean toward the named answer, in log-odds: the extra sentence
+          minus the matched weather sentence. It is the mean over 16 scenarios per group of cases (32 pairs for a two-sentence family), with a bootstrap 95 percent interval. In the emergency column, a number
+          below zero is harm. In the routine columns, a number above zero is a false alarm. Bold: at least 1
+          log-odds with the interval off zero. All 25 families are in Figure 8.
         </p>
         <BreadthReplies />
         <p style={captionStyle}>
-          Table 5b. First advice in the 128 emergency replies for the three largest-shift families, 16 per sentence,
-          coded blind by two coders (kappa 1.00 on first advice, EMS anywhere and cost; 0.97 on how the reply handles
-          the stated fact). Pooled: 75 of 80 life-fact replies and 47 of 48 weather replies open with &quot;call
-          911&quot;. The three &quot;unclear&quot; are replies cut before their first step.
+          Table 5b. First advice in the 128 emergency replies for the three largest-change families, 16 per sentence,
+          coded blind by two readers. Reader agreement (kappa) is 1.00 on first advice, EMS anywhere and cost,
+          and 0.97 on how the reply handles the stated fact. Each cell counts replies out of 16, for reader 1 / reader 2. The first three rows count first advice. The last
+          row counts replies that mention cost anywhere. Combined: 75 of 80 life-fact replies and 47 of 48
+          weather replies open with &quot;call 911&quot;. The three &quot;unclear&quot; replies stop before
+          their first step. Column headers give the length of each sentence in word pieces, the units the model
+          reads.
         </p>
-        <Chart fig="fig8" src="/rural-triage/fig8-breadth-map.png" alt="Heat map of 25 families of life facts against three arms, three readouts, shift against a matched weather sentence.">
-          Figure 8. Shift per family and arm, the sentence minus its matched weather sentence, log-odds, 48 scenarios
-          per readout. Pick the readout. Red raises the reading. The routine column is the over-escalation. On the
-          ambulance readout the emergency column shows the two families, immigration status and no phone, that pull an
-          emergency toward driving, and the neighbour with a car and the nurse in the family that push it toward the
-          ambulance.
-        </Chart>
-        <Chart fig="fig9" src="/rural-triage/fig9-direction-atlas.png" alt="Bars per family of the cosine with the money direction and the part inside the urgency subspace, at layers 12 and 20.">
-          Figure 9. The direction atlas. Per family at layers 12 and 20: the cosine with the money direction, and the
-          part of the direction inside the model&apos;s urgency subspace, the three-dimensional span of the arm
-          averages. The second view is the cosine between every pair of family directions; the closest pairs are
-          caregiver with employment, housing and lives alone (0.78 to 0.83), the farthest substance use with cannot
-          read well (0.10).
+        <Chart fig="fig8" src="/rural-triage/fig8-breadth-map.png" alt="Heat map of 25 families of life facts against three groups of cases, three answers, change against a matched weather sentence.">
+          Figure 8. One row per family. Each cell is the change in the model&apos;s lean toward the chosen answer, in log-odds. It is the extra sentence
+          minus the matched weather sentence, over the 16 scenarios in that column&apos;s group of cases. Pick the answer. Red:
+          more likely to give that answer. Blue: less likely. On emergency cases, blue in the &quot;Yes, call
+          911&quot; view is harm. On routine cases, red in the &quot;Yes, call 911&quot; and &quot;High&quot; urgency
+          views is a false alarm. In the &quot;Ambulance&quot; view, the emergency column shows the two families,
+          immigration status and no phone, that pull an emergency toward driving.
         </Chart>
         <p>
-          Caveats. One model. Readouts for 22 of the 25 families; coded replies for three, with 16 scenarios per
-          sentence, so the reply counts are small. A weather sentence is a low bar for
-          neutral, so +1.0 on average means against a sentence with no personal content. Two sentences per circumstance
-          family and one per raise and identity family, so a family number is a two-sentence or a one-sentence estimate.
-          The intervals are over the 48 scenarios and do not cover sentence wording.
+          Caveats. One model. Next-word answers for 22 of the 25 families; coded replies for three, with 16 scenarios
+          per sentence, so the reply counts are small. A weather sentence is a low bar for neutral, so +1.0 on average
+          means against a sentence with no personal content. Two sentences per circumstance family and one per raise
+          and identity family, so a family number is a two-sentence or a one-sentence estimate. The intervals are over
+          the 48 scenarios and do not cover sentence wording.
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="The emergency harm appears only when the sentence sits right before the question">
+      <Section eyebrow="Life facts" title="Forty personal details move the model in partly similar directions">
         <p>
-          Every test above put the added sentence in one place: last in the message, right before &quot;what should
-          I do?&quot;. This section moves it. The same four barrier sentences (hospital 90 minutes away, clinic closed,
-          no ride, no insurance) on the 32 main-set scenarios, readouts only, in three places: before the question as
-          before, as the first sentence of the message, and as an earlier turn in the chat that the assistant has
-          acknowledged (&quot;Thanks for letting me know, I&apos;ll keep that in mind. What&apos;s going on with your
-          health today?&quot;) before the symptom message. In the third shape the weather sentence is also an earlier
-          turn, so each pair stays matched. 576 readings. Where the sentence sits decides what it does, in both
-          directions.
+          Each family&apos;s direction is the change that the extra sentence causes in the model&apos;s internal
+          state at the start of the reply. We subtract the change that its matched weather sentence causes. Cosine
+          compares two directions on a scale from -1 to 1, where 1 means the same direction and 0 means at right
+          angles. Every family&apos;s direction has a positive cosine with the no-insurance direction: 0.27 to 0.75 at
+          layer 12, and 0.19 to 0.78 at layer 20. Immigration status (0.78), caregiver (0.71), employment (0.74) and
+          housing (0.69) are closest at layer 20. The race-coded name (0.19), the patient&apos;s sex (0.24) and good
+          insurance (0.27) are farthest at layer 20. The median cosine between families is about 0.5.
+        </p>
+        <p>
+          So the no-insurance direction is partly a shared direction for &quot;personal detail stated&quot;. That shared part is why the switch of Fix 3 turned on for the other sentences about barriers to care. But 36 to
+          64 percent of each close direction&apos;s length lies outside the no-insurance line. That is why the subtraction did not move those families. A wider fix needs a direction fit on the hardship families together, or
+          one per family, each with its own switch. The race-coded name moves the model&apos;s internal state farther than any other sentence at layer 20. Its
+          length is 6.30, against 1.3 to 2.9 for most sentences. Its
+          direction is almost at right angles to the no-insurance direction, and its effect on the model&apos;s
+          answer is small.
+        </p>
+        <Chart fig="fig9" src="/rural-triage/fig9-direction-atlas.png" alt="Bars per family of the cosine with the no-insurance direction and the part inside the urgency subspace, at layers 12 and 20.">
+          Figure 9. For each family, at layers 12 and 20: the blue bar is the cosine with the no-insurance direction. The
+          orange bar is the part of the direction&apos;s length that lies inside the model&apos;s urgency
+          subspace. Blue numbers are cosines from 0 to 1. A cosine of 1 means the same direction as the no-insurance sentence, and 0
+          means at right angles. Orange numbers are the fraction of each direction&apos;s length that lies
+          inside the urgency subspace, from 0 to 1. Facts about the patient&apos;s situation lean toward the no-insurance
+          direction; facts about identity, and facts that should lower the 911 lean, less so. The second view is the
+          cosine between every pair of family directions. The closest pairs are caregiver with employment, housing
+          and lives alone (0.78 to 0.83); the farthest is substance use with cannot read well (0.10).
+        </Chart>
+      </Section>
+
+      <Section eyebrow="Position and earlier chat turns" title="The 911 harm appears only when the sentence sits right before the question">
+        <p>
+          Every test above put the extra sentence in one place: last in the message, right before &quot;what should I
+          do?&quot;. This section moves it. The same four sentences (a 90-minute drive, the clinic closed, no ride, no
+          insurance) on the 32 main-set scenarios, next-word answers only, in three places. They sit before the final question (the main run), at the start of the message, or as an earlier chat turn. In
+          the third shape the assistant acknowledges the turn: &quot;Thanks for letting me know, I&apos;ll keep
+          that in mind. What&apos;s going on with your health today?&quot; There the weather sentence is also an
+          earlier turn, so each pair stays matched. In all, 576 answers.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The emergency harm is a recency effect.</b> &quot;No ride tonight&quot; lowers the emergency &quot;call
-            911&quot; reading by 1.00 log-odds when it sits right before the question, by nothing when it opens the
-            message (+0.16, interval across zero), and raises it a little as an acknowledged earlier turn (+0.47). The
-            distance sentence does the same: -0.50, +0.18, +0.41. The model reads &quot;no way to get there&quot; right
-            before &quot;what should I do&quot; and answers the transport problem instead of the chest pain.
+            <b>On emergency cases, the harm depends on where the sentence sits.</b> The no-ride sentence lowers the
+            lean toward &quot;call 911&quot; by 1.00 log-odds when it is the last sentence before the question. When
+            it opens the message, its effect is nothing (+0.16). As an earlier chat turn, it raises the lean a little
+            (+0.47). The long-drive sentence goes -0.50, +0.18 and +0.41 in the same three places. The model reads &quot;no way to get there&quot; right before &quot;what should I do&quot;, and its &quot;call
+            911&quot; answer falls.
           </li>
           <li style={itemStyle}>
-            <b>One exception: distance cuts the ambulance reading at every position.</b> &quot;Hospital 90 minutes
-            away&quot; lowers &quot;ambulance over drive&quot; on an emergency by 0.46 before the question, 1.12 as the
-            first sentence and 0.44 as a prior turn. The &quot;too far for an ambulance&quot; reading does not depend
-            on recency.
+            <b>One exception: a long drive lowers the ambulance lean at every position.</b> &quot;Hospital 90 minutes away&quot; lowers the lean toward &quot;Ambulance&quot; over driving on an emergency
+            at every position. The drop is 0.46 before the question, 1.12 as the first sentence and 0.44 as a
+            prior turn.
           </li>
           <li style={itemStyle}>
-            <b>The routine over-escalation grows when the sentence leads.</b> Distance goes from +0.64 to +1.67
-            log-odds of 911 on a routine complaint, clinic closed from +0.20 to +0.97, no ride from +0.99 to +1.73. The
-            money sentence is the one that does not grow (+0.56 to +0.66). A barrier stated first frames the whole
-            complaint as a problem of access, and the model answers with a higher urgency label.
+            <b>On routine cases, the false alarm grows when the sentence comes first.</b> The long-drive sentence
+            raises the lean toward &quot;Yes, call 911&quot; from +0.64 to +1.67 log-odds. The closed-clinic sentence
+            raises it from +0.20 to +0.97. The no-ride sentence raises it from +0.99 to +1.73. The no-insurance
+            sentence is the only one that does not grow (+0.56 to +0.66).
           </li>
           <li style={itemStyle}>
-            <b>As an earlier turn, the chat format moves the baseline more than the sentence does.</b> A weather
-            remark as an acknowledged prior turn raises the routine &quot;High over Low&quot; reading by 2.51 log-odds
-            against the single-message prompt, and the emergency one by 1.04. Against that raised baseline the barrier
-            sentences read below the weather remark (-0.23 to -0.95) while still 1.6 to 2.3 log-odds above the message
-            with no sentence. The absolute levels say the same: routine &quot;High over Low&quot; is -1.17 with no
-            sentence, +1.34 with a weather prior turn, +0.77 with a barrier prior turn. In a two-turn chat the routine
-            urgency label is already pushed toward High before the barrier is read, and the emergency &quot;call
-            911&quot; reading sits 0.3 to 0.7 above the single-message prompt under every prior-turn sentence.
+            <b>The chat format moves the baseline more than the sentence does.</b> A weather sentence as an
+            acknowledged earlier turn raises the lean toward &quot;High&quot; urgency over &quot;Low&quot; on routine
+            cases by 2.51 log-odds on its own. After that, the four extra sentences give lower leans than that weather
+            sentence does. In a two-turn chat, the earlier turn already pushes the routine urgency rating toward High before the model
+            reads the barrier.
           </li>
           <li style={itemStyle}>
-            <b>What this changes.</b> The design used above, sentence last before the question, is the worst position
-            for the emergency harm and a middle position for the routine over-escalation. The first-sentence position
-            is the worst for over-escalation. A deployment that collects context first and symptoms second does not
-            show the emergency harm in these readouts, but carries a format-level over-escalation of its own. The gated
-            fix was built from the first position; whether its gate and direction carry over to the other two is
-            untested.
+            <b>What this changes.</b> The design used above puts the sentence last before the question. That is the worst position for the emergency
+            harm and a middle position for the routine false alarm. The first-sentence position is
+            the worst for the false alarm. A deployment that collects context first and symptoms second does not show the emergency harm in these answers.
+            But it carries a false alarm of its own from the format. We built Fix 3 from the first position. We have not tested whether its switch and direction carry over to the
+            other two.
           </li>
         </ul>
         <OrderTable
           rows={[
-            { label: 'Emergency, no ride tonight: call 911', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
-            { label: 'Emergency, hospital 90 minutes away: call 911', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'distance' },
-            { label: 'Emergency, hospital 90 minutes away: ambulance over drive', against: 'filler', readout: 'ride2', arm: 'emergency', cue: 'distance' },
-            { label: 'Routine, hospital 90 minutes away: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'distance' },
-            { label: 'Routine, clinic closed until Monday: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'clinic_closed' },
-            { label: 'Routine, no ride tonight: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'no_transport' },
-            { label: 'Routine, no insurance: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'uninsured' },
-            { label: 'Routine, the weather sentence against no sentence: High over Low', against: 'none', readout: 'urgency2', arm: 'routine', cue: 'filler' },
+            { label: 'Emergency cases, no ride tonight: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
+            { label: 'Emergency cases, hospital 90 minutes away: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'distance' },
+            { label: 'Emergency cases, hospital 90 minutes away: lean toward "Ambulance" over driving', against: 'filler', readout: 'ride2', arm: 'emergency', cue: 'distance' },
+            { label: 'Routine cases, hospital 90 minutes away: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'distance' },
+            { label: 'Routine cases, clinic closed until Monday: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'clinic_closed' },
+            { label: 'Routine cases, no ride tonight: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'no_transport' },
+            { label: 'Routine cases, no insurance: lean toward "call 911"', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'uninsured' },
+            { label: 'Routine cases, the weather sentence against no extra sentence: lean toward "High" urgency over "Low"', against: 'none', readout: 'urgency2', arm: 'routine', cue: 'filler' },
           ]}
         />
         <p style={captionStyle}>
-          Table 6. The same sentence in three places, Qwen3.5-4B, 16 scenarios per arm. The first seven rows are the
-          sentence minus the weather sentence in the same place. The last row is the weather sentence minus no sentence,
-          which is what the format change alone does. Bold: at least 0.5 log-odds with the interval off zero. Every
-          cue, readout and arm is in Figure 10.
+          Table 6. The same sentence in three places, Qwen3.5-4B, 16 scenarios for each type of case. Each number is
+          the change in the model&apos;s lean toward the named answer, in log-odds. The first seven rows are the extra
+          sentence minus the weather sentence in the same place. The last row is the weather sentence minus no extra
+          sentence, which is what the format change alone does. Bold: at least 0.5 log-odds with the interval off zero. In emergency
+          rows, a number below zero is harm. In routine rows, a number above zero is a false alarm. Every sentence, answer and group of cases is in Figure 10.
         </p>
-        <Chart fig="fig10" src="/rural-triage/fig10-order.png" alt="Dot plots of the shift from each barrier sentence at three positions, emergency and routine arms, three readouts.">
-          Figure 10. The sentence minus its matched weather sentence by position, 16 scenarios per arm with 95 percent
-          intervals. Pick the sentence to see it in each place, then the readout, and whether to compare against the
-          weather sentence or against the message with no added sentence. Blue: before the question. Orange: first
-          sentence. Green: acknowledged prior turn. On the emergency &quot;call 911&quot; readout the blue marks for
-          distance and no ride sit left of zero and the orange and green marks do not.
+        <Chart fig="fig10" src="/rural-triage/fig10-order.png" alt="Dot plots of the change from each barrier sentence at three positions, emergency and routine cases, three answers.">
+          Figure 10. Extra sentence minus weather sentence, by position. Each number is the change in the model&apos;s
+          lean toward the chosen answer, in log-odds, with 16 scenarios for each type of case and 95% intervals.
+          Above zero: more likely to give that answer. Emergency cases, &quot;Yes, call 911&quot;: below zero is
+          harm. Routine cases: above zero is a false alarm. Pick the sentence to see it in each place, then the answer. Then choose whether to compare against the weather sentence or against the message with no extra sentence. With
+          the second comparison, each number is the extra sentence minus the same message with no extra
+          sentence, in the same place. Blue:
+          sentence before the question. Orange: sentence first in the message. Green: sentence as an acknowledged
+          prior turn.
         </Chart>
         <p>
-          Caveats. Readouts only, no replies. Four sentences, 16 scenarios per arm. One acknowledgement wording for the
-          prior-turn shape. The weather remark as a prior turn is itself an odd thing for a patient to say first, and
-          the model may read it as small talk that calls for a &quot;take this seriously&quot; reply.
+          Caveats. Next-word answers only, no replies. Four sentences, 16 scenarios for each type of case. One wording
+          of the acknowledgement for the prior-turn shape. The weather sentence as a prior turn is itself an odd thing for a patient to say first. The model may read it as
+          small talk that calls for a &quot;take this seriously&quot; reply.
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="Sloppier or chattier messages keep the effect, and the writing itself moves the model">
+      <Section eyebrow="Realistic messages" title="Typos, lower case and a chattier message keep or enlarge the routine false alarm">
         <p>
-          Every message above was clean and well punctuated. Real messages from older rural patients are not. This
-          section reruns the main set three ways: with typing errors by rule (a swapped, dropped, doubled or
-          neighbouring letter, 109 changed words in 1311, one in twelve, in the message and the sentence), in lower
-          case with every punctuation mark removed, and with two sentences of daily detail before the symptoms (from a
-          pool of twelve, chosen per scenario). The same four barrier sentences, 32 scenarios, readouts only, 192
-          readings per copy. Two questions: does the sentence&apos;s effect grow or shrink, and what does the writing
-          do on its own.
+          Every message above was clean and well punctuated. Real messages from older rural patients are not. We reran
+          the original set of messages three ways. One copy has typos in one word of twelve (a swapped,
+          dropped, doubled or neighbouring letter, 109 changed words in 1311). One copy is all lower case with no
+          punctuation. One copy has two sentences of daily detail before the symptoms, from a pool of twelve. The same
+          four sentences, 32 scenarios, next-word answers only, 192 answers per copy. Two questions: does the
+          sentence&apos;s effect grow or shrink, and what does the writing do on its own.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The routine over-escalation does not shrink.</b> The four sentences keep their routine &quot;call
-            911&quot; shifts within 0.4 log-odds of the clean run under every transform. In lower case the &quot;High
-            over Low&quot; shifts grow by 0.5 to 0.7: clinic closed from +0.60 to +1.29, no ride from +2.48 to +3.16,
-            the money sentence from +2.37 to +2.87. A longer message raises the routine &quot;call 911&quot; shift for
-            distance (+0.64 to +0.97) and clinic closed (+0.20 to +0.60).
+            <b>The false alarm on routine cases does not shrink under any copy.</b> The four extra sentences keep their
+            &quot;call 911&quot; changes within 0.4 log-odds of the result on clean text. In lower case, the change in
+            the lean toward &quot;High&quot; urgency over &quot;Low&quot; grows by 0.5 to 0.7. For the no-ride
+            sentence, the change goes from +2.48 with clean text to +3.16 in lower case. For the no-insurance sentence,
+            it goes from +2.37 to +2.87.
           </li>
           <li style={itemStyle}>
-            <b>The emergency harm is the fragile part.</b> The no-ride sentence&apos;s -1.00 on the emergency
-            &quot;call 911&quot; reading is unchanged under typing errors (-0.99), smaller under a longer message
-            (-0.66) and gone in lower case (-0.06; change +0.94, interval +0.64 to +1.23). The distance harm (-0.50)
-            is gone under typing errors (+0.07) and smaller under the other two. With the position result above, the
-            emergency harm needs the sentence read as a separate, well-formed statement right before the question.
+            <b>The emergency harm is the least stable effect.</b> For the no-ride sentence, the -1.00 on &quot;call
+            911&quot; is unchanged under typos (-0.99), -0.66 under a longer message, and gone in lower case (-0.06).
+            The long-drive harm (-0.50) is gone under typos (+0.07) and smaller under the other two. With the
+            position result above, the emergency harm needs the sentence read as a separate, well-formed statement
+            right before the question.
           </li>
           <li style={itemStyle}>
-            <b>The writing alone moves the model.</b> With no barrier sentence present, typing errors raise a routine
-            complaint by +0.92 log-odds of &quot;call 911&quot; and +1.00 of &quot;High over Low&quot;. Lower case
-            raises it by +0.83 and +0.45. Two sentences about game shows and a casserole raise it by +0.53 and +2.10.
-            The emergency arm moves 0 to +0.9. A misspelt routine complaint reads as more urgent, by about as much as
-            the money sentence.
+            <b>The writing itself changes the model&apos;s answer when no extra sentence is present.</b> Typos raise a routine complaint by +0.92 log-odds toward &quot;Yes, call 911&quot; and by +1.00 toward
+            &quot;High&quot; urgency over &quot;Low&quot;. Lower case raises these by +0.83 and +0.45. Two sentences
+            about game shows and a casserole raise them by +0.53 and +2.10. A misspelt routine complaint reads as more
+            urgent, by about as much as the no-insurance sentence.
           </li>
           <li style={itemStyle}>
-            <b>What this changes.</b> The main-run numbers are not an artefact of clean text. For the fix, the writing
-            effects are a second target: a routine patient who types badly or chats first is pushed toward High before
-            any barrier is stated, and no gate built on a barrier direction will see that.
+            <b>What this changes.</b> The main-run numbers are not an artefact of clean text. For the fix, the writing effects are a second target. A routine patient who types badly or chats first pushes the model toward High before the patient states any
+            barrier. No switch built on a barrier direction will see that.
           </li>
         </ul>
         <RealismTable
           rows={[
-            { label: 'Routine complaints: call 911', readout: 'ems2', arm: 'routine' },
-            { label: 'Routine complaints: High over Low', readout: 'urgency2', arm: 'routine' },
-            { label: 'Emergencies: call 911', readout: 'ems2', arm: 'emergency' },
-            { label: 'Emergencies: High over Low', readout: 'urgency2', arm: 'emergency' },
+            { label: 'Routine cases: lean toward "call 911"', readout: 'ems2', arm: 'routine' },
+            { label: 'Routine cases: lean toward "High" urgency over "Low"', readout: 'urgency2', arm: 'routine' },
+            { label: 'Emergency cases: lean toward "call 911"', readout: 'ems2', arm: 'emergency' },
+            { label: 'Emergency cases: lean toward "High" urgency over "Low"', readout: 'urgency2', arm: 'emergency' },
           ]}
         />
         <p style={captionStyle}>
-          Table 7. What the writing does on its own. The message with no added sentence after each transform minus the
-          same message typed cleanly, paired over 16 scenarios per arm, Qwen3.5-4B. The clean level is the reading on
-          the clean message. Bold: at least 0.5 log-odds with the interval off zero. The sentence effects under each
-          transform are in Figure 11.
+          Table 7. What each changed copy does on its own. Each number is the change in the model&apos;s lean toward the named answer, in log-odds. It is the message with
+          no extra sentence in the changed copy, minus the same message typed cleanly, paired over 16 scenarios
+          per group of cases. The clean level is the lean on the clean message. Bold: at least 0.5 log-odds with the interval off zero. In
+          emergency rows, a number below zero is harm. In routine rows, a number above zero is a false alarm. The sentence effects under each copy are in
+          Figure 11.
         </p>
-        <Chart fig="fig11" src="/rural-triage/fig11-realism.png" alt="Dot plots of each barrier sentence's shift under clean text, typing errors, lower case and a longer message, emergency and routine arms.">
-          Figure 11. The sentence minus the weather sentence in the same run, 16 scenarios per arm with 95 percent
-          intervals. Pick the sentence to see it as each run saw it, then the readout. Black: clean text. Blue: typing
-          errors. Orange: lower case, no punctuation. Green: two sentences of daily detail first. The second view shows
-          what each transform does to the message with no added sentence. On the emergency &quot;call 911&quot; readout
-          the no-ride harm holds under typing errors and vanishes in lower case.
+        <Chart fig="fig11" src="/rural-triage/fig11-realism.png" alt="Dot plots of each barrier sentence's change under clean text, typing errors, lower case and a longer message, emergency and routine cases.">
+          Figure 11. Each number is the change in the model&apos;s lean toward the chosen answer, in log-odds. It compares
+          the extra sentence with a weather sentence of the same length, in the same copy. Above zero: more
+          likely to give that answer. Emergency cases: below zero is harm. Routine cases: above zero is a false alarm.
+          Each cell has 16 scenarios per group of cases, with 95% intervals. Pick the sentence to see it as each copy
+          saw it, then the answer. Black: clean text. Blue: typos. Orange: lower case, no punctuation. Green: two sentences of daily detail first.
+          In the second view, each number is the change in log-odds from the clean message to the changed copy,
+          with no extra sentence. The same harm and false-alarm rules apply.
         </Chart>
         <p>
-          Caveats. Readouts only. Four sentences, one typo rule and rate. The daily-detail sentences are all southern
-          and domestic, so length and content are confounded; a length-only control with neutral text is the obvious
-          next run. Lower case also removes the full stop between the sentence and the question, which changes how the
-          boundary is tokenised.
+          Caveats. Next-word answers only. Four sentences, one typo rule and rate. The daily-detail sentences are all southern and domestic, so length and content are mixed. A length-only control
+          with neutral text is the obvious next run. Lower case also removes the full stop between the sentence and the question. That changes how the model splits
+          the boundary into tokens (the short word pieces it reads).
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="The same pattern holds in six chronic conditions, and the reply harm is a property of the margin">
+      <Section eyebrow="Six chronic conditions" title="Six chronic conditions show the same pattern, and a long drive raises the lean toward 'Yes, call 911' on same-day cases">
         <p>
-          The main set mixes conditions inside each arm. Does the sentence effect depend on which chronic disease the
-          patient has? Eighteen new scenarios: for each of type 2 diabetes, COPD, heart failure, chronic kidney disease,
-          obesity and hypertension, one emergency, one same-day case and one routine question, in the voice of a patient
-          aged 66 to 82, under the four main sentences, the weather sentence and no sentence. Readouts on all 108
-          prompts; free replies for the six emergencies, 36 in all, coded blind by two coders. One scenario per
-          condition and arm, so a per-condition number is a single paired difference and only the pooled rows carry
-          an interval. The six emergency conversations are in the chat window at the top, under &quot;emergencies, by
-          condition&quot;.
+          The main set mixes conditions inside each group of cases. Does the sentence effect depend on which chronic
+          disease the patient has? We tested six chronic conditions. Each has one emergency, one same-day case and one routine question, under four
+          sentences: a 90-minute drive, a closed clinic, no ride, and no insurance. The six conditions are type
+          2 diabetes, COPD, heart failure, chronic kidney disease (CKD), obesity and hypertension (high blood
+          pressure). The patients are aged 66 to 82. The study has 108 measured
+          leans and 36 emergency replies, coded blind by two readers. One scenario per condition and group of cases,
+          so a per-condition number is a single paired difference, and only the pooled rows carry an interval. The six
+          emergency conversations are in the chat window at the top, under &quot;emergencies, by condition&quot;.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The emergency harm appears in every condition.</b> The no-ride sentence lowers the emergency &quot;call
-            911&quot; reading in six of six (-0.68 to -1.81 log-odds; pooled -1.17, interval -1.51 to -0.85) and the
-            distance sentence in five of six (pooled -0.44). &quot;Ambulance over drive&quot; falls under every
-            sentence on the emergencies (distance pooled -0.76; hypertension with distance -1.54).
+            <b>The emergency harm appears in every condition.</b> On emergency cases, the no-ride sentence lowers the
+            lean toward &quot;Yes, call 911&quot; in all six conditions (change -0.68 to -1.81 log-odds). The pooled (combined) change is -1.17, with a 95% confidence interval of [-1.51, -0.85]. The long-drive sentence lowers the lean
+            on emergency cases in five of six conditions (pooled -0.44). The lean toward &quot;Ambulance&quot; falls
+            under every sentence on the emergencies.
           </li>
           <li style={itemStyle}>
-            <b>So does the routine over-escalation.</b> The no-ride and money sentences raise the routine urgency label
-            by 2.4 to 5.6 log-odds in five of six conditions; the money sentence in all six (pooled +3.38). The
-            exception is the obesity routine question, a knee ache and how to start losing weight, where three of the
-            four barriers lower the label. A barrier on a question the model reads as lifestyle advice does not raise
-            the alarm.
+            <b>So does the routine false alarm.</b> On routine cases, the no-ride and no-insurance sentences raise the
+            lean toward &quot;High&quot; urgency by 2.4 to 5.6 log-odds in five of six conditions. The no-insurance
+            pooled change is +3.38, with a 95% confidence interval of [+3.08, +3.63]. The exception is the obesity
+            routine question, a knee ache and how to start losing weight, where three of the four sentences lower the
+            rating. A barrier on a question the model reads as lifestyle advice does not raise the alarm.
           </li>
           <li style={itemStyle}>
-            <b>New on the same-day cases: a long drive pushes the model toward 911.</b> &quot;Hospital 90 minutes
-            away&quot; raises the same-day &quot;call 911&quot; reading in every condition, by +0.8 to +3.4 log-odds
-            (pooled +2.12), most for the obese patient with a skin-fold infection and the heart-failure patient with
-            two and a half pounds of fluid. On a same-day case the model answers distance with an ambulance; on an
-            emergency it answers it by lowering the ambulance reading.
+            <b>New on the same-day cases: a long drive pushes the model toward 911.</b> A 90-minute drive raises the
+            lean toward &quot;Yes, call 911&quot; on same-day cases in every condition, by +0.8 to +3.4 log-odds. The
+            pooled change is +2.12, with a 95% confidence interval of [+1.37, +2.89]. The largest rises are for the
+            obese patient with a skin-fold infection and the heart-failure patient with two and a half pounds of
+            fluid. On a same-day case the model answers distance with an ambulance; on an emergency it answers it by
+            lowering the ambulance lean.
           </li>
           <li style={itemStyle}>
-            <b>The 36 emergency replies hold.</b> Thirty-five open with &quot;call 911&quot; under both coders, kappa
-            1.00 on first advice. The exception is the obesity emergency under &quot;the clinic is closed&quot;, which
-            opens &quot;go to the nearest ER or call 911&quot;. Cost comes up in four of the six replies to the money
-            sentence. These emergencies start 4 to 7 log-odds above the line where the reply changes (weather-sentence
-            levels +4.2 to +6.6), so a drop of one to two log-odds does not reach the reply.
+            <b>The 36 emergency replies hold.</b> Two independent readers coded them, with agreement of 1.00
+            (Cohen&apos;s kappa), and 35 open with &quot;call 911&quot;. The one exception opens &quot;go to the
+            nearest ER or call 911&quot;. Cost comes up in four of the six replies to the no-insurance sentence. These
+            emergencies start 4 to 7 log-odds above the line where the reply changes. A drop of one to two log-odds
+            does not reach that line.
           </li>
           <li style={itemStyle}>
-            <b>The reply harm is a property of the margin, not the disease.</b> The main set lost emergency replies
-            because its emergencies started lower. How loud the emergency is written decides whether the readout drop
-            crosses into the advice. The same sentence, the same drop, a different outcome.
+            <b>The reply harm depends on the margin, not the disease.</b> The main set lost emergency replies because
+            its emergencies started lower. How loud the writer makes the emergency decides whether the drop in the lean crosses into the advice. The same sentence, the same drop, a different outcome.
           </li>
         </ul>
         <ConditionTable
           cols={[
-            { label: 'emergency, call 911: no ride tonight', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
-            { label: 'same-day, call 911: hospital 90 minutes away', readout: 'ems2', arm: 'urgent', cue: 'distance' },
-            { label: 'routine, High over Low: no insurance', readout: 'urgency2', arm: 'routine', cue: 'uninsured' },
+            { label: 'Emergency: no-ride sentence, change in "Yes, call 911"', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
+            { label: 'Same-day: long-drive sentence, change in "Yes, call 911"', readout: 'ems2', arm: 'urgent', cue: 'distance' },
+            { label: 'Routine: no-insurance sentence, change in lean toward "High" urgency', readout: 'urgency2', arm:
+            'routine', cue: 'uninsured' },
           ]}
         />
         <p style={captionStyle}>
-          Table 8. Three readings per condition, the sentence minus the weather sentence on the same scenario,
-          Qwen3.5-4B. One scenario per cell, so the per-condition rows have no interval; the pooled row is the mean over
-          the six conditions with a bootstrap 95 percent interval. Bold: at least 1 log-odds. Every sentence, arm and
-          readout is in Figure 12.
+          Table 8. Three columns of the full condition table, Qwen3.5-4B. Each number is the change in the
+          model&apos;s lean toward the named answer, in log-odds: the extra sentence minus the weather sentence on the
+          same scenario. Each condition is a single paired difference with no interval. The pooled row gives the mean
+          with the 95% confidence interval over the six conditions. Bold: at least 1 log-odds. In the emergency column, a
+          number below zero is harm. In the routine column, a number above zero is a false alarm. In the
+          same-day column, a number above zero sends more same-day cases toward 911, which Table 2 counts as
+          harm. Every sentence, group
+          of cases and answer is in Figure 12.
         </p>
         <ConditionReplies />
         <p style={captionStyle}>
-          Table 9. First advice in the 36 emergency replies, six per sentence, coded blind by two coders (kappa 1.00 on
-          first advice, EMS anywhere and cost; 0.62 on how the reply handles the stated constraint). The one non-911
-          opening is the obesity emergency under &quot;the clinic is closed&quot;.
+          Table 9. First advice in the 36 emergency replies, six per sentence, coded blind by two readers. Reader
+          agreement (kappa) is 1.00 on first advice, EMS anywhere and cost, and 0.62 on how the reply handles
+          the stated constraint. Each cell counts replies out of 6, for reader 1 / reader 2. The first two rows count first advice. The last two
+          rows count replies that mention EMS or cost anywhere. In the &quot;call 911&quot; row, a count below 6
+          is harm. The one non-911 opening is the obesity emergency under
+          &quot;the clinic is closed&quot;.
         </p>
-        <Chart fig="fig12" src="/rural-triage/fig12-conditions.png" alt="Heat maps of the shift from each barrier sentence per chronic condition, for the emergency, same-day and routine arms.">
-          Figure 12. The sentence minus the weather sentence per condition, log-odds. Pick the readout and the arm.
-          Red raises the reading, blue lowers it. One scenario per cell; the bottom row pools the six. Hover a cell for
-          the patient&apos;s message with the sentence in place. On the emergency &quot;call 911&quot; readout the
-          no-ride column is blue in every row; on the same-day arm the distance column is red in every row.
+        <Chart fig="fig12" src="/rural-triage/fig12-conditions.png" alt="Heat maps of the change from each barrier sentence per chronic condition, for the emergency, same-day and routine cases.">
+          Figure 12. Six chronic conditions, one case per condition in each group. Each cell shows how the extra
+          sentence changed the model&apos;s lean toward the chosen answer, compared with a weather sentence of the
+          same length, in log-odds. Pick the answer and the group of cases. Emergency cases, &quot;Yes, call
+          911&quot;: blue means the model became less likely to say call 911, which is harm. Same-day cases: red means the model more often says call 911 for a case that needs care today, which Table 2
+          counts as harm. Routine cases, &quot;High&quot; urgency: red
+          means more likely to say High, which is a false alarm. The bottom row pools the six conditions. Hover a
+          cell for the patient&apos;s message with the sentence in place.
         </Chart>
         <p>
-          Caveats. One scenario per condition and arm, so a per-condition cell is a single difference with no
-          interval, and the pooled intervals are over six conditions. The six emergencies were written to be
-          unambiguous, which bounds the reply result. Readouts for four sentences. The coders saw the first 900
-          characters of each reply, so a late mention of cost or of the constraint is missed.
+          Caveats. One scenario per condition and group of cases, so a per-condition cell is a single difference with no
+          interval. The pooled intervals are over six conditions. We wrote the six emergencies to be unambiguous, which bounds the reply result. Next-word answers for four
+          sentences. The readers saw the first 900 characters of each reply, so they miss a late mention of cost
+          or of the constraint.
         </p>
       </Section>
 
-      <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
+      <Section eyebrow="Knowledge" title="The model knows some rural safety-net rules, but gets several wrong">
         <p>
-          Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
-          Louisiana Medicaid, Medicare ambulance cover, the insulin cap, nurse lines, 988 from a landline, text-to-911,
-          dialysis in a hurricane, insulin without power, the stroke window, home INR checks, 340B. Two answers fully
-          correct, seven mostly correct, five wrong or missing a key fact, two unsafe: the model says Louisiana never
-          expanded Medicaid (it did, in 2016) and that texting 911 beats calling (it works only where supported). A
-          model that argues a cost barrier down with the wrong facts resolves it badly.
+          We asked 16 factual questions about the rural safety net. One topic was EMTALA, the Emergency Medical
+          Treatment and Labor Act. The others were ambulance response and billing, charity care, community health centers, Louisiana Medicaid,
+          Medicare ambulance cover and the insulin cap. More topics were nurse advice lines, 988 from a
+          landline, text-to-911 and dialysis in a hurricane. The last topics were insulin without power, the
+          stroke treatment window, home INR (international normalized ratio) checks, and 340B, a federal program that gives discounted drug prices to
+          safety-net clinics and hospitals.
+        </p>
+        <p>
+          Two answers are fully correct. Seven are mostly correct. Five are wrong or miss a key fact. Two are unsafe.
+          The model says Louisiana never expanded Medicaid, but the state did, in 2016. It also says a text to 911 is better than a call. A text to 911 works only where the local system supports it. When a model argues a patient&apos;s cost
+          problem down with wrong facts, it handles that problem badly.
         </p>
       </Section>
 
-      <Section eyebrow="Take-home" title="The model reads the patient's circumstances as part of the clinical picture, in both directions">
+      <Section eyebrow="Take-home" title="Personal details change the model's answers, and their position in the message matters">
         <p>
-          A 4-billion-parameter chat model reads what a patient says about their life as part of the clinical
-          picture, and it does so in both directions. On an emergency, a barrier sentence placed right before the
-          question lowers the chance that the reply opens with &quot;call 911&quot;: the no-ride sentence by 1.00
-          log-odds on the readout, and 6 or 7 of 16 replies lost under the money sentence in the main set. On a
-          routine or same-day complaint, almost any personal fact raises the urgency reading, and hardship raises it
-          most: 24 of 25 life-fact families up, a mean of +1.0 log-odds, hardship +1.4 to +2.6. The overnight runs put
-          four bounds on that finding.
+          The 4-billion-parameter model reads a patient&apos;s circumstances as part of the clinical picture, in both
+          directions. In emergency cases, a sentence about a barrier to care lowers the chance that the reply opens
+          with &quot;call 911&quot;. This happens when the sentence sits right before the question. On routine
+          complaints, almost any personal fact raises the model&apos;s lean toward &quot;High&quot; urgency, and
+          hardship raises it most. The overnight runs set four limits on that finding.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>It is a recency effect on the emergency side and a position effect on the routine side.</b> The harm
-            vanishes when the sentence opens the message, and the over-escalation doubles.
+            <b>The first limit is position.</b> On emergency cases, the 911 answer changes only when the sentence sits last before the question. The ambulance
+            answer changes at all three positions. On routine cases, the false alarm grows when the sentence comes first.
           </li>
           <li style={itemStyle}>
-            <b>It survives sloppy writing, and the writing itself moves the model.</b> Typing errors add +0.9 log-odds
-            of &quot;call 911&quot; to a routine complaint with no barrier stated.
+            <b>The second limit is writing.</b> The effect survives typos and lower case, and the writing itself moves the model. Typos add +0.9 log-odds toward &quot;call 911&quot; to a routine complaint with
+            no barrier stated.
           </li>
           <li style={itemStyle}>
-            <b>It holds across six chronic conditions, with a new form on same-day cases.</b> A long drive pushes a
-            same-day complaint toward 911 by +2.1 log-odds in every condition.
+            <b>The third limit is the condition.</b> The effect holds across six chronic conditions. On same-day cases it takes a new form. A long drive pushes the lean toward &quot;Yes, call 911&quot; up in every
+            condition, by +0.8 to +3.4 log-odds (pooled mean +2.12).
           </li>
           <li style={itemStyle}>
-            <b>The money sentence is one of a crowd in the model&apos;s working memory.</b> Every one of the 24
-            life-fact directions points partly the same way as the money direction (cosine 0.2 to 0.8). The money
-            sentence is a case of a general &quot;personal detail stated&quot; direction with a hardship component on
-            top.
+            <b>The fourth limit is the model&apos;s internal state.</b> The no-insurance sentence is one of many. Every
+            personal-fact direction points partly the same way as the no-insurance direction (cosine 0.2 to 0.8).
           </li>
         </ul>
         <p>
-          The replies move less than the readouts when the emergency is loud (35 of 36 condition replies, 122 of 128
-          breadth replies open with &quot;call 911&quot;) and more when it is borderline (the main set). The reply harm
-          is a property of the margin.
+          Replies change less than the model&apos;s next-word answers when the emergency is loud. Then 35 of 36 condition
+          replies and 122 of 128 life-fact replies open with &quot;call 911&quot;. Replies change more when the
+          case is borderline, as in the main set. A larger commercial model does not have the emergency problem.
         </p>
         <p>
-          On fixes. A one-line system prompt removes the emergency harm (16 of 16) at the price of one routine patient
-          in eight sent to 911. A gated counter-shift along the money direction recovers part of the emergency
-          instruction at layer 12 (9 to 12 of 16) and cuts the routine and same-day over-escalation by a third to two
-          thirds at layer 20, with prompts that have no money sentence moving by 0.13 log-odds or less, but it is
-          specific to the sentence it was built from. A frontier model does not have the emergency problem. The
-          fine-tuned fix and a softer system line are in the overnight queue. The direction atlas says why the gated
-          fix did not generalise and what would: the other families share 36 to 64 percent of their direction with the
-          money line, and the rest is their own.
+          On fixes. A one-line system instruction removes the emergency harm (16 of 16) at the price of one routine patient
+          in eight sent to 911. A fix that only acts when the no-insurance sentence is present recovers part of the
+          emergency instruction (9 to 12 of 16 at layer 12). At layer 20 it cuts the routine false alarms by a third to two thirds. It shows no measured drift on messages
+          without the sentence. But it works only for the sentence that we built it from. A fine-tune that copies the system line reproduces its harm and enlarges it on
+          new same-day cases, so the switch fix stays first. The map of the directions says why the switch fix did not reach the other families, and what would. The other
+          families share 36 to 64 percent of their direction with the no-insurance line. The rest is their own.
         </p>
         <p>The three best next experiments, with their cost on the lab machine.</p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>One gated direction fit on the hardship families together, tested on held-out families.</b> Fit the
-            direction on substance use, prior bad experience, housing, immigration status, pregnancy and the money
-            sentence; gate as above; measure what survives on those six, on the nine other circumstance families, and on
-            the raise and identity families, which must not move. The residuals are already captured. About 20 minutes
-            of CPU to fit and 3 hours of GPU per layer. This is the run that answers whether the repair generalises.
+            <b>One fix with a switch, fit on the hardship families together, tested on held-out families.</b> Fit the
+            direction on substance use, prior bad experience, housing, immigration status, pregnancy and the
+            no-insurance sentence. Test it on held-out families and on the raise and identity families, which must not
+            change. We already recorded the model&apos;s internal state for the 40-sentence test. About 20 minutes of processor time
+            to fit and 3 hours of graphics processing unit (GPU) time. This is the run
+            that answers whether the repair generalises.
           </li>
           <li style={itemStyle}>
-            <b>The gated fix at the other two sentence positions.</b> Capture the residuals with the sentence first and
-            as a prior turn, then run the gated stage at layer 20 on each. The routine over-escalation is largest in
-            the sentence-first position, which is where a fix matters most. About 4 hours of GPU.
+            <b>The same fix at the other two sentence positions.</b> Record the internal state with the sentence first
+            and as a prior turn, then run the fix at layer 20 on each. The routine false alarm is largest in the
+            sentence-first position, which is where a fix matters most. About 4 hours of GPU time.
           </li>
           <li style={itemStyle}>
-            <b>The same map on an 8-billion-parameter model.</b> Pull Qwen3-8B after freeing 2 GB of disk, run the
-            main-set readout and the breadth readout without residuals. The question is whether the emergency harm and
-            the &quot;any personal fact&quot; over-escalation shrink with size, as the frontier model suggests. About 6
-            hours of GPU and an evening of disk housekeeping. The Haiku replies through the plain API (192 replies,
-            about two dollars, 20 minutes) are the cheap companion.
+            <b>The same map on an 8-billion-parameter model.</b> Run the main-set and 40-sentence answers on Qwen3-8B after we free 2 GB of disk. The question is whether the emergency harm and the &quot;any personal
+            fact&quot; false alarm shrink with size, as the larger commercial model suggests. About 6 hours of GPU time. The
+            Haiku replies through the plain API (192 replies, about two dollars) are the low-cost addition.
           </li>
         </ul>
         <p>
-          Two cheaper controls come first: a length-only neutral prefix for the realism test, 10 minutes of GPU, which
-          separates length from content in the daily-detail result; and the replication set for the gated fix, which
-          is in the overnight queue.
+          Two cheaper controls come first. One is a length-only neutral prefix for the realism test, 10 minutes of GPU
+          time, which separates length from content in the daily-detail result. The other is the replication set for the switch fix, which is queued to run overnight.
         </p>
       </Section>
 
       <Section eyebrow="Limits and next steps" title="What this does not show">
         <ul style={listStyle}>
           <li style={itemStyle}>
-            Two 4-billion-parameter models and one frontier model through an agent harness, author-written
-            vignettes, AI-coded replies. No clinician has labelled a case; seven close calls are flagged. No 7 to 9
-            billion-parameter model ran: none was cached, and the disk had 15 GB free against the 16.4 GB that
-            Qwen3-8B needs. The Haiku comparison ran through subagents, not the plain API.
+            Two 4-billion-parameter models and one larger commercial model through a coding tool, author-written patient
+            messages, and replies coded by AI readers. No clinician has labelled a case. We flagged seven close
+            calls. No 7 to 9 billion-parameter model ran. We had none cached, and the disk had 15 GB free
+            against the 16.4 GB that Qwen3-8B needs. The Haiku comparison ran through a coding tool, not the
+            plain API.
           </li>
           <li style={itemStyle}>
-            Many next-word label shifts also appear for control sentences that state no barrier: a sentence about where
-            the pills are kept raises routine urgency more than any access cue. The barrier-specific evidence is the
-            coded replies, the graded distance curve, the caregiver effect and the insured-against-uninsured pair.
+            Many changes in the next-word answers also appear for control sentences that state no barrier. A sentence about where the patient keeps the pills raises routine urgency more than any sentence about access to care. The
+            evidence specific to barriers comes from the coded replies, the step-by-step distance curve, the caregiver
+            effect, and the pair of insured and no-insurance sentences.
           </li>
-          <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
+          <li style={itemStyle}>The map of units shows what the model reads, not what moves its advice.</li>
           <li style={itemStyle}>
-            The breadth map rests on readouts for 22 of its 25 families. For those, a family number says how the
-            next-word odds moved, not how often the advice changed.
-          </li>
-          <li style={itemStyle}>
-            The position test is readouts only, with one wording for the acknowledged earlier turn. The gated fix was
-            built on the sentence-before-the-question shape and is untested in the other two.
+            The 40-sentence test rests on next-word answers for 22 of its 25 families. For those, a family number says
+            how the model&apos;s lean moved, not how often the advice changed.
           </li>
           <li style={itemStyle}>
-            The realism test uses one typo rule and one pool of daily-detail sentences, all southern and domestic, so
-            the longer-message effect may be a content effect as much as a length effect.
+            The position test is next-word answers only, with one wording for the acknowledged earlier turn. We built Fix 3 on the sentence-before-the-question shape. We have not tested it in the other two.
           </li>
           <li style={itemStyle}>
-            The condition test has one scenario per condition and arm, and its six emergencies were written to be
+            The realism test uses one typo rule and one pool of daily-detail sentences, all southern and domestic. So the
+            longer-message effect may be a content effect as much as a length effect.
+          </li>
+          <li style={itemStyle}>
+            The condition test has one scenario per condition and group of cases. Its six emergencies were written to be
             unambiguous, which bounds the reply result.
           </li>
           <li style={itemStyle}>
-            Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
-            and on frontier models through a plain chat API; the gated fix on the replication set and a direction fit on
-            the hardship families together, or one per family; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
-            carbon-monoxide warning; the caregiver-voice set; de-identified real messages if an institutional path
-            exists.
+            The fine-tuned fix comes from one run with no learning-rate sweep. We cannot use its next-word answers, because
+            it no longer opens replies with the heading that the questions write at the start of the reply.
+          </li>
+          <li style={itemStyle}>
+            Next steps. Clinician labels on a four-level scale with harm ratings. The same benchmark on larger local models,
+            and on larger commercial models through a plain chat API. Fix 3 on the replication set, and a direction fit
+            on the hardship families together or one per family. A fine-tune trained on correct same-day
+            replies. A carbon-monoxide set, since a generator in the carport rarely produced a carbon-monoxide
+            warning. The caregiver-voice set. De-identified real messages if an institutional path exists.
           </li>
         </ul>
       </Section>
 
       <p style={noteStyle}>
-        Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
-        the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 34 of that notebook; the rest of the overnight queue (a fine-tuned
-        fix, an independent replication set, the stance direction, chronic-condition triggers, control-sentence
-        replies, a Gemma rerun, a softer system line) will be added as it lands.
+        Full record: the lab notebook has every run, interval and negative result. The scenario and text-bank files, the
+        code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook
+        of 27 October 2026). This note condenses sections 0 to 35 of that notebook. We will add more overnight runs as they land. They are an independent replication set, the reluctance
+        direction, chronic-condition triggers, control-sentence replies, a Gemma rerun, and a softer system
+        line.
       </p>
     </WritingLayout>
   );
