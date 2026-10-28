@@ -1061,3 +1061,168 @@ export function OrderTable({ rows }) {
     </div>
   );
 }
+
+// Figure 11: message realism, the same sentence under typing errors, lower case and a longer message
+const TR11 = { clean: { color: C.black, short: 'clean text' }, typos: { color: C.blue, short: 'typing errors' }, lower: { color: C.orange, short: 'lower case, no punctuation' }, long: { color: C.green, short: 'two sentences of daily detail first' } };
+const VIEWS11 = [{ key: 'effect', label: 'The sentence, under each transform' }, { key: 'alone', label: 'The writing alone, no sentence' }];
+
+function Samples11({ s, cue }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px 14px', marginBottom: 12 }}>
+      {Object.keys(TR11).map((k) => {
+        const r = s.runs[k];
+        return (
+          <div key={k}>
+            <div style={{ ...who, color: TR11[k].color, opacity: 1, marginBottom: 6 }}><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 4, background: TR11[k].color, marginRight: 6 }} />{TR11[k].short}</div>
+            <div style={miniBubble}>{r.body} <span style={inserted}>{r.sentences[cue]}</span> {r.question}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function Fig11({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [readout, setReadout] = useState('ems2');
+  const [view, setView] = useState('effect');
+  const [cue, setCue] = useState('no_transport');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig11;
+  const label = f.readouts.find((r) => r.key === readout).label;
+  const keys = view === 'effect' ? Object.keys(TR11) : Object.keys(TR11).slice(1);
+  const rows = view === 'effect'
+    ? f.cues.map((c) => ({ key: c, label: f.sample.cueLabels[c], get: (a, k) => f.effect[readout][a][c][k] }))
+    : f.readouts.map((r) => ({ key: r.key, label: r.label, get: (a, k) => f.alone[r.key][a][k] }));
+  const all = rows.flatMap((r) => f.arms.flatMap((a) => keys.flatMap((k) => r.get(a, k).slice(1))));
+  let lo = Math.min(0, ...all), hi = Math.max(0, ...all);
+  const pad = (hi - lo) * 0.06;
+  lo -= pad; hi += pad;
+  const X = (v) => Math.round((v - lo) / (hi - lo) * 1000) / 10;
+  const ticks = niceTicks(lo, hi, 4);
+  const rowH = view === 'effect' ? 48 : 40;
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}><span style={small}>Sentence</span>{f.cues.map((c) => <button key={c} type="button" aria-pressed={c === cue} style={chip(c === cue)} onClick={() => setCue(c)}>{f.sample.cueLabels[c]}</button>)}</div>
+      <Samples11 s={f.sample} cue={cue} />
+      <div style={{ fontSize: '0.72rem', opacity: 0.65, marginBottom: 12 }}>
+        One patient message ({f.sample.label}) with the selected sentence, as the four runs saw it. Typing errors by rule, one word
+        in twelve, in the message and the sentence. Lower case removes every punctuation mark. The daily-detail sentences come
+        from a pool of twelve, chosen per scenario. The same transform was made in all 32 messages.
+      </div>
+      <div style={row}><span style={small}>Show</span>{VIEWS11.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
+      {view === 'effect' && <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>}
+      <div style={{ overflowX: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
+          <div />
+          {f.arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM10[a]}</div>)}
+          {rows.map((r) => (
+            <Fragment key={r.key}>
+              <div style={{ ...labelCell7, fontWeight: view === 'effect' && r.key === cue ? 'bold' : 'normal' }}><span>{r.label}</span></div>
+              {f.arms.map((a) => (
+                <svg key={a} style={{ ...strip7, height: rowH }} aria-label={`${r.label}, ${ARM10[a]}`}>
+                  <line x1="0%" x2="100%" y1={rowH / 2} y2={rowH / 2} stroke="rgba(0,0,0,0.08)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={rowH} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  {keys.map((k, i) => {
+                    const v = r.get(a, k);
+                    const ch = view === 'effect' && k !== 'clean' ? f.change[readout][a][r.key][k] : null;
+                    const node = (
+                      <div>
+                        <div><b>{r.label}</b>, {TR11[k].short} · {ARM10[a].toLowerCase()}: {fmt(v[0])} [{fmt(v[1])}, {fmt(v[2])}]</div>
+                        {view === 'effect' ? (
+                          <>
+                            <div style={{ marginTop: 4 }}>“{f.sample.runs[k].sentences[r.key]}”</div>
+                            {ch && <div style={{ marginTop: 3 }}>Change against clean text: {fmt(ch[0])} [{fmt(ch[1])}, {fmt(ch[2])}], paired by scenario.</div>}
+                            <div style={{ opacity: 0.6, marginTop: 3 }}>{label}, log-odds, the sentence minus the weather sentence in the same run, paired over {f.n} scenarios</div>
+                          </>
+                        ) : (
+                          <>
+                            <div style={{ marginTop: 4 }}>“{f.sample.runs[k].body}”</div>
+                            <div style={{ opacity: 0.6, marginTop: 3 }}>the message with no added sentence, transformed minus clean, paired over {f.n} scenarios; clean level {fmt(f.level[r.key][a])}</div>
+                          </>
+                        )}
+                      </div>
+                    );
+                    return <Mark7 key={k} x={[X(v[0]), X(v[1]), X(v[2])]} y={rowH / 2 + (i - (keys.length - 1) / 2) * 10} r={4.5} color={TR11[k].color} filled tip={node} onTip={show} onHide={hide} />;
+                  })}
+                </svg>
+              ))}
+            </Fragment>
+          ))}
+          <div />
+          {f.arms.map((a) => (
+            <svg key={a} style={{ ...strip7, height: 18 }}>
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+            </svg>
+          ))}
+        </div>
+      </div>
+      <div style={legendRow}>
+        {keys.map((k) => <Swatch key={k} color={TR11[k].color} label={TR11[k].short} />)}
+        <span>{view === 'effect' ? label : 'Each readout'}, log-odds. Horizontal lines: 95% intervals. Dark line: no shift.</span>
+      </div>
+      {view === 'effect' && (
+        <div style={{ ...hint, opacity: 0.8 }}>
+          Mean size of the sentence effect over the eight arm-by-sentence cells: {Object.keys(TR11).map((k) => `${TR11[k].short} ${f.meanAbs[readout][k].toFixed(2)}`).join('; ')}.
+        </div>
+      )}
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the axes are.</div>
+        {view === 'effect' ? (
+          <>
+            <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences. Columns: the two arms, 16 scenarios each.</div>
+            <div style={{ marginLeft: 12, marginTop: 3 }}>Marks: the reading with the sentence minus the reading with the weather sentence, both in the same run, one mark per run.</div>
+          </>
+        ) : (
+          <>
+            <div style={{ marginLeft: 12 }}>Rows: the three readouts. Columns: the two arms, 16 scenarios each.</div>
+            <div style={{ marginLeft: 12, marginTop: 3 }}>Marks: the message with no added sentence after the transform minus the same message typed cleanly. Right of the dark line reads as more urgent.</div>
+          </>
+        )}
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 7: what the writing does on its own
+export function RealismTable({ rows }) {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig11;
+  const keys = Object.keys(TR11).slice(1);
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>no added sentence; shift, log-odds [95% interval]</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal' }}>clean level</th>
+            {keys.map((k) => <th key={k} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: TR11[k].color }}>{TR11[k].short}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.label}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+              <td style={{ ...cell, opacity: 0.7 }}>{fmt(f.level[r.readout][r.arm])}</td>
+              {keys.map((k) => {
+                const [v, lo, hi] = f.alone[r.readout][r.arm][k];
+                const off = lo > 0 || hi < 0;
+                return (
+                  <td key={k} style={{ ...cell, fontWeight: off && Math.abs(v) >= 0.5 ? 'bold' : 'normal' }}>
+                    {fmt(v)}
+                    <div style={{ fontSize: '0.68rem', opacity: 0.55 }}>[{fmt(lo)}, {fmt(hi)}]</div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

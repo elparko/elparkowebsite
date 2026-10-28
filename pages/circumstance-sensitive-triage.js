@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, HaikuGrid, BreadthTable, OrderTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, HaikuGrid, BreadthTable, OrderTable, RealismTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -36,7 +36,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -220,6 +220,15 @@ export default function CircumstanceSensitiveTriage() {
             little as an acknowledged earlier turn. The routine over-escalation grows when the sentence leads, to two or
             three times its size. As an earlier turn the chat format itself moves the baseline more than the sentence:
             a weather remark as a prior turn raises the routine urgency reading by 2.5 log-odds on its own.
+          </li>
+          <li style={itemStyle}>
+            <b>Sloppier or chattier messages keep the effect.</b> With typing errors in one word in twelve, in lower
+            case with no punctuation, or with two sentences of daily detail before the symptoms, the routine
+            over-escalation does not shrink, and in lower case it grows by 0.5 to 0.7 log-odds. The emergency harm is
+            the fragile part: the no-ride harm survives typing errors, shrinks under a longer message and vanishes in
+            lower case. The writing alone moves the model: typing errors raise a routine complaint by +0.92 log-odds of
+            &quot;call 911&quot;, and two sentences about game shows and a casserole raise its urgency reading by 2.1,
+            before any barrier is stated.
           </li>
         </ul>
         <p>
@@ -646,6 +655,73 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Findings" title="Sloppier or chattier messages keep the effect, and the writing itself moves the model">
+        <p>
+          Every message above was clean and well punctuated. Real messages from older rural patients are not. This
+          section reruns the main set three ways: with typing errors by rule (a swapped, dropped, doubled or
+          neighbouring letter, 109 changed words in 1311, one in twelve, in the message and the sentence), in lower
+          case with every punctuation mark removed, and with two sentences of daily detail before the symptoms (from a
+          pool of twelve, chosen per scenario). The same four barrier sentences, 32 scenarios, readouts only, 192
+          readings per copy. Two questions: does the sentence&apos;s effect grow or shrink, and what does the writing
+          do on its own.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The routine over-escalation does not shrink.</b> The four sentences keep their routine &quot;call
+            911&quot; shifts within 0.4 log-odds of the clean run under every transform. In lower case the &quot;High
+            over Low&quot; shifts grow by 0.5 to 0.7: clinic closed from +0.60 to +1.29, no ride from +2.48 to +3.16,
+            the money sentence from +2.37 to +2.87. A longer message raises the routine &quot;call 911&quot; shift for
+            distance (+0.64 to +0.97) and clinic closed (+0.20 to +0.60).
+          </li>
+          <li style={itemStyle}>
+            <b>The emergency harm is the fragile part.</b> The no-ride sentence&apos;s -1.00 on the emergency
+            &quot;call 911&quot; reading is unchanged under typing errors (-0.99), smaller under a longer message
+            (-0.66) and gone in lower case (-0.06; change +0.94, interval +0.64 to +1.23). The distance harm (-0.50)
+            is gone under typing errors (+0.07) and smaller under the other two. With the position result above, the
+            emergency harm needs the sentence read as a separate, well-formed statement right before the question.
+          </li>
+          <li style={itemStyle}>
+            <b>The writing alone moves the model.</b> With no barrier sentence present, typing errors raise a routine
+            complaint by +0.92 log-odds of &quot;call 911&quot; and +1.00 of &quot;High over Low&quot;. Lower case
+            raises it by +0.83 and +0.45. Two sentences about game shows and a casserole raise it by +0.53 and +2.10.
+            The emergency arm moves 0 to +0.9. A misspelt routine complaint reads as more urgent, by about as much as
+            the money sentence.
+          </li>
+          <li style={itemStyle}>
+            <b>What this changes.</b> The main-run numbers are not an artefact of clean text. For the fix, the writing
+            effects are a second target: a routine patient who types badly or chats first is pushed toward High before
+            any barrier is stated, and no gate built on a barrier direction will see that.
+          </li>
+        </ul>
+        <RealismTable
+          rows={[
+            { label: 'Routine complaints: call 911', readout: 'ems2', arm: 'routine' },
+            { label: 'Routine complaints: High over Low', readout: 'urgency2', arm: 'routine' },
+            { label: 'Emergencies: call 911', readout: 'ems2', arm: 'emergency' },
+            { label: 'Emergencies: High over Low', readout: 'urgency2', arm: 'emergency' },
+          ]}
+        />
+        <p style={captionStyle}>
+          Table 7. What the writing does on its own. The message with no added sentence after each transform minus the
+          same message typed cleanly, paired over 16 scenarios per arm, Qwen3.5-4B. The clean level is the reading on
+          the clean message. Bold: at least 0.5 log-odds with the interval off zero. The sentence effects under each
+          transform are in Figure 11.
+        </p>
+        <Chart fig="fig11" src="/rural-triage/fig11-realism.png" alt="Dot plots of each barrier sentence's shift under clean text, typing errors, lower case and a longer message, emergency and routine arms.">
+          Figure 11. The sentence minus the weather sentence in the same run, 16 scenarios per arm with 95 percent
+          intervals. Pick the sentence to see it as each run saw it, then the readout. Black: clean text. Blue: typing
+          errors. Orange: lower case, no punctuation. Green: two sentences of daily detail first. The second view shows
+          what each transform does to the message with no added sentence. On the emergency &quot;call 911&quot; readout
+          the no-ride harm holds under typing errors and vanishes in lower case.
+        </Chart>
+        <p>
+          Caveats. Readouts only. Four sentences, one typo rule and rate. The daily-detail sentences are all southern
+          and domestic, so length and content are confounded; a length-only control with neutral text is the obvious
+          next run. Lower case also removes the full stop between the sentence and the question, which changes how the
+          boundary is tokenised.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
         <p>
           Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
@@ -678,6 +754,10 @@ export default function CircumstanceSensitiveTriage() {
             built on the sentence-before-the-question shape and is untested in the other two.
           </li>
           <li style={itemStyle}>
+            The realism test uses one typo rule and one pool of daily-detail sentences, all southern and domestic, so
+            the longer-message effect may be a content effect as much as a length effect.
+          </li>
+          <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
             and on frontier models through a plain chat API; the gated fix on the replication set and a direction fit on
             the hardship families together, or one per family; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
@@ -690,9 +770,9 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 30 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies, the coded replies for three breadth families, message
-        realism) will be added.
+        27 October 2026). This note condenses sections 0 to 31 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies, the coded replies for three breadth families, the
+        condition families) will be added.
       </p>
     </WritingLayout>
   );
