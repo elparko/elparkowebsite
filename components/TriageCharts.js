@@ -1230,6 +1230,7 @@ export function RealismTable({ rows }) {
 // Figure 12: the four main sentences on six chronic conditions
 const ARM12 = { emergency: 'Emergency', urgent: 'Same-day case', routine: 'Routine question' };
 const CUE12 = { distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight', uninsured: 'no insurance, money tight' };
+const CUE12_SHORT = { distance: '90 min away', clinic_closed: 'clinic closed', no_transport: 'no ride', uninsured: 'no insurance' };
 
 export function Fig12({ src, alt }) {
   const d = useCharts();
@@ -1248,7 +1249,7 @@ export function Fig12({ src, alt }) {
       <div style={row}><span style={small}>Arm</span>{f.arms.map((a) => <button key={a} type="button" aria-pressed={a === arm} style={chip(a === arm)} onClick={() => setArm(a)}>{ARM12[a]}</button>)}</div>
       <div style={{ display: 'grid', gridTemplateColumns: `minmax(7.5em, 10em) repeat(${f.cues.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.72rem' }}>
         <div />
-        {f.cues.map((q) => <div key={q} style={{ textAlign: 'center', padding: '0 2px 4px', lineHeight: 1.2 }}>{CUE12[q]}</div>)}
+        {f.cues.map((q) => <div key={q} style={{ textAlign: 'center', padding: '0 2px 4px', lineHeight: 1.2 }}>{CUE12_SHORT[q]}</div>)}
         {f.conditions.map((c) => {
           const s = c.scenarios[arm];
           return (
