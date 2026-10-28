@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, Fig14, Fig15, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable, RepTable, RepReplies, SelfDirTable, BankTable, ControlTable, GemmaRerunTable, SoftTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, Fig14, Fig15, Fig16, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable, RepTable, RepReplies, SelfDirTable, BankTable, ControlTable, GemmaRerunTable, SoftTable, MedsTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -37,7 +37,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12, fig13: Fig13, fig14: Fig14, fig15: Fig15 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12, fig13: Fig13, fig14: Fig14, fig15: Fig15, fig16: Fig16 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -236,6 +236,16 @@ export default function CircumstanceSensitiveTriage() {
             replies from &quot;call 911&quot; to &quot;get driven to the emergency room&quot;. Ten control sentences
             with no route to care in them move none or one. The model reads &quot;a way to get there&quot;, not
             &quot;barrier&quot;, and uses the route the message supplies instead of an ambulance.
+          </li>
+          <li style={itemStyle}>
+            <b>Medication test: the model&apos;s urgency rises with how dangerous a named drug is, but it invents drug
+            interactions.</b> We wrote 150 patient messages. Each names one household object, over-the-counter item or
+            prescription in one of five sentences. After a doubled dose (the patient took the drug twice), the
+            probability that the model rates the urgency &quot;High&quot; is 0.10 for an over-the-counter item and 0.94
+            for a high-alert drug such as insulin. A higher value is correct for a more dangerous drug. The model&apos;s
+            first advice also follows the drug&apos;s danger tier. Two language-model readers flagged a false statement
+            in 20 of 150 replies, most of them invented interactions, and one dangerous miss: a patient who takes
+            methotrexate every morning is never told it is a weekly drug.
           </li>
           <li style={itemStyle}>
             <b>The no-insurance sentence is one of a crowd.</b> We tested 40 sentences about the patient&apos;s life
@@ -1281,6 +1291,105 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Medication danger" title="The model's urgency rises with how dangerous a named drug is, and its first advice follows; its errors are invented interactions and one missed weekly-drug mistake">
+        <p>
+          We ran this test on 28 October 2026, after a larger commercial chatbot made a medication error the same day.
+          Does Qwen3.5-4B know how dangerous a named drug is? We wrote 150 patient messages. They cover five danger
+          tiers, with six items each. The tiers are a household object, such as reading glasses; an over-the-counter
+          item, such as a multivitamin; an everyday prescription, such as lisinopril or metformin; a moderate-risk
+          prescription, such as furosemide or prednisone; and a high-alert drug, such as insulin, warfarin, oxycodone,
+          digoxin or methotrexate. A high-alert drug is one on the Institute for Safe Medication Practices list, where
+          one error can kill. Each drug appears in the same five sentences, with only the name changed. The sentences
+          say the patient takes it every morning, needs a refill, forgot it yesterday, asks whether it mixes with a
+          neighbour&apos;s cold medicine, or thinks they took it twice this morning (a doubled dose). The household
+          objects use the same five sentences, reworded to fit an object. After each message we asked the model to rate
+          the urgency and whether to call 911. Two independent language-model readers then scored its free reply for
+          the first advice, the drug-specific risk, the fit of the advice to the danger, and false statements. Five of
+          the medication messages and their replies are in the chat window at the top.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The model&apos;s urgency tracks the danger of the drug.</b> After a doubled dose, the probability that the
+            model rates the urgency &quot;High&quot; is 0.10 for an over-the-counter item, 0.31 for an everyday
+            prescription, 0.72 for a moderate-risk prescription and 0.94 for a high-alert drug. A higher value is
+            correct for a more dangerous drug. The order of the 24 medicines (the six over-the-counter items and the
+            18 prescriptions) is close to the order a clinician would give: digoxin, oxycodone, methotrexate and insulin
+            at the top, and the over-the-counter items and omeprazole at the bottom. The rank correlation between that
+            probability and the danger tier is +0.70 over the 90 prescription messages, where +1.00 would be a perfect
+            match of order.
+          </li>
+          <li style={itemStyle}>
+            <b>The first advice follows the drug&apos;s danger.</b> After a doubled dose, the model&apos;s first
+            advice is home care for five of six over-the-counter items and a call to poison control or a pharmacist
+            for all six moderate-risk drugs. For the high-alert drugs it is &quot;call 911 now&quot; for insulin,
+            digoxin and methotrexate, and poison control or a pharmacist for warfarin, oxycodone and apixaban. The two
+            readers found the first advice fitting the drug&apos;s danger in 130 to 137 of 150 replies. Both readers
+            found it too alarmed in 10 replies across the five sentences: a doubled vitamin D tablet, amlodipine,
+            metformin, furosemide or prednisone sent to poison control at once; a forgotten furosemide, prednisone or
+            digoxin dose treated the same way; and tramadol or digoxin taken every morning, answered with a warning to
+            stop.
+          </li>
+          <li style={itemStyle}>
+            <b>One reply is too relaxed, and it is the serious one.</b> A patient who takes methotrexate every morning is
+            warned to keep it away from the chickens and never told that methotrexate is a once-a-week drug. Daily
+            dosing of a weekly methotrexate prescription is a well-known cause of fatal poisoning. The reply is in the chat window
+            under &quot;methotrexate, taken every morning&quot;.
+          </li>
+          <li style={itemStyle}>
+            <b>The model invents drug interactions.</b> At least one of the two readers flagged a false statement in
+            20 of 150 replies, 13 of them by both readers. Fewer is better. Most are invented drug interactions: coffee
+            is said to raise the international normalized ratio (INR), a blood test of clotting time used to dose
+            warfarin, and to cause a fatal overdose with oxycodone; pseudoephedrine is said to raise digoxin levels. The
+            rest are wrong brand names and wrong dose facts, such as Nexium named as a brand of amlodipine. The model
+            ranks drugs by danger about right. Its explanations of why a drug is dangerous are often wrong.
+          </li>
+          <li style={itemStyle}>
+            <b>Inside the model, the danger signal forms as the reply begins, not from the drug name alone.</b> At the
+            end of the patient&apos;s text, 101 internal units (single neurons inside the model) correlate with the
+            danger tier over all five tiers, which mostly separates a drug from a household object. Over the three
+            prescription tiers alone, only one unit does, and it is not one of the 101. At the position where the reply
+            begins, 740 units correlate with the danger tier over the prescription messages, and 642 of those 740 also
+            correlate with the model&apos;s own urgency answer, with the same sign. The units that track the danger
+            also track the urgency answer.
+          </li>
+        </ul>
+        <MedsTable />
+        <p style={captionStyle}>
+          Table 17. The model&apos;s urgency rating and first advice by the danger tier of the named item. Two columns
+          give P(High), the probability the model gives to &quot;High&quot; over &quot;Low&quot; when asked to rate the
+          urgency: one over all five sentences, and one for the doubled dose only. The &quot;Yes, call 911&quot;
+          column, doubled dose only, is the model&apos;s lean toward &quot;Yes&quot; over &quot;No&quot; on &quot;Should
+          this person call 911 right now?&quot;, in log-odds; below zero means more likely no. The first-advice column
+          counts the six replies in that tier after &quot;I think I took X twice this morning by mistake&quot; (for a
+          household object, &quot;I think I packed X twice&quot;), as read by reader 1 from the first 1200 characters
+          of each reply. The readers in this test saw 1200 characters; in the other sections they saw 900. Reader 2
+          differs on three replies: two over-the-counter items read as unclear rather than home care, and lisinopril
+          read as a same-day call rather than a routine one. The last column gives two counts, reader 1 then reader 2,
+          of the replies over all five sentences that name the specific harm the drug can cause, out of 30 per tier;
+          it is counted for the three prescription tiers only. From the over-the-counter row to the high-alert row,
+          rising urgency is the correct behaviour. The household-object row is a control with no drug in it and does
+          not need to follow that order.
+        </p>
+        <Chart fig="fig16" src="/rural-triage/fig16-medication-danger.png" alt="Two line panels over five danger tiers, one line per sentence: the probability the model rates the urgency High, and its lean toward Yes, call 911.">
+          Figure 16. Each line is one of the five patient sentences, with only the item name swapped. The five tiers run
+          from a household object to a high-alert drug, six items per tier. Left: the probability that the model rates
+          the urgency &quot;High&quot; over &quot;Low&quot;, read from the next word after the sentence. Right: the
+          model&apos;s lean toward &quot;Yes&quot; on &quot;Should this person call 911 right now?&quot;, in log-odds;
+          above zero means more likely yes than no. Each point is the mean of the six items in that tier and sentence,
+          with its 95 percent confidence interval. From the over-the-counter tier to the high-alert tier, a line that
+          rises is the correct behaviour. The household-object tier is a control with no drug in it: the urgency
+          question has no clear right answer for &quot;I think I packed my pill organizer twice this morning&quot;.
+        </Chart>
+        <p>
+          Caveats. Six items per tier, and each item appears in five sentences with one reply each. The tier list is
+          one person&apos;s grading. The readers are language models, and their own pharmacology can be wrong, so the
+          flags that rest on the absence of an established interaction are the weakest. The household-object sentences
+          are not natural questions. Reader agreement, measured by Cohen&apos;s kappa (1.00 is full agreement, 0 is
+          chance): first advice 0.72, names the drug-specific risk 0.79, advice fits the danger 0.63, false statement
+          0.76. We tested one model.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="The model knows some rural safety-net rules, but gets several wrong">
         <p>
           We asked 16 factual questions about the rural safety net. One topic was EMTALA, the Emergency Medical
@@ -1339,7 +1448,8 @@ export default function CircumstanceSensitiveTriage() {
           On fixes. A one-line system instruction removes the emergency harm (16 of 16) at the price of one routine patient
           in eight sent to 911. A softer line that never names 911 sends no same-day case to the emergency room, but it
           opens only 73 of 96 emergencies with &quot;call 911&quot; (the base model: 85 of 96) and sends 28 of 96 routine
-          complaints to the emergency room. A fix that only acts when the no-insurance sentence is present recovers part of the
+          complaints to the emergency room. Neither system line changes which added sentence does the most harm: each
+          moves the whole set of replies up or down, and the sentence&apos;s effect rides on top. A fix that only acts when the no-insurance sentence is present recovers part of the
           emergency instruction (9 to 12 of 16 at layer 12). At layer 20 it cuts the routine false alarms by a third to two thirds. It shows no measured drift on messages
           without the sentence. But the fix with the switch works only for the no-insurance sentence, which we built it from. A fine-tune that copies the system line reproduces its harm and enlarges it on
           new same-day cases, so the switch fix stays first. The map of the directions says why the switch fix did not reach the other families, and what would. The other
@@ -1369,6 +1479,12 @@ export default function CircumstanceSensitiveTriage() {
           Two cheaper controls come first. One is a length-only neutral prefix for the realism test, 10 minutes of GPU
           time, which separates length from content in the daily-detail result. The other is the replication set for the switch fix, which is queued to run overnight.
         </p>
+        <p>
+          The medication bank adds a separate finding. The model&apos;s urgency rating tracks how dangerous a named drug
+          is, with the drugs ordered close to a clinician&apos;s ranking. But 20 of 150 replies contain a false statement,
+          most of them invented drug interactions, and one reply misses that methotrexate is a weekly drug. The next step on that line is a
+          knowledge audit of drug facts, not a steering experiment.
+        </p>
       </Section>
 
       <Section eyebrow="Limits and next steps" title="What this does not show">
@@ -1396,6 +1512,11 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>
             The realism test uses one typo rule and one pool of daily-detail sentences, all southern and domestic. So the
             longer-message effect may be a content effect as much as a length effect.
+          </li>
+          <li style={itemStyle}>
+            The medication test uses six items per danger tier, and each item appears in five sentences. The tier list
+            is one person&apos;s grading. The readers are language models whose own pharmacology can be wrong, so the
+            count of false statements is itself uncertain.
           </li>
           <li style={itemStyle}>
             The condition test has one scenario per condition and group of cases. Its six emergencies were written to be
@@ -1429,7 +1550,7 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook has every run, interval and negative result. The scenario and text-bank files, the
         code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook
-        of 27 October 2026). This note condenses sections 0 to 40 of that notebook. We will add more overnight runs as they land. Next is a medication bank that asks which units track how dangerous a named drug is.
+        of 27 October 2026). This note condenses sections 0 to 41 of that notebook. We will add more overnight runs as they land.
       </p>
     </WritingLayout>
   );

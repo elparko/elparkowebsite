@@ -135,7 +135,7 @@ export default function TriageChat() {
   return (
     <div style={frame}>
       <div style={bar}>
-        <span>patient · {scenario.arm === 'emergency' ? 'emergency case' : 'routine case'}</span>
+        <span>patient · {scenario.arm === 'emergency' ? 'emergency case' : scenario.arm === 'medication' ? 'medication question' : 'routine case'}</span>
         <span>{data.models[modelKey]}</span>
       </div>
       <div style={controls}>
