@@ -841,11 +841,87 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Take-home" title="The model reads the patient's circumstances as part of the clinical picture, in both directions">
+        <p>
+          A 4-billion-parameter chat model reads what a patient says about their life as part of the clinical
+          picture, and it does so in both directions. On an emergency, a barrier sentence placed right before the
+          question lowers the chance that the reply opens with &quot;call 911&quot;: the no-ride sentence by 1.00
+          log-odds on the readout, and 6 or 7 of 16 replies lost under the money sentence in the main set. On a
+          routine or same-day complaint, almost any personal fact raises the urgency reading, and hardship raises it
+          most: 24 of 25 life-fact families up, a mean of +1.0 log-odds, hardship +1.4 to +2.6. The overnight runs put
+          four bounds on that finding.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>It is a recency effect on the emergency side and a position effect on the routine side.</b> The harm
+            vanishes when the sentence opens the message, and the over-escalation doubles.
+          </li>
+          <li style={itemStyle}>
+            <b>It survives sloppy writing, and the writing itself moves the model.</b> Typing errors add +0.9 log-odds
+            of &quot;call 911&quot; to a routine complaint with no barrier stated.
+          </li>
+          <li style={itemStyle}>
+            <b>It holds across six chronic conditions, with a new form on same-day cases.</b> A long drive pushes a
+            same-day complaint toward 911 by +2.1 log-odds in every condition.
+          </li>
+          <li style={itemStyle}>
+            <b>The money sentence is one of a crowd in the model&apos;s working memory.</b> Every one of the 24
+            life-fact directions points partly the same way as the money direction (cosine 0.2 to 0.8). The money
+            sentence is a case of a general &quot;personal detail stated&quot; direction with a hardship component on
+            top.
+          </li>
+        </ul>
+        <p>
+          The replies move less than the readouts when the emergency is loud (35 of 36 condition replies, 122 of 128
+          breadth replies open with &quot;call 911&quot;) and more when it is borderline (the main set). The reply harm
+          is a property of the margin.
+        </p>
+        <p>
+          On fixes. A one-line system prompt removes the emergency harm (16 of 16) at the price of one routine patient
+          in eight sent to 911. A gated counter-shift along the money direction recovers part of the emergency
+          instruction at layer 12 (9 to 12 of 16) and cuts the routine and same-day over-escalation by a third to two
+          thirds at layer 20, with prompts that have no money sentence moving by 0.13 log-odds or less, but it is
+          specific to the sentence it was built from. A frontier model does not have the emergency problem. The
+          fine-tuned fix and a softer system line are in the overnight queue. The direction atlas says why the gated
+          fix did not generalise and what would: the other families share 36 to 64 percent of their direction with the
+          money line, and the rest is their own.
+        </p>
+        <p>The three best next experiments, with their cost on the lab machine.</p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>One gated direction fit on the hardship families together, tested on held-out families.</b> Fit the
+            direction on substance use, prior bad experience, housing, immigration status, pregnancy and the money
+            sentence; gate as above; measure what survives on those six, on the nine other circumstance families, and on
+            the raise and identity families, which must not move. The residuals are already captured. About 20 minutes
+            of CPU to fit and 3 hours of GPU per layer. This is the run that answers whether the repair generalises.
+          </li>
+          <li style={itemStyle}>
+            <b>The gated fix at the other two sentence positions.</b> Capture the residuals with the sentence first and
+            as a prior turn, then run the gated stage at layer 20 on each. The routine over-escalation is largest in
+            the sentence-first position, which is where a fix matters most. About 4 hours of GPU.
+          </li>
+          <li style={itemStyle}>
+            <b>The same map on an 8-billion-parameter model.</b> Pull Qwen3-8B after freeing 2 GB of disk, run the
+            main-set readout and the breadth readout without residuals. The question is whether the emergency harm and
+            the &quot;any personal fact&quot; over-escalation shrink with size, as the frontier model suggests. About 6
+            hours of GPU and an evening of disk housekeeping. The Haiku replies through the plain API (192 replies,
+            about two dollars, 20 minutes) are the cheap companion.
+          </li>
+        </ul>
+        <p>
+          Two cheaper controls come first: a length-only neutral prefix for the realism test, 10 minutes of GPU, which
+          separates length from content in the daily-detail result; and the replication set for the gated fix, which
+          is in the overnight queue.
+        </p>
+      </Section>
+
       <Section eyebrow="Limits and next steps" title="What this does not show">
         <ul style={listStyle}>
           <li style={itemStyle}>
             Two 4-billion-parameter models and one frontier model through an agent harness, author-written
-            vignettes, AI-coded replies. No clinician has labelled a case; seven close calls are flagged.
+            vignettes, AI-coded replies. No clinician has labelled a case; seven close calls are flagged. No 7 to 9
+            billion-parameter model ran: none was cached, and the disk had 15 GB free against the 16.4 GB that
+            Qwen3-8B needs. The Haiku comparison ran through subagents, not the plain API.
           </li>
           <li style={itemStyle}>
             Many next-word label shifts also appear for control sentences that state no barrier: a sentence about where
@@ -882,8 +958,9 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 32 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies) will be added.
+        27 October 2026). This note condenses sections 0 to 34 of that notebook; the rest of the overnight queue (a fine-tuned
+        fix, an independent replication set, the stance direction, chronic-condition triggers, control-sentence
+        replies, a Gemma rerun, a softer system line) will be added as it lands.
       </p>
     </WritingLayout>
   );
