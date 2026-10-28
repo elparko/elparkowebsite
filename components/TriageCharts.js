@@ -925,3 +925,139 @@ export function Fig9({ src, alt }) {
     </div>
   );
 }
+
+// Figure 10: the same sentence in three places
+const POS10 = { before: { label: 'Before the question', short: 'before the question', color: C.blue }, start: { label: 'First sentence', short: 'first sentence of the message', color: C.orange }, prior: { label: 'Prior turn, acknowledged', short: 'an earlier turn, acknowledged', color: C.green } };
+const ARM10 = { emergency: 'Emergencies', routine: 'Routine complaints' };
+const AGAINST10 = [{ key: 'filler', label: 'the weather sentence in the same place' }, { key: 'none', label: 'the message with no added sentence' }];
+const miniBubble = { padding: '7px 10px', background: '#e6e6d2', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '12px 12px 3px 12px', fontSize: '0.7rem', lineHeight: 1.45, hyphens: 'none', marginBottom: 5 };
+const miniReply = { ...miniBubble, background: '#ffffff', borderRadius: '12px 12px 12px 3px' };
+
+function Positions10({ s, cue }) {
+  const sent = s.sentences[cue];
+  const hl = <span style={inserted}>{sent}</span>;
+  const head = (k) => <div style={{ ...who, color: POS10[k].color, opacity: 1, marginBottom: 6 }}><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 4, background: POS10[k].color, marginRight: 6 }} />{POS10[k].label}</div>;
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '10px 14px', marginBottom: 12 }}>
+      <div>{head('before')}<div style={miniBubble}>{s.body} {hl} {s.question}</div></div>
+      <div>{head('start')}<div style={miniBubble}>{hl} {s.body} {s.question}</div></div>
+      <div>{head('prior')}<div style={miniBubble}>{hl}</div><div style={miniReply}>{s.ack}</div><div style={miniBubble}>{s.body} {s.question}</div></div>
+    </div>
+  );
+}
+
+export function Fig10({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [readout, setReadout] = useState('ems2');
+  const [against, setAgainst] = useState('filler');
+  const [cue, setCue] = useState('no_transport');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig10;
+  const label = f.readouts.find((r) => r.key === readout).label;
+  const table = f[against][readout];
+  const cues = against === 'none' ? ['filler', ...f.cues] : f.cues;
+  const all = cues.flatMap((c) => f.arms.flatMap((a) => f.positions.flatMap((p) => table[a][c][p.key].slice(1))));
+  let lo = Math.min(0, ...all), hi = Math.max(0, ...all);
+  const pad = (hi - lo) * 0.06;
+  lo -= pad; hi += pad;
+  const X = (v) => Math.round((v - lo) / (hi - lo) * 1000) / 10;
+  const ticks = niceTicks(lo, hi, 4);
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}><span style={small}>Sentence</span>{f.cues.map((c) => <button key={c} type="button" aria-pressed={c === cue} style={chip(c === cue)} onClick={() => setCue(c)}>{f.sample.cueLabels[c]}</button>)}</div>
+      <Positions10 s={{ ...f.sample, ack: f.ack }} cue={cue} />
+      <div style={{ fontSize: '0.72rem', opacity: 0.65, marginBottom: 12 }}>
+        One patient message ({f.sample.label}) with the selected sentence in each of the three places. The same move was made in
+        all 32 messages. In the third shape the weather sentence is also a prior turn, so the pair stays matched.
+      </div>
+      <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
+      <div style={row}><span style={small}>Against</span>{AGAINST10.map((v) => <button key={v.key} type="button" aria-pressed={v.key === against} style={chip(v.key === against)} onClick={() => setAgainst(v.key)}>{v.label}</button>)}</div>
+      <div style={{ overflowX: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
+          <div />
+          {f.arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM10[a]}</div>)}
+          {cues.map((c) => (
+            <Fragment key={c}>
+              <div style={{ ...labelCell7, fontWeight: c === cue ? 'bold' : 'normal' }}><span>{c === 'filler' ? 'weather sentence' : f.sample.cueLabels[c]}</span></div>
+              {f.arms.map((a) => (
+                <svg key={a} style={{ ...strip7, height: 40 }} aria-label={`${c}, ${ARM10[a]}`}>
+                  <line x1="0%" x2="100%" y1={20} y2={20} stroke="rgba(0,0,0,0.08)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={40} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  {f.positions.map((p, i) => {
+                    const v = table[a][c][p.key];
+                    const node = (
+                      <div>
+                        <div><b>{c === 'filler' ? 'weather sentence' : f.sample.cueLabels[c]}</b>, {POS10[p.key].short} · {ARM10[a].toLowerCase()}: {fmt(v[0])} [{fmt(v[1])}, {fmt(v[2])}]</div>
+                        <div style={{ marginTop: 4 }}>“{c === 'filler' ? f.sample.sentences.filler : f.sample.sentences[c]}”</div>
+                        <div style={{ opacity: 0.6, marginTop: 3 }}>{label}, log-odds, against {AGAINST10.find((x) => x.key === against).label}, paired over {f.n} scenarios</div>
+                      </div>
+                    );
+                    return <Mark7 key={p.key} x={[X(v[0]), X(v[1]), X(v[2])]} y={20 + (i - 1) * 10} r={4.5} color={POS10[p.key].color} filled tip={node} onTip={show} onHide={hide} />;
+                  })}
+                </svg>
+              ))}
+            </Fragment>
+          ))}
+          <div />
+          {f.arms.map((a) => (
+            <svg key={a} style={{ ...strip7, height: 18 }}>
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+            </svg>
+          ))}
+        </div>
+      </div>
+      <div style={legendRow}>
+        {f.positions.map((p) => <Swatch key={p.key} color={POS10[p.key].color} label={POS10[p.key].label.toLowerCase()} />)}
+        <span>{label}, log-odds. Horizontal lines: 95% intervals. Dark line: no shift.</span>
+      </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the axes are.</div>
+        <div style={{ marginLeft: 12 }}>Rows: the four barrier sentences{against === 'none' ? ', and the weather sentence' : ''}. Columns: the two arms, 16 scenarios each.</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>
+          Marks: the reading with the sentence minus the reading against {AGAINST10.find((x) => x.key === against).label}, one mark per
+          place the sentence sits. Right of the dark line raises the reading.
+        </div>
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 6: eight readings by position
+export function OrderTable({ rows }) {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig10;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>shift, log-odds [95% interval]</th>
+            {f.positions.map((p) => <th key={p.key} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: POS10[p.key].color }}>{POS10[p.key].label.toLowerCase()}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.label}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+              {f.positions.map((p) => {
+                const [v, lo, hi] = f[r.against][r.readout][r.arm][r.cue][p.key];
+                const off = lo > 0 || hi < 0;
+                return (
+                  <td key={p.key} style={{ ...cell, fontWeight: off && Math.abs(v) >= 0.5 ? 'bold' : 'normal' }}>
+                    {fmt(v)}
+                    <div style={{ fontSize: '0.68rem', opacity: 0.55 }}>[{fmt(lo)}, {fmt(hi)}]</div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, HaikuGrid, BreadthTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, HaikuGrid, BreadthTable, OrderTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -36,7 +36,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -212,6 +212,14 @@ export default function CircumstanceSensitiveTriage() {
             insurance or a nurse in the family, raise it too. In the model&apos;s working memory every new direction
             points partly along the money direction, so a wider fix needs a direction fit on the hardship families
             together, or one per family.
+          </li>
+          <li style={itemStyle}>
+            <b>Where the sentence sits decides what it does.</b> The emergency harm appears only when the barrier
+            sentence is the last thing before the question: &quot;no ride tonight&quot; lowers the emergency
+            &quot;call 911&quot; reading by 1.00 log-odds there, by nothing when it opens the message, and raises it a
+            little as an acknowledged earlier turn. The routine over-escalation grows when the sentence leads, to two or
+            three times its size. As an earlier turn the chat format itself moves the baseline more than the sentence:
+            a weather remark as a prior turn raises the routine urgency reading by 2.5 log-odds on its own.
           </li>
         </ul>
         <p>
@@ -556,6 +564,88 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Findings" title="The emergency harm appears only when the sentence sits right before the question">
+        <p>
+          Every test above put the added sentence in one place: last in the message, right before &quot;what should
+          I do?&quot;. This section moves it. The same four barrier sentences (hospital 90 minutes away, clinic closed,
+          no ride, no insurance) on the 32 main-set scenarios, readouts only, in three places: before the question as
+          before, as the first sentence of the message, and as an earlier turn in the chat that the assistant has
+          acknowledged (&quot;Thanks for letting me know, I&apos;ll keep that in mind. What&apos;s going on with your
+          health today?&quot;) before the symptom message. In the third shape the weather sentence is also an earlier
+          turn, so each pair stays matched. 576 readings. Where the sentence sits decides what it does, in both
+          directions.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The emergency harm is a recency effect.</b> &quot;No ride tonight&quot; lowers the emergency &quot;call
+            911&quot; reading by 1.00 log-odds when it sits right before the question, by nothing when it opens the
+            message (+0.16, interval across zero), and raises it a little as an acknowledged earlier turn (+0.47). The
+            distance sentence does the same: -0.50, +0.18, +0.41. The model reads &quot;no way to get there&quot; right
+            before &quot;what should I do&quot; and answers the transport problem instead of the chest pain.
+          </li>
+          <li style={itemStyle}>
+            <b>One exception: distance cuts the ambulance reading at every position.</b> &quot;Hospital 90 minutes
+            away&quot; lowers &quot;ambulance over drive&quot; on an emergency by 0.46 before the question, 1.12 as the
+            first sentence and 0.44 as a prior turn. The &quot;too far for an ambulance&quot; reading does not depend
+            on recency.
+          </li>
+          <li style={itemStyle}>
+            <b>The routine over-escalation grows when the sentence leads.</b> Distance goes from +0.64 to +1.67
+            log-odds of 911 on a routine complaint, clinic closed from +0.20 to +0.97, no ride from +0.99 to +1.73. The
+            money sentence is the one that does not grow (+0.56 to +0.66). A barrier stated first frames the whole
+            complaint as a problem of access, and the model answers with a higher urgency label.
+          </li>
+          <li style={itemStyle}>
+            <b>As an earlier turn, the chat format moves the baseline more than the sentence does.</b> A weather
+            remark as an acknowledged prior turn raises the routine &quot;High over Low&quot; reading by 2.51 log-odds
+            against the single-message prompt, and the emergency one by 1.04. Against that raised baseline the barrier
+            sentences read below the weather remark (-0.23 to -0.95) while still 1.6 to 2.3 log-odds above the message
+            with no sentence. The absolute levels say the same: routine &quot;High over Low&quot; is -1.17 with no
+            sentence, +1.34 with a weather prior turn, +0.77 with a barrier prior turn. In a two-turn chat the routine
+            urgency label is already pushed toward High before the barrier is read, and the emergency &quot;call
+            911&quot; reading sits 0.3 to 0.7 above the single-message prompt under every prior-turn sentence.
+          </li>
+          <li style={itemStyle}>
+            <b>What this changes.</b> The design used above, sentence last before the question, is the worst position
+            for the emergency harm and a middle position for the routine over-escalation. The first-sentence position
+            is the worst for over-escalation. A deployment that collects context first and symptoms second does not
+            show the emergency harm in these readouts, but carries a format-level over-escalation of its own. The gated
+            fix was built from the first position; whether its gate and direction carry over to the other two is
+            untested.
+          </li>
+        </ul>
+        <OrderTable
+          rows={[
+            { label: 'Emergency, no ride tonight: call 911', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
+            { label: 'Emergency, hospital 90 minutes away: call 911', against: 'filler', readout: 'ems2', arm: 'emergency', cue: 'distance' },
+            { label: 'Emergency, hospital 90 minutes away: ambulance over drive', against: 'filler', readout: 'ride2', arm: 'emergency', cue: 'distance' },
+            { label: 'Routine, hospital 90 minutes away: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'distance' },
+            { label: 'Routine, clinic closed until Monday: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'clinic_closed' },
+            { label: 'Routine, no ride tonight: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'no_transport' },
+            { label: 'Routine, no insurance: call 911', against: 'filler', readout: 'ems2', arm: 'routine', cue: 'uninsured' },
+            { label: 'Routine, the weather sentence against no sentence: High over Low', against: 'none', readout: 'urgency2', arm: 'routine', cue: 'filler' },
+          ]}
+        />
+        <p style={captionStyle}>
+          Table 6. The same sentence in three places, Qwen3.5-4B, 16 scenarios per arm. The first seven rows are the
+          sentence minus the weather sentence in the same place. The last row is the weather sentence minus no sentence,
+          which is what the format change alone does. Bold: at least 0.5 log-odds with the interval off zero. Every
+          cue, readout and arm is in Figure 10.
+        </p>
+        <Chart fig="fig10" src="/rural-triage/fig10-order.png" alt="Dot plots of the shift from each barrier sentence at three positions, emergency and routine arms, three readouts.">
+          Figure 10. The sentence minus its matched weather sentence by position, 16 scenarios per arm with 95 percent
+          intervals. Pick the sentence to see it in each place, then the readout, and whether to compare against the
+          weather sentence or against the message with no added sentence. Blue: before the question. Orange: first
+          sentence. Green: acknowledged prior turn. On the emergency &quot;call 911&quot; readout the blue marks for
+          distance and no ride sit left of zero and the orange and green marks do not.
+        </Chart>
+        <p>
+          Caveats. Readouts only, no replies. Four sentences, 16 scenarios per arm. One acknowledgement wording for the
+          prior-turn shape. The weather remark as a prior turn is itself an odd thing for a patient to say first, and
+          the model may read it as small talk that calls for a &quot;take this seriously&quot; reply.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
         <p>
           Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
@@ -584,6 +674,10 @@ export default function CircumstanceSensitiveTriage() {
             a family number says how the next-word odds moved, not how often the advice changed.
           </li>
           <li style={itemStyle}>
+            The position test is readouts only, with one wording for the acknowledged earlier turn. The gated fix was
+            built on the sentence-before-the-question shape and is untested in the other two.
+          </li>
+          <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
             and on frontier models through a plain chat API; the gated fix on the replication set and a direction fit on
             the hardship families together, or one per family; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
@@ -596,9 +690,9 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 29 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies, the coded replies for three breadth families, cue
-        order and turns) will be added.
+        27 October 2026). This note condenses sections 0 to 30 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies, the coded replies for three breadth families, message
+        realism) will be added.
       </p>
     </WritingLayout>
   );
