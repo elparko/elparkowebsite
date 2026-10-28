@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const frame = { border: '1px solid #000000', boxShadow: '4px 4px 0 rgba(0, 0, 0, 0.8)', background: '#f5f5dc', margin: '20px 0 28px', textAlign: 'left', fontSize: '0.85rem', lineHeight: '1.6' };
 const bar = { display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '8px 14px', background: '#000000', color: '#f5f5dc', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase' };
@@ -6,7 +6,6 @@ const controls = { padding: '12px 14px', borderBottom: '1px solid rgba(0, 0, 0, 
 const row = { display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' };
 const label = { fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.6, minWidth: '6.5em' };
 const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid #000000', borderRadius: '999px', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
-const select = { font: 'inherit', fontSize: '0.8rem', padding: '3px 6px', border: '1px solid #000000', borderRadius: '4px', background: '#ffffff', color: '#000000', maxWidth: '100%' };
 const thread = { padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' };
 const patient = { alignSelf: 'flex-end', maxWidth: '88%', padding: '10px 14px', background: '#e6e6d2', color: '#000000', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '14px 14px 3px 14px', hyphens: 'none' };
 const model = { alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', background: '#ffffff', color: '#000000', border: '1px solid #000000', borderRadius: '14px 14px 14px 3px', hyphens: 'none' };
@@ -59,6 +58,58 @@ function Prompt({ text, sentence }) {
   );
 }
 
+const ddButton = { font: 'inherit', fontSize: '0.8rem', padding: '4px 10px', border: '1px solid #000000', borderRadius: '4px', background: 'transparent', color: '#000000', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', maxWidth: '100%', textAlign: 'left' };
+const ddPanel = { position: 'absolute', zIndex: 6, top: 'calc(100% + 6px)', left: 0, minWidth: '18em', maxWidth: 'calc(100vw - 48px)', background: '#f5f5dc', border: '1px solid #000000', boxShadow: '3px 3px 0 rgba(0, 0, 0, 0.8)', padding: '6px 0', maxHeight: '60vh', overflowY: 'auto' };
+const ddGroup = { fontSize: '0.66rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.55, padding: '8px 12px 2px' };
+const ddItem = (on, active) => ({ display: 'block', width: '100%', font: 'inherit', fontSize: '0.8rem', textAlign: 'left', padding: '6px 12px', border: 'none', background: active ? 'rgba(0, 0, 0, 0.08)' : 'transparent', color: '#000000', cursor: 'pointer', fontWeight: on ? 'bold' : 'normal', whiteSpace: 'nowrap' });
+
+function Dropdown({ label, value, options, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const root = useRef(null);
+  const current = options.find((o) => o.value === value);
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => { if (!root.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('touchstart', close);
+    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('touchstart', close); };
+  }, [open]);
+  const choose = (o) => { onChange(o.value); setOpen(false); };
+  const onKey = (e) => {
+    if (e.key === 'Escape') { setOpen(false); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { setOpen(true); setActive(Math.max(0, options.findIndex((o) => o.value === value))); return; }
+      setActive((i) => (i + (e.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length);
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && open) { e.preventDefault(); choose(options[active]); }
+  };
+  const groups = [...new Set(options.map((o) => o.group))];
+  return (
+    <div ref={root} style={{ position: 'relative', display: 'inline-block', maxWidth: '100%' }} onKeyDown={onKey}>
+      <button type="button" style={ddButton} aria-haspopup="listbox" aria-expanded={open} aria-label={label}
+        onClick={() => { setOpen((v) => !v); setActive(Math.max(0, options.findIndex((o) => o.value === value))); }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{current ? current.label : label}</span>
+        <span aria-hidden="true" style={{ fontSize: '0.65rem', transform: open ? 'rotate(180deg)' : 'none', display: 'inline-block' }}>▼</span>
+      </button>
+      {open && (
+        <div role="listbox" style={ddPanel}>
+          {groups.map((g) => (
+            <div key={g}>
+              <div style={ddGroup}>{g}</div>
+              {options.map((o, i) => (o.group === g ? (
+                <button key={o.value} type="button" role="option" aria-selected={o.value === value} style={ddItem(o.value === value, i === active)}
+                  onMouseEnter={() => setActive(i)} onClick={() => choose(o)}>{o.label}</button>
+              ) : null))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function TriageChat() {
   const [data, setData] = useState(null);
   const [modelKey, setModelKey] = useState('qwen');
@@ -91,9 +142,8 @@ export default function TriageChat() {
         </div>
         <div style={row}>
           <span style={label}>Patient</span>
-          <select style={select} aria-label="Patient" value={sid} onChange={(e) => setSid(e.target.value)}>
-            {data.scenarios.map((s) => <option key={s.id} value={s.id}>{s.arm}: {s.label}</option>)}
-          </select>
+          <Dropdown label="Patient" value={sid} onChange={setSid}
+            options={data.scenarios.map((s) => ({ value: s.id, label: s.label, group: s.arm === 'emergency' ? 'emergencies' : 'routine complaints' }))} />
         </div>
         <div style={row}>
           <span style={label}>Added</span>
