@@ -86,7 +86,7 @@ export default function CircumstanceSensitiveTriage() {
         How one sentence about a rural patient&apos;s life shifts emergency advice in small chat models.
       </p>
       <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
-        Preliminary research note, 27 October 2026. One day of experiments on two 4-billion-parameter open models,
+        Preliminary research note, 27 October 2026. Experiments on two 4-billion-parameter open models,
         with author-written vignettes and AI-coded replies. No clinician labels yet. Shared to invite scrutiny.
         Not medical advice.
       </p>
@@ -294,7 +294,7 @@ export default function CircumstanceSensitiveTriage() {
       <Section eyebrow="Limits and next steps" title="What this does not show">
         <ul style={listStyle}>
           <li style={itemStyle}>
-            One day, two 4-billion-parameter models, author-written vignettes, AI-coded replies. No clinician has
+            Two 4-billion-parameter models, author-written vignettes, AI-coded replies. No clinician has
             labelled a case; seven close calls are flagged.
           </li>
           <li style={itemStyle}>
