@@ -85,10 +85,15 @@
 }
 
 .menu:hover ul {
-  max-height: 80vh;
+  max-height: 90vh;
   opacity: 1;
   margin-top: 10px;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.menu:hover ul::-webkit-scrollbar {
+  display: none;
 }
 
 .menu li {
