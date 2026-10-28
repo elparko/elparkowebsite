@@ -1,5 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6 } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -23,10 +24,6 @@ const itemStyle = { marginBottom: '0.7em' };
 const figureStyle = { margin: '24px 0 28px' };
 const imageStyle = { display: 'block', width: '100%', height: 'auto', background: '#ffffff', border: '1px solid rgba(0, 0, 0, 0.15)' };
 const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
-const tableWrapStyle = { overflowX: 'auto', margin: '16px 0 8px' };
-const tableStyle = { borderCollapse: 'collapse', width: '100%', fontSize: '0.85rem', lineHeight: '1.45', textAlign: 'left' };
-const thStyle = { verticalAlign: 'top', padding: '6px 28px 6px 0', borderBottom: '1.5px solid #000000' };
-const tdStyle = { verticalAlign: 'top', padding: '6px 28px 6px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)' };
 const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
 
 function Section({ eyebrow, title, children }) {
@@ -39,6 +36,18 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6 };
+
+function Chart({ fig, src, alt, children }) {
+  const C = CHARTS[fig];
+  return (
+    <figure style={figureStyle}>
+      <C src={src} alt={alt} />
+      <figcaption style={captionStyle}>{children}</figcaption>
+    </figure>
+  );
+}
+
 function Figure({ src, alt, children }) {
   return (
     <figure style={figureStyle}>
@@ -48,19 +57,24 @@ function Figure({ src, alt, children }) {
   );
 }
 
-function Table({ head, rows, minWidth, widths = [] }) {
+const rowsStyle = { margin: '14px 0 6px', borderTop: '1.5px solid #000000' };
+const rowStyle = { padding: '10px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
+const rowLabel = { fontWeight: 'bold', marginBottom: '4px' };
+const cellRow = { display: 'grid', gridTemplateColumns: '5.5em 1fr', gap: '8px', hyphens: 'none' };
+const cellHead = { opacity: 0.6 };
+
+function Rows({ head, rows, note }) {
   return (
-    <div style={tableWrapStyle}>
-      <table style={{ ...tableStyle, minWidth }}>
-        <thead>
-          <tr>{head.map((h, i) => <th key={h} style={{ ...thStyle, width: widths[i] }}>{h}</th>)}</tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r[0]}>{r.map((c, i) => <td key={i} style={tdStyle}>{c}</td>)}</tr>
+    <div style={rowsStyle}>
+      {note && <p style={{ ...captionStyle, margin: '8px 0' }}>{note}</p>}
+      {rows.map((r) => (
+        <div key={r[0]} style={rowStyle}>
+          <div style={rowLabel}>{r[0]}</div>
+          {r.slice(1).map((c, i) => (
+            <div key={head[i + 1]} style={cellRow}><span style={cellHead}>{head[i + 1]}</span><span>{c}</span></div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      ))}
     </div>
   );
 }
@@ -95,8 +109,8 @@ export default function CircumstanceSensitiveTriage() {
         <ul style={listStyle}>
           <li style={itemStyle}>
             <b>A sentence about money lowers the emergency instruction.</b> With &quot;no insurance, money is
-            tight&quot;, 7 of 16 Qwen emergency replies drop &quot;call 911&quot; and tell a confused diabetic, a
-            stroke patient or a septic 80-year-old to get to the ER on their own. On Gemma the same sentence halves the
+            tight&quot;, 7 of 16 Qwen emergency replies tell a confused diabetic, a stroke patient or a septic
+            80-year-old to get to the ER on their own instead of calling 911. On Gemma the same sentence halves the
             &quot;call EMS&quot; replies and three of sixteen say wait at home. Wording matters: &quot;I pay for every
             visit myself&quot; changes nothing, and naming the ambulance cost outright makes the model argue it down
             and say &quot;call 911&quot; first every time.
@@ -162,8 +176,7 @@ export default function CircumstanceSensitiveTriage() {
           against a random direction. Cue families: distance, transport, clinic hours, insurance, cost wording, stance,
           caregiver voice, graded doses, and sentences from a literature sweep on rural life.
         </p>
-        <Table
-          widths={['22%', '46%', '32%']}
+        <Rows
           head={['Design element', 'Choice', 'Why']}
           rows={[
             ['Models', 'Qwen3.5-4B (mechanism and behaviour), Gemma-3-4b-it (behaviour replication)', 'both run locally; two training lineages'],
@@ -175,48 +188,43 @@ export default function CircumstanceSensitiveTriage() {
       </Section>
 
       <Section eyebrow="Findings" title="Money and the emergency instruction">
-        <Figure src="/rural-triage/fig1-first-advice.png" alt="Stacked bars of the first advice in 16 emergency scenarios, one pair of bars per added sentence.">
+        <Chart fig="fig1" src="/rural-triage/fig1-first-advice.png" alt="Stacked bars of the first advice in 16 emergency scenarios, one pair of bars per added sentence.">
           Figure 1. What the reply tells an emergency patient to do first, by added sentence. Qwen3.5-4B, 16 scenarios
-          per bar, two coders side by side. The no-insurance sentence moves 7 and 6 of 16 replies from &quot;call
-          911&quot; to &quot;go to the ER yourself&quot;; the clinic-closed sentence moves two. No other sentence moves any.
-        </Figure>
-        <Table
-          minWidth="640px"
-          head={['Gemma-3-4b-it, first advice in emergencies (of 16)', 'none', 'weather', 'far hospital', 'clinic closed', 'no ride', 'uninsured']}
-          rows={[
-            ['call EMS now (coder 1 / coder 2)', '14 / 14', '13 / 13', '14 / 14', '15 / 13', '15 / 14', '8 / 8'],
-            ['go to the ER yourself', '0', '0', '0', '0', '0', '3 / 3'],
-            ['home care or wait', '1 / 0', '1 / 0', '2 / 1', '0 / 2', '1 / 2', '3 / 3'],
-          ]}
-        />
-        <p style={captionStyle}>Table 1. The same test on the second model family. The cost effect replicates and is larger.</p>
+          per bar, two coders side by side. With the no-insurance sentence, 7 and 6 of 16 replies say &quot;go to the
+          ER yourself&quot;; with the clinic-closed sentence, two; with the other sentences, none.
+        </Chart>
+        <p>
+          The same test on the second model family is behind the model toggle in Figure 1. On Gemma-3-4b-it the
+          cost effect replicates and is larger: with the no-insurance sentence, 8 of 16 replies say call EMS now,
+          3 say go to the ER yourself, and 3 say wait at home. With no added sentence, 14 of 16 say call EMS now.
+        </p>
       </Section>
 
       <Section eyebrow="Findings" title="Distance, step by step">
-        <Figure src="/rural-triage/fig2-dose.png" alt="Six line charts of three readouts against hospital distance and against the size of a past bill.">
+        <Chart fig="fig2" src="/rural-triage/fig2-dose.png" alt="Six line charts of three readouts against hospital distance and against the size of a past bill.">
           Figure 2. Graded cues on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away, and a past bill of 200 to
           20,000 dollars. Top row: distance; bottom row: the bill. Orange: emergencies; blue: routine complaints. Bands
           are 95% intervals. On emergencies the &quot;call 911&quot; reading falls with each step of distance and the
           &quot;ambulance&quot; reading falls overall; on routine complaints the alarm rises. Gemma shows the same slope,
           steeper.
-        </Figure>
+        </Chart>
       </Section>
 
       <Section eyebrow="Findings" title="Reluctance, in both directions">
-        <Figure src="/rural-triage/fig3-stance.png" alt="Two bar charts of the emergency and routine readouts for each reluctance sentence.">
-          Figure 3. One sentence of reluctance on Qwen3.5-4B. Left: share of emergency replies that open with
-          &quot;call 911&quot;. Orange bars are the stance sentences. Black is the weather sentence. Blue is a
-          smoking-history fact. Gray is no sentence, and a neutral self-description. Right: probability of a High
-          urgency label on routine complaints.
-        </Figure>
+        <Chart fig="fig3" src="/rural-triage/fig3-stance.png" alt="Two bar charts of the emergency and routine readouts for each reluctance sentence.">
+          Figure 3. One sentence of reluctance on Qwen3.5-4B. Left: how many of 16 emergency replies open with
+          &quot;call 911&quot;. Right: how likely the model is to call a routine complaint High urgency at the start of
+          its reply. Orange bars are the stance sentences. Black is the weather sentence. Blue is a smoking-history
+          fact. Gray is no sentence, and a neutral self-description.
+        </Chart>
       </Section>
 
       <Section eyebrow="Findings" title="What the model assumes about the person">
-        <Figure src="/rural-triage/fig4-persona.png" alt="Heat map of ten inferred traits against four added sentences.">
+        <Chart fig="fig4" src="/rural-triage/fig4-persona.png" alt="Heat map of ten inferred traits against four added sentences.">
           Figure 4. Yes/no questions put to the model after each message (&quot;Based only on this message, does this
           person live in a rural area?&quot;). Cells: the shift in log-odds of Yes when one sentence is added, against
           the weather sentence. Every constraint raises &quot;low health literacy&quot; and &quot;frail&quot;.
-        </Figure>
+        </Chart>
       </Section>
 
       <Section eyebrow="Inside the model" title="The rural-life units, and what moves the advice">
@@ -230,11 +238,11 @@ export default function CircumstanceSensitiveTriage() {
           fires alike on &quot;I cannot afford insurance&quot; and &quot;I came to this country without papers&quot;.
           Three labels failed their own test and were dropped.
         </p>
-        <Figure src="/rural-triage/fig5-atlas.png" alt="Heat map of sixteen named units against thirteen kinds of text.">
+        <Chart fig="fig5" src="/rural-triage/fig5-atlas.png" alt="Heat map of sixteen named units against thirteen kinds of text.">
           Figure 5. The sixteen most selective units, named by what they respond to, against the kinds of text in the
           bank. Each cell is the unit&apos;s mean activation on that kind of text, in multiples of its largest
           activation on ordinary web text. Clinical notes are the average of four cases in twelve document formats.
-        </Figure>
+        </Chart>
         <p>
           Four interventions did nothing against random controls: switching off the twenty units that read the
           insurance sentence (everywhere, or only on the sentence), pushing the units that shift at the reply opener,
@@ -243,16 +251,16 @@ export default function CircumstanceSensitiveTriage() {
           third and most of the same-day &quot;call 911&quot; rise, while a random direction did nothing. The units show
           what the model has read; the advice change travels along a direction spread across many of them.
         </p>
-        <Figure src="/rural-triage/fig6-intervention.png" alt="Three dot plots of the no-insurance shift under no ablation, twenty units zeroed, and two random unit sets.">
+        <Chart fig="fig6" src="/rural-triage/fig6-intervention.png" alt="Three dot plots of the no-insurance shift under no ablation, twenty units zeroed, and two random unit sets.">
           Figure 6. Switching off the twenty insurance-reading units everywhere (orange) leaves the cost effect in
           place, and so do two random sets of units (gray). Three arms, three readouts, 16 scenarios each.
-        </Figure>
+        </Chart>
       </Section>
 
       <Section eyebrow="Fix" title="One line of instruction, and its price">
-        <Table
-          widths={['24%', '38%', '38%']}
-          head={['Set', 'Benefit: emergency replies that open with "call 911"', 'Harm: non-emergencies sent to 911']}
+        <Rows
+          note="Benefit: the share of emergency replies that open with call 911. Harm: non-emergencies sent to 911."
+          head={['Set', 'Benefit', 'Harm']}
           rows={[
             ['Main set, 6 cues', '0.62 to 0.81 before; 16 of 16 after, every cue', '12 of 96 routine replies after (2 to 3 before)'],
             ['Stance set, 9 cues', '0.50 to 0.88 before; 16 of 16 after, every sentence', 'not measured on this set'],

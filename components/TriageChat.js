@@ -20,7 +20,7 @@ function inline(text, keyBase) {
 }
 
 function Reply({ text }) {
-  const clean = text.replace(/\r/g, '').replace(/\*+\s*$/, '').trimEnd();
+  const clean = text.replace(/\r/g, '').replace(/\*+\s*$/, '').replace(/\n\s*([*\-•]|\d+\.)\s*$/, '').trimEnd();
   const cut = !/[.!?)]\s*$/.test(clean);
   const lines = clean.split('\n').map((l) => l.replace(/^#+\s*/, '').trimEnd()).filter((l, i, arr) => l.trim() || (i > 0 && arr[i - 1].trim()));
   const last = lines.map((l) => l.trim()).filter(Boolean).length - 1;
@@ -91,7 +91,7 @@ export default function TriageChat() {
         </div>
         <div style={row}>
           <span style={label}>Patient</span>
-          <select style={select} value={sid} onChange={(e) => setSid(e.target.value)}>
+          <select style={select} aria-label="Patient" value={sid} onChange={(e) => setSid(e.target.value)}>
             {data.scenarios.map((s) => <option key={s.id} value={s.id}>{s.arm}: {s.label}</option>)}
           </select>
         </div>
