@@ -82,21 +82,31 @@ const mark = (show, hide, node) => ({
 });
 
 // the sample message shown above figures 1 and 3: one patient message with the selected sentence inserted
-const bubble = { maxWidth: '100%', padding: '10px 14px', background: '#000000', color: '#f5f5dc', borderRadius: '14px 14px 3px 14px', hyphens: 'none', fontSize: '0.8rem', lineHeight: '1.55', margin: '0 0 6px' };
-const inserted = { background: '#f5f5dc', color: '#000000', padding: '0 3px', borderRadius: '3px' };
+const bubble = { maxWidth: '100%', padding: '10px 14px', background: '#e6e6d2', color: '#000000', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '14px 14px 3px 14px', hyphens: 'none', fontSize: '0.8rem', lineHeight: '1.55', margin: '0 0 6px', display: 'grid' };
+const inserted = { background: '#ffffff', color: '#000000', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px #000000' };
 const who = { fontSize: '0.66rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
 
-function SampleMessage({ prompt, sentence, label }) {
+function longestOf(prompts, cues) {
+  return { prompt: Object.values(prompts).reduce((a, b) => (b.length > a.length ? b : a), ''), label: cues.reduce((a, c) => (c.label.length > a.length ? c.label : a), '') };
+}
+
+function SampleMessage({ prompt, sentence, label, longest }) {
   const i = sentence ? prompt.indexOf(sentence) : -1;
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={bubble}>
-        <div style={who}>sample message · {label}</div>
-        {i < 0 ? prompt : <>{prompt.slice(0, i)}<span style={inserted}>{sentence}</span>{prompt.slice(i + sentence.length)}</>}
+        <div style={{ gridArea: '1 / 1' }}>
+          <div style={who}>sample message · {label}</div>
+          {i < 0 ? prompt : <>{prompt.slice(0, i)}<span style={inserted}>{sentence}</span>{prompt.slice(i + sentence.length)}</>}
+        </div>
+        <div style={{ gridArea: '1 / 1', visibility: 'hidden' }} aria-hidden="true">
+          <div style={who}>sample message · {longest.label}</div>
+          {longest.prompt}
+        </div>
       </div>
       <div style={{ fontSize: '0.72rem', opacity: 0.65 }}>
-        {sentence ? 'The highlighted sentence is the one added. ' : 'No sentence added. '}
-        Select a bar to change it. The same swap was made in all 16 messages.
+        {sentence ? 'The highlighted sentence is the one added.' : 'No sentence added, the control message as written.'} Select a
+        bar to change it. The same swap was made in all 16 messages.
       </div>
     </div>
   );
@@ -116,7 +126,7 @@ export function Fig1({ src, alt }) {
   const H = 220;
   return (
     <div style={wrap} ref={ref}>
-      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} />
+      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} longest={longestOf(f.prompts, f.cues)} />
       <ModelToggle models={d.models} value={model} onChange={setModel} />
       <div style={{ display: 'flex', alignItems: 'stretch', gap: '4px' }}>
         <div style={{ position: 'relative', width: '2.2em', height: H, flex: 'none' }}>
@@ -313,7 +323,7 @@ export function Fig3({ src, alt }) {
         one added sentence. Two rows are controls: no sentence, and a sentence about the weather of the same length.
         The dashed line marks the weather sentence.
       </p>
-      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} />
+      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} longest={longestOf(f.prompts, f.cues)} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px 24px' }}>
         <HBars title="Emergencies: how many of 16 replies open with call 911" cues={f.cues} values={counts} max={16} format={(v) => `${v} / 16`} baseline={1} tipFor={tipEm} selected={sel} onSelect={setSel} />
         <HBars title="Routine complaints: how likely the model is to call the case High urgency" cues={f.cues} values={pct} max={Math.max(...pct) * 1.1} format={(v) => `${v.toFixed(0)}%`} baseline={1} tipFor={tipPh} selected={sel} onSelect={setSel} />

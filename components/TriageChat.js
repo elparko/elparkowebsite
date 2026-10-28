@@ -8,9 +8,9 @@ const label = { fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'upp
 const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid #000000', borderRadius: '999px', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
 const select = { font: 'inherit', fontSize: '0.8rem', padding: '3px 6px', border: '1px solid #000000', borderRadius: '4px', background: '#ffffff', color: '#000000', maxWidth: '100%' };
 const thread = { padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' };
-const patient = { alignSelf: 'flex-end', maxWidth: '88%', padding: '10px 14px', background: '#000000', color: '#f5f5dc', borderRadius: '14px 14px 3px 14px', hyphens: 'none' };
+const patient = { alignSelf: 'flex-end', maxWidth: '88%', padding: '10px 14px', background: '#e6e6d2', color: '#000000', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '14px 14px 3px 14px', hyphens: 'none' };
 const model = { alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', background: '#ffffff', color: '#000000', border: '1px solid #000000', borderRadius: '14px 14px 14px 3px', hyphens: 'none' };
-const mark = { background: '#f5f5dc', color: '#000000', padding: '0 3px', borderRadius: '3px' };
+const mark = { background: '#ffffff', color: '#000000', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px #000000' };
 const who = { fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
 const coded = { fontSize: '0.75rem', opacity: 0.7, padding: '0 14px 12px' };
 
