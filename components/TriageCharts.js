@@ -81,18 +81,42 @@ const mark = (show, hide, node) => ({
   onKeyDown: (e) => { if (e.key === 'Escape') hide(); },
 });
 
+// the sample message shown above figures 1 and 3: one patient message with the selected sentence inserted
+const bubble = { maxWidth: '100%', padding: '10px 14px', background: '#000000', color: '#f5f5dc', borderRadius: '14px 14px 3px 14px', hyphens: 'none', fontSize: '0.8rem', lineHeight: '1.55', margin: '0 0 6px' };
+const inserted = { background: '#f5f5dc', color: '#000000', padding: '0 3px', borderRadius: '3px' };
+const who = { fontSize: '0.66rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
+
+function SampleMessage({ prompt, sentence, label }) {
+  const i = sentence ? prompt.indexOf(sentence) : -1;
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={bubble}>
+        <div style={who}>sample message · {label}</div>
+        {i < 0 ? prompt : <>{prompt.slice(0, i)}<span style={inserted}>{sentence}</span>{prompt.slice(i + sentence.length)}</>}
+      </div>
+      <div style={{ fontSize: '0.72rem', opacity: 0.65 }}>
+        {sentence ? 'The highlighted sentence is the one added. ' : 'No sentence added. '}
+        Select a bar to change it. The same swap was made in all 16 messages.
+      </div>
+    </div>
+  );
+}
+
 // Figure 1: stacked bars, first advice in emergencies, two coders, by added sentence
 export function Fig1({ src, alt }) {
   const d = useCharts();
   const [model, setModel] = useState('qwen');
+  const [sel, setSel] = useState('uninsured');
   const { ref, tip, show, hide } = useTip();
   if (!d) return <Loading ok={d} src={src} alt={alt} />;
   const f = d.fig1;
+  const selCue = f.cues.find((c) => c.key === sel);
   const coders = f.models[model];
   const ex = f.examples[model];
   const H = 220;
   return (
     <div style={wrap} ref={ref}>
+      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} />
       <ModelToggle models={d.models} value={model} onChange={setModel} />
       <div style={{ display: 'flex', alignItems: 'stretch', gap: '4px' }}>
         <div style={{ position: 'relative', width: '2.2em', height: H, flex: 'none' }}>
@@ -116,8 +140,8 @@ export function Fig1({ src, alt }) {
                         </div>
                       );
                       return (
-                        <div key={cat.key} {...mark(show, hide, node)}
-                          style={{ height: `calc(${(n / 16) * 100}% - 2px)`, marginTop: 2, background: CAT[cat.key], display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.key === 'ems_now' ? '#fff' : '#000', fontSize: '0.7rem', cursor: 'default' }}>
+                        <div key={cat.key} {...mark(show, hide, node)} onMouseEnter={() => setSel(cue.key)} onClick={(e) => { setSel(cue.key); show(e, node); }}
+                          style={{ height: `calc(${(n / 16) * 100}% - 2px)`, marginTop: 2, background: CAT[cat.key], outline: cue.key === sel ? '2px solid #000' : 'none', outlineOffset: -2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.key === 'ems_now' ? '#fff' : '#000', fontSize: '0.7rem', cursor: 'default' }}>
                           {n >= 2 ? n : ''}
                         </div>
                       );
@@ -130,7 +154,7 @@ export function Fig1({ src, alt }) {
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-around', padding: '4px 2% 0 2.4em', fontSize: '0.7rem', lineHeight: 1.25 }}>
-        {f.cues.map((cue) => <span key={cue.key} style={{ width: '15%', textAlign: 'center', overflowWrap: 'normal', wordBreak: 'keep-all', hyphens: 'none' }}>{cue.label}</span>)}
+        {f.cues.map((cue) => <span key={cue.key} onClick={() => setSel(cue.key)} style={{ width: '15%', textAlign: 'center', overflowWrap: 'normal', wordBreak: 'keep-all', hyphens: 'none', fontWeight: cue.key === sel ? 'bold' : 'normal', cursor: 'pointer' }}>{cue.label}</span>)}
       </div>
       <div style={legendRow}>
         {f.cats.filter((c) => coders.some((counts) => counts.some((x) => x[c.key] > 0))).map((c) => <Swatch key={c.key} color={CAT[c.key]} label={c.label} />)}
@@ -229,16 +253,17 @@ export function Fig2({ src, alt }) {
 }
 
 // Figure 3: horizontal bars, stance sentences, Qwen
-function HBars({ title, cues, values, max, format, baseline, tipFor }) {
+function HBars({ title, cues, values, max, format, baseline, tipFor, selected, onSelect }) {
   const base = baseline != null ? (values[baseline] / max) * 100 : null;
   return (
     <div>
       <div style={{ fontSize: '0.78rem', marginBottom: 8, minHeight: '2.4em' }}>{title}</div>
       {cues.map((c, i) => (
         <div key={c.key} style={{ display: 'grid', gridTemplateColumns: 'minmax(7.5em, 12em) 1fr 4.8em', gap: '8px', alignItems: 'center', marginBottom: 5, fontSize: '0.74rem' }}>
-          <span style={{ textAlign: 'right', opacity: c.role === 'orange' || c.role === 'blue' ? 1 : 0.7 }}>{c.label}</span>
-          <div style={{ position: 'relative', height: 16, background: 'rgba(0,0,0,0.06)' }} tabIndex={0} onMouseMove={(e) => tipFor(e, i)} onMouseLeave={tipFor.hide} onClick={(e) => tipFor(e, i)}
-            onFocus={(e) => { const r = e.currentTarget.getBoundingClientRect(); tipFor({ clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }, i); }} onBlur={tipFor.hide} onKeyDown={(e) => { if (e.key === 'Escape') tipFor.hide(); }}>
+          <span onClick={() => onSelect(c.key)} style={{ textAlign: 'right', fontWeight: c.key === selected ? 'bold' : 'normal', opacity: c.role === 'orange' || c.role === 'blue' || c.key === selected ? 1 : 0.7, cursor: 'pointer' }}>{c.label}</span>
+          <div style={{ position: 'relative', height: 16, background: 'rgba(0,0,0,0.06)', outline: c.key === selected ? '2px solid #000' : 'none', outlineOffset: 1 }} tabIndex={0}
+            onMouseMove={(e) => tipFor(e, i)} onMouseEnter={() => onSelect(c.key)} onMouseLeave={tipFor.hide} onClick={(e) => { onSelect(c.key); tipFor(e, i); }}
+            onFocus={(e) => { onSelect(c.key); const r = e.currentTarget.getBoundingClientRect(); tipFor({ clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }, i); }} onBlur={tipFor.hide} onKeyDown={(e) => { if (e.key === 'Escape') tipFor.hide(); }}>
             <div style={{ width: `${(values[i] / max) * 100}%`, height: '100%', background: ROLE[c.role], borderRadius: '0 3px 3px 0' }} />
             {base != null && <div style={{ position: 'absolute', top: -3, bottom: -3, left: `${base}%`, borderLeft: '2px dashed #000' }} />}
           </div>
@@ -252,8 +277,10 @@ function HBars({ title, cues, values, max, format, baseline, tipFor }) {
 export function Fig3({ src, alt }) {
   const d = useCharts();
   const { ref, tip, show, hide } = useTip();
+  const [sel, setSel] = useState('minimize');
   if (!d) return <Loading ok={d} src={src} alt={alt} />;
   const f = d.fig3;
+  const selCue = f.cues.find((c) => c.key === sel);
   const counts = f.em.map((v) => Math.round(v * 16));
   const pct = f.ph.map((v) => v * 100);
   const tipEm = (e, i) => {
@@ -282,12 +309,14 @@ export function Fig3({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <p style={{ fontSize: '0.78rem', margin: '0 0 12px', opacity: 0.85 }}>
-        Each row is one sentence added to the same 16 messages. The first two rows are controls: no sentence, and the
-        weather sentence. The dashed line marks the weather sentence. Orange rows are sentences of reluctance.
+        The test: the same 16 patient messages, each with one sentence added before the final question. Each row is
+        one added sentence. Two rows are controls: no sentence, and a sentence about the weather of the same length.
+        The dashed line marks the weather sentence.
       </p>
+      <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px 24px' }}>
-        <HBars title="Emergencies: how many of 16 replies open with call 911" cues={f.cues} values={counts} max={16} format={(v) => `${v} / 16`} baseline={1} tipFor={tipEm} />
-        <HBars title="Routine complaints: how likely the model is to call the case High urgency" cues={f.cues} values={pct} max={Math.max(...pct) * 1.1} format={(v) => `${v.toFixed(0)}%`} baseline={1} tipFor={tipPh} />
+        <HBars title="Emergencies: how many of 16 replies open with call 911" cues={f.cues} values={counts} max={16} format={(v) => `${v} / 16`} baseline={1} tipFor={tipEm} selected={sel} onSelect={setSel} />
+        <HBars title="Routine complaints: how likely the model is to call the case High urgency" cues={f.cues} values={pct} max={Math.max(...pct) * 1.1} format={(v) => `${v.toFixed(0)}%`} baseline={1} tipFor={tipPh} selected={sel} onSelect={setSel} />
       </div>
       <div style={legendRow}><Swatch color={C.orange} label="a sentence of reluctance" /><Swatch color={C.blue} label="a smoking history, a medical fact for comparison" /><Swatch color={C.dark} label="controls" /><Swatch color={C.black} label="the weather sentence" /></div>
       <Hint />
@@ -366,12 +395,14 @@ export function Fig5({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <div style={{ overflowX: 'auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: `15em repeat(${f.cats.length}, minmax(34px, 1fr))`, gap: 2, fontSize: '0.72rem', minWidth: 700, paddingRight: '3em' }}>
-          <div />
-          {f.cats.map((c) => <div key={c} style={{ height: 110, position: 'relative', overflow: 'visible' }}><span style={{ position: 'absolute', left: '50%', bottom: 4, transformOrigin: 'left bottom', transform: 'rotate(-60deg)', whiteSpace: 'nowrap', fontSize: '0.7rem' }}>{c}</span></div>)}
+        <div style={{ display: 'grid', gridTemplateColumns: `15em repeat(${f.cats.length}, minmax(34px, 1fr))`, gridAutoRows: '36px', gap: 2, fontSize: '0.72rem', minWidth: 690, paddingRight: '2.5em' }}>
+          <div style={{ gridRow: '1 / span 3' }} />
+          {f.cats.map((c) => <div key={c} style={{ gridRow: '1 / span 3', position: 'relative', overflow: 'visible' }}><span style={{ position: 'absolute', left: '50%', bottom: 4, transformOrigin: 'left bottom', transform: 'rotate(-60deg)', whiteSpace: 'nowrap', fontSize: '0.7rem' }}>{c}</span></div>)}
           {f.units.map((u, i) => (
             <Fragment key={u.key}>
-              <div style={{ textAlign: 'right', paddingRight: 8, alignSelf: 'center' }}>{u.name} <span style={{ opacity: 0.55 }}>({u.layer} {u.neuron})</span></div>
+              <div style={{ textAlign: 'right', paddingRight: 8, alignSelf: 'center', lineHeight: 1.2, overflow: 'hidden', fontSize: '0.66rem', maxHeight: 36, hyphens: 'none' }}>
+                {u.name} <span style={{ opacity: 0.55, whiteSpace: 'nowrap' }}>{u.layer} {u.neuron}</span>
+              </div>
               {f.cats.map((c, j) => {
                 const v = f.M[i][j];
                 const node = (
@@ -383,7 +414,7 @@ export function Fig5({ src, alt }) {
                 );
                 return (
                   <div key={c} {...mark(show, hide, node)}
-                    style={{ background: sequential(v, vmax), color: v >= 2.1 ? '#fff' : '#000', textAlign: 'center', padding: '7px 1px', cursor: 'default' }}>{v >= 0.5 ? v.toFixed(1) : ''}</div>
+                    style={{ background: sequential(v, vmax), color: v >= 2.1 ? '#fff' : '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default' }}>{v >= 0.5 ? v.toFixed(1) : ''}</div>
                 );
               })}
             </Fragment>
