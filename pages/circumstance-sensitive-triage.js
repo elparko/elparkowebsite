@@ -200,7 +200,7 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
-      <Section eyebrow="Findings" title="Distance, step by step">
+      <Section eyebrow="Findings" title="The farther the hospital, the less the model says call 911">
         <Chart fig="fig2" src="/rural-triage/fig2-dose.png" alt="Six line charts of three readouts against hospital distance and against the size of a past bill.">
           Figure 2. Graded cues on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away, and a past bill of 200 to
           20,000 dollars. Top row: distance; bottom row: the bill. Orange: emergencies; blue: routine complaints. Bands
