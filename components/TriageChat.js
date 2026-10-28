@@ -12,6 +12,7 @@ const model = { alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', 
 const mark = { background: '#ffffff', color: '#000000', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px #000000' };
 const who = { fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
 const coded = { fontSize: '0.75rem', opacity: 0.7, padding: '0 14px 12px' };
+const system = { alignSelf: 'stretch', padding: '8px 12px', border: '1px dashed rgba(0, 0, 0, 0.45)', fontSize: '0.78rem', lineHeight: 1.5, opacity: 0.85, hyphens: 'none' };
 
 function inline(text, keyBase) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
@@ -160,6 +161,12 @@ export default function TriageChat() {
       {conv ? (
         <>
           <div style={thread}>
+            {data.modelSystem?.[modelKey] && (
+              <div style={system}>
+                <div style={who}>instruction given to the model before the patient writes</div>
+                {data.modelSystem[modelKey]}
+              </div>
+            )}
             <div style={patient}>
               <div style={who}>patient</div>
               <Prompt text={conv.prompt} sentence={cueInfo?.sentence} />

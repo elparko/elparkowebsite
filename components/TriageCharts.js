@@ -1420,8 +1420,7 @@ export function Fig13({ src, alt }) {
               {f.models.map((m) => {
                 const v = x.models[m.key];
                 if (!v) {
-                  const why = m.key === 'system' && x.key === 'urgent' ? `${m.label}: ${f.systemSameDay}, see Table 2` : `${m.label}: not run on this set`;
-                  return <div key={m.key} {...mark(show, hide, <div>{why}</div>)} style={{ height: 14, fontSize: '0.66rem', opacity: 0.55, paddingLeft: 4, lineHeight: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.key === 'system' && x.key === 'urgent' ? 'word rule only' : 'not run'}</div>;
+                  return <div key={m.key} {...mark(show, hide, <div>{m.label}: not run on this set</div>)} style={{ height: 14, fontSize: '0.66rem', opacity: 0.55, paddingLeft: 4, lineHeight: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>not run</div>;
                 }
                 const node = (
                   <div>
@@ -1503,7 +1502,7 @@ export function LoraTable() {
                 <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
                 {f.models.map((m) => {
                   const v = x.models[m.key];
-                  return <td key={m.key} style={{ ...cell, opacity: v ? 1 : 0.55, whiteSpace: v ? 'nowrap' : 'normal', fontSize: v ? 'inherit' : '0.7rem' }}>{v ? <>{count13(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55 }}>{totals13(v)[0] === totals13(v)[1] ? 'both readers' : `readers ${totals13(v)[0]} / ${totals13(v)[1]}`}</div></> : m.key === 'system' && x.key === 'urgent' ? f.systemSameDay : 'not run'}</td>;
+                  return <td key={m.key} style={{ ...cell, opacity: v ? 1 : 0.55, whiteSpace: v ? 'nowrap' : 'normal', fontSize: v ? 'inherit' : '0.7rem' }}>{v ? <>{count13(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55 }}>{totals13(v)[0] === totals13(v)[1] ? 'both readers' : `readers ${totals13(v)[0]} / ${totals13(v)[1]}`}</div></> : 'not run'}</td>;
                 })}
               </tr>
             </Fragment>
@@ -1770,6 +1769,126 @@ export function GemmaRerunTable() {
               <tr>
                 <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
                 {r.values.map((v, j) => <td key={j} style={{ ...cell, fontWeight: Math.abs(v) >= 2 ? 'bold' : 'normal', opacity: j === 3 ? 0.8 : 1 }}>{fmt(v)}</td>)}
+              </tr>
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Figure 15 and Table 16: the softer system line against the base model and the first system line
+const MODEL15 = { base: C.dark, system: C.orange, soft: C.green };
+const MEASURE15 = { emergency: 'say “call 911” first', routine: 'are sent to the emergency room or 911 first', urgent: 'are sent to the emergency room or 911 first' };
+export function Fig15({ src, alt }) {
+  const d = useCharts();
+  const [sel, setSel] = useState('main_emergency');
+  const { ref, tip, show, hide } = useTip();
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig15;
+  const set = f.sets.find((x) => x.key === sel);
+  const models = f.models.filter((m) => set.models[m.key]);
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(9em, 14em) minmax(0, 1fr)', gap: '4px 10px', fontSize: '0.74rem', alignItems: 'center' }}>
+        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of replies, mean of two readers, every sentence pooled</div>
+        <div />
+        <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}><span>0%</span><span>50%</span><span>100%</span></div>
+        {f.sets.map((x) => (
+          <Fragment key={x.key}>
+            <div onClick={() => setSel(x.key)} style={{ cursor: 'pointer', lineHeight: 1.2, hyphens: 'none', fontWeight: x.key === sel ? 'bold' : 'normal', paddingRight: 4 }}>
+              <div>{x.label}</div>
+              <div style={{ opacity: 0.6, fontWeight: 'normal' }}>replies that {MEASURE15[x.arm]}; {GOOD13[x.arm]}</div>
+            </div>
+            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid #000', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)' }}>
+              {f.models.map((m) => {
+                const v = x.models[m.key];
+                if (!v) {
+                  return <div key={m.key} {...mark(show, hide, <div>{m.label}: the readers did not code this set</div>)} style={{ height: 14, fontSize: '0.66rem', opacity: 0.55, paddingLeft: 4, lineHeight: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>not coded</div>;
+                }
+                const node = (
+                  <div>
+                    <div><b>{m.label}</b> · {x.label}</div>
+                    <div style={{ marginTop: 3 }}>{count13(v)} replies {MEASURE15[x.arm]}, mean of two readers ({(v.share * 100).toFixed(0)} percent): reader 1 {totals13(v)[0]}, reader 2 {totals13(v)[1]}. In this set, {GOOD13[x.arm]}.</div>
+                  </div>
+                );
+                return (
+                  <div key={m.key} {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
+                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL15[m.key], outline: x.key === sel ? '1px solid #000' : 'none' }} />
+                    {v.share > 0.7
+                      ? <span style={{ position: 'absolute', right: `calc(${100 - v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#fff' }}>{count13(v)}</span>
+                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#000' }}>{count13(v)}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </Fragment>
+        ))}
+      </div>
+      <div style={legendRow}>
+        {f.models.map((m) => <Swatch key={m.key} color={MODEL15[m.key]} label={m.label} />)}
+      </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the bars are. In the two emergency sets, each bar is the share of replies whose first concrete advice is “call 911 now”. In the routine and same-day sets, each bar is the share of replies whose first concrete advice sends the patient to the emergency room by any means, ambulance or not. Select a set to see the count under each sentence.</div>
+      </div>
+      <div style={{ ...small, marginTop: 12 }}>{set.label}, replies that {MEASURE15[set.arm]}, by sentence (reader 1 / reader 2, of {set.per})</div>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 420, marginTop: 4 }}>
+          <thead>
+            <tr>
+              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>model</th>
+              {set.cues.map((q) => {
+                const node = <div><div><b>{f.cueLabels[q]}</b></div>{f.sentences[q] ? <div style={{ marginTop: 3 }}>“{f.sentences[q]}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}</div>;
+                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {models.map((m) => (
+              <tr key={m.key}>
+                <td style={{ padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}><Swatch color={MODEL15[m.key]} label={m.label} /></td>
+                {set.cues.map((q) => {
+                  const v = set.models[m.key].perCue[q];
+                  const full = set.arm === 'emergency' ? v[0] >= set.per && v[1] >= set.per : v[0] === 0 && v[1] === 0;
+                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid rgba(0,0,0,0.15)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
+                })}
+              </tr>
+            ))}
+            {models.length < f.models.length && (
+              <tr><td colSpan={set.cues.length + 1} style={{ padding: '6px', fontSize: '0.7rem', opacity: 0.6 }}>{f.models.filter((m) => !set.models[m.key]).map((m) => m.label).join(', ')}: the readers did not code this set.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ fontSize: '0.72rem', opacity: 0.65, marginTop: 8 }}>Shaded cells: every reply in the cell gives the best answer for that set (16 of 16 “call 911” on emergencies; 0 of 16 sent to the emergency room on routine and same-day cases).</div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 16: counts by first advice for the three models
+export function SoftTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const t = d.fig15.tab16;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            {t.header.map((h, i) => <th key={h} style={{ ...cell, textAlign: i ? 'center' : 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: i ? 1 : 0.6, whiteSpace: 'normal', fontSize: i ? '0.72rem' : 'inherit', lineHeight: 1.25 }}>{h}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r, i) => (
+            <Fragment key={r[0]}>
+              {(i === 0 || i === 3) && <tr><td colSpan={4} style={{ ...small, padding: '12px 0 4px', textAlign: 'left' }}>{i === 0 ? 'benefit: emergency cases, a higher count is good' : 'harm: routine and same-day cases, a higher count is a false alarm'}</td></tr>}
+              <tr>
+                <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r[0]}</td>
+                {r.slice(1).map((v, j) => <td key={j} style={{ ...cell, opacity: /^\d+$/.test(v) ? 1 : 0.55, fontSize: /^\d+$/.test(v) ? 'inherit' : '0.7rem', fontWeight: j === 2 ? 'bold' : 'normal' }}>{v}</td>)}
               </tr>
             </Fragment>
           ))}
