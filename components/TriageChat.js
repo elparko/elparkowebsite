@@ -123,6 +123,8 @@ export default function TriageChat() {
   if (data === false) return <p style={{ opacity: 0.7 }}>The example conversations did not load.</p>;
   if (!data) return <div style={frame}><div style={bar}><span>patient</span><span>loading</span></div><div style={thread}>Loading the example conversations.</div></div>;
 
+  const allowed = data.modelCues?.[modelKey];
+  const cues = allowed ? data.cues.filter((c) => allowed.includes(c.key)) : data.cues;
   const conv = data.conversations[modelKey]?.[sid]?.[cue];
   const cueInfo = data.cues.find((c) => c.key === cue);
   const scenario = data.scenarios.find((s) => s.id === sid);
@@ -137,7 +139,7 @@ export default function TriageChat() {
         <div style={row}>
           <span style={label}>Model</span>
           {Object.entries(data.models).map(([k, name]) => (
-            <button key={k} type="button" style={chip(k === modelKey)} onClick={() => setModelKey(k)}>{name}</button>
+            <button key={k} type="button" style={chip(k === modelKey)} onClick={() => { setModelKey(k); const a = data.modelCues?.[k]; if (a && !a.includes(cue)) setCue(a[0]); }}>{name}</button>
           ))}
         </div>
         <div style={row}>
@@ -147,9 +149,10 @@ export default function TriageChat() {
         </div>
         <div style={row}>
           <span style={label}>Added</span>
-          {data.cues.map((c) => (
+          {cues.map((c) => (
             <button key={c.key} type="button" style={chip(c.key === cue)} onClick={() => setCue(c.key)}>{c.label}</button>
           ))}
+          {allowed && <span style={{ fontSize: '0.72rem', opacity: 0.65 }}>The fix acts only after the money sentence, so only that sentence has fixed replies.</span>}
         </div>
       </div>
       {conv ? (

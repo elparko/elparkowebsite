@@ -564,3 +564,122 @@ export function Fig6({ src, alt }) {
     </div>
   );
 }
+
+// Figure 7: the gated circumstance-direction fix and its controls
+const COND = {
+  none: { label: 'No change', color: C.black, filled: true, text: 'The model as shipped.' },
+  full_direction: { label: 'Direction removed, all prompts', color: C.blue, filled: false, text: 'The money direction is projected out of the model’s working memory at this layer and every later one, on every prompt.' },
+  gated_full: { label: 'Direction removed, gated', color: C.blue, filled: true, text: 'The same removal, only when the gate says the model has read a money sentence.' },
+  subspace: { label: 'Urgency part removed, all prompts', color: C.orange, filled: false, text: 'Only the part of the money direction that lies inside the model’s urgency subspace is projected out, on every prompt.' },
+  gated_subspace: { label: 'Urgency part removed, gated', color: C.orange, filled: true, text: 'The same removal, only when the gate opens. At layer 12 this removes the emergency signal itself.' },
+  gated_shift_d: { label: 'Counter-shift, direction, gated', color: C.green, filled: true, text: 'When the gate opens, the average displacement the money sentence causes is subtracted at this layer, at the reply opener and at every token the model writes. The layer-20 fix.' },
+  gated_shift_u: { label: 'Counter-shift, urgency part, gated', color: '#66c2a5', filled: true, text: 'The same counter-shift, with only the part inside the urgency subspace. The layer-12 fix.' },
+  random: { label: 'Random direction, all prompts', color: C.dark, filled: false, text: 'A random unit vector projected out of the same layers. The control.' },
+};
+const ARM7 = { emergency: 'Emergencies', urgent: 'Same-day cases', routine: 'Routine complaints' };
+const CUE7 = { uninsured: 'no insurance, money tight', distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight' };
+const VIEWS7 = [
+  { key: 'shift', label: 'Money prompts: what survives', note: 'Each mark is the shift the money sentence still causes under that condition: money sentence minus weather sentence, paired, 16 scenarios per arm. The dashed line is the shift with no change. A mark on zero means the fix landed the money prompt on the weather prompt’s answer.' },
+  { key: 'drift', label: 'Prompts with no money sentence', note: 'What each condition does to prompts the fix must leave alone: the condition minus no change on the same prompt, 32 prompts per arm (no sentence, and the weather sentence). A mark on zero means the condition did not touch them.' },
+  { key: 'main', label: 'Other sentences, main set', note: 'The gated counter-shift was built from the money sentence. These marks are the shift each of four sentences causes on the main set before (black, hollow) and after (green) the fix. The fix does not reach the other three barriers.' },
+];
+const MAIN7 = [{ key: 'none', color: C.black, filled: false, label: 'before the fix' }, { key: 'gated_shift_d', color: C.green, filled: true, label: 'after the fix, full direction' }, { key: 'gated_shift_u', color: '#66c2a5', filled: true, label: 'after the fix, urgency part' }];
+const strip7 = { width: '100%', height: 30, display: 'block', overflow: 'visible' };
+const labelCell7 = { fontSize: '0.74rem', lineHeight: 1.2, display: 'flex', alignItems: 'center', gap: 7, minHeight: 30, paddingRight: 6 };
+
+function Mark7({ x, y = 15, r = 6, color, filled, tip, onTip, onHide }) {
+  return (
+    <g {...mark(onTip, onHide, tip)} style={{ cursor: 'default' }}>
+      <line x1={`${x[1]}%`} x2={`${x[2]}%`} y1={y} y2={y} stroke={color} strokeWidth={2} />
+      <circle cx={`${x[0]}%`} cy={y} r={r} fill={filled ? color : '#f5f5dc'} stroke={filled ? '#f5f5dc' : color} strokeWidth={filled ? 1.5 : 2.5} />
+      <rect x={`${Math.max(0, x[1] - 2)}%`} y={y - 8} width={`${Math.min(100, x[2] + 2) - Math.max(0, x[1] - 2)}%`} height={16} fill="transparent" />
+    </g>
+  );
+}
+
+export function Fig7({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [layer, setLayer] = useState('20');
+  const [metric, setMetric] = useState('lo_yes');
+  const [view, setView] = useState('shift');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig7;
+  const metricLabel = f.metrics.find((m) => m.key === metric).label;
+  const arms = view === 'main' ? f.main.arms : f.arms;
+  let rows;
+  if (view === 'shift') rows = f.conds.map((c) => ({ key: c, label: COND[c].label, swatch: COND[c], marks: arms.map((a) => ({ ...COND[c], key: c, arm: a, v: f.shift[layer][metric][c][a], ref: f.shift[layer][metric].none[a][0] })) }));
+  else if (view === 'drift') rows = f.conds.filter((c) => c !== 'none').map((c) => ({ key: c, label: COND[c].label, swatch: COND[c], marks: arms.map((a) => ({ ...COND[c], key: c, arm: a, v: f.drift[layer][metric][c][a], ref: 0 })) }));
+  else rows = f.mainCues.map((cue) => ({ key: cue, label: CUE7[cue] || cue, marks: arms.flatMap((a) => MAIN7.map((m) => ({ ...m, arm: a, v: f.main[layer][metric][m.key][cue][a], ref: 0, text: `${m.label}: this sentence minus the weather sentence, paired, 16 scenarios` }))) }));
+  const all = rows.flatMap((r) => r.marks.flatMap((m) => [m.v[1], m.v[2], m.ref]));
+  let lo = Math.min(...all), hi = Math.max(...all);
+  const pad = (hi - lo) * 0.06;
+  lo -= pad; hi += pad;
+  const X = (v) => Math.round((v - lo) / (hi - lo) * 1000) / 10;
+  const ticks = niceTicks(lo, hi, 4);
+  const g = f.gate[layer];
+  const pct = (v) => Math.round(v * 100);
+  const cols = `minmax(10em, 13em) repeat(${arms.length}, minmax(0, 1fr))`;
+  const viewNote = VIEWS7.find((v) => v.key === view).note;
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}><span style={small}>Layer</span>{f.layers.map((l) => <button key={l} type="button" aria-pressed={l === layer} style={chip(l === layer)} onClick={() => setLayer(l)}>{l}</button>)}</div>
+      <div style={row}><span style={small}>Readout</span>{f.metrics.map((m) => <button key={m.key} type="button" aria-pressed={m.key === metric} style={chip(m.key === metric)} onClick={() => setMetric(m.key)}>{m.label}</button>)}</div>
+      <div style={row}><span style={small}>Prompts</span>{VIEWS7.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
+      <p style={{ fontSize: '0.76rem', margin: '4px 0 10px', opacity: 0.85 }}>{viewNote}</p>
+      <div style={{ overflowX: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: cols, columnGap: 26, minWidth: 540, alignItems: 'center' }}>
+          <div />
+          {arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM7[a]}</div>)}
+          {rows.map((r) => (
+            <Fragment key={r.key}>
+              <div style={labelCell7}>
+                {r.swatch && <span style={{ width: 11, height: 11, borderRadius: '50%', flex: 'none', background: r.swatch.filled ? r.swatch.color : '#f5f5dc', border: r.swatch.filled ? 'none' : `2.5px solid ${r.swatch.color}`, boxSizing: 'border-box' }} />}
+                <span>{r.label}</span>
+              </div>
+              {arms.map((a) => (
+                <svg key={a} style={strip7} aria-label={`${r.label}, ${ARM7[a]}`}>
+                  <line x1="0%" x2="100%" y1={15} y2={15} stroke="rgba(0,0,0,0.08)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={30} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  {r.marks.filter((m) => m.arm === a).map((m, i, list) => {
+                    const refX = X(m.ref);
+                    const node = (
+                      <div>
+                        <div><b>{view === 'main' ? m.label : COND[m.key].label}</b> · {ARM7[a]}: {fmt(m.v[0])}  [{fmt(m.v[1])}, {fmt(m.v[2])}]</div>
+                        <div style={{ marginTop: 4 }}>{m.text}</div>
+                        <div style={{ opacity: 0.6, marginTop: 3 }}>{metricLabel}, log-odds, layer {layer}{view === 'shift' && m.key !== 'none' ? `; with no change: ${fmt(m.ref)}` : ''}</div>
+                      </div>
+                    );
+                    return (
+                      <Fragment key={m.key}>
+                        {i === 0 && view === 'shift' && m.key !== 'none' && <line x1={`${refX}%`} x2={`${refX}%`} y1={2} y2={28} stroke="#000" strokeDasharray="3 3" />}
+                        <Mark7 x={[X(m.v[0]), X(m.v[1]), X(m.v[2])]} y={15 + (i - (list.length - 1) / 2) * 9} r={list.length > 1 ? 4.5 : 6} color={m.color} filled={m.filled} tip={node} onTip={show} onHide={hide} />
+                      </Fragment>
+                    );
+                  })}
+                </svg>
+              ))}
+            </Fragment>
+          ))}
+          <div />
+          {arms.map((a) => (
+            <svg key={a} style={{ ...strip7, height: 18 }}>
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+            </svg>
+          ))}
+        </div>
+      </div>
+      <div style={legendRow}>
+        <span>{metricLabel}, log-odds. Horizontal lines: 95% intervals.</span>
+        {view === 'shift' && <span>Dashed line: the shift with no change.</span>}
+        {view !== 'main' && <span>Hollow: applied to every prompt. Filled: only when the gate opens.</span>}
+        {view === 'main' && MAIN7.map((m) => <Swatch key={m.key} color={m.filled ? m.color : '#f5f5dc'} label={m.label} />)}
+      </div>
+      <div style={{ ...hint, opacity: 0.8 }}>
+        Gate open at layer {layer}: money prompts {pct(g.emergency.uninsured)} / {pct(g.urgent.uninsured)} / {pct(g.routine.uninsured)} percent (emergency / same-day / routine); prompts without one {pct(g.emergency.none)} / {pct(g.urgent.none)} / {pct(g.routine.none)} percent.
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, HaikuGrid } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, HaikuGrid } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -36,7 +36,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -83,12 +83,11 @@ function FixCell({ head, value, empty }) {
   );
 }
 
-function FixGrid({ sets }) {
+function FixGrid({ sets, note }) {
   return (
     <div style={{ ...rowsStyle, marginBottom: '10px' }}>
       <p style={{ ...captionStyle, margin: '8px 0' }}>
-        Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency
-        replies that open with call 911. Harm: non-emergencies sent to 911.
+        {note || 'Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency replies that open with call 911. Harm: non-emergencies sent to 911.'}
       </p>
       {sets.map((x) => (
         <div key={x.set} style={fixSet}>
@@ -141,7 +140,7 @@ export default function CircumstanceSensitiveTriage() {
           Two small open chat models (Qwen3.5-4B and Gemma-3-4b-it) read messages like the ones older rural patients
           with chronic illness write. We added one sentence about the person&apos;s circumstances and measured what
           changed. Then we looked inside one model for the units that respond to those sentences, tried to switch
-          them off, and tested a first fix. The chat window shows the real messages and the real replies. Pick a
+          them off, and tested two fixes. The chat window shows the real messages and the real replies. Pick a
           patient, a model and the added sentence. The added sentence is highlighted. Replies were generated to a
           fixed length, so some stop mid-sentence.
         </p>
@@ -196,6 +195,13 @@ export default function CircumstanceSensitiveTriage() {
             emergencies under every sentence, and sends one routine patient in eight and up to two thirds of same-day
             cases to 911 when they mention a barrier. Fixes have to be scored on harm.
           </li>
+          <li style={itemStyle}>
+            <b>A fix that waits for the money sentence recovers part of the instruction at a lower price.</b> A gate
+            opens only when the model has read a money sentence. It then subtracts the shift that sentence causes in
+            the model&apos;s working memory. At layer 12 this restores &quot;call 911&quot; in 3 of the 7 emergency
+            replies the sentence had moved. At layer 20 it halves the over-escalation of same-day and routine cases.
+            Prompts with no such sentence do not change. It does not reach the other barrier sentences.
+          </li>
         </ul>
         <p>
           For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for one who
@@ -220,7 +226,8 @@ export default function CircumstanceSensitiveTriage() {
           </li>
           <li style={itemStyle}>
             <b>Score a fix by harm as well as benefit.</b> The one-line fix repaired every emergency and sent
-            borderline patients with the least access to 911.
+            borderline patients with the least access to 911. The gated fix repairs less and breaks nothing we
+            measured.
           </li>
           <li style={itemStyle}>
             <b>The problem is not one switch inside the model.</b> The neurons that read these sentences can be
@@ -381,6 +388,71 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Fix" title="A fix that waits for the money sentence recovers part of the instruction at a lower price">
+        <p>
+          The second fix is narrower than the system line. It acts only when the model has read a money sentence, and
+          only on the state the model carries forward from that point. A gate scores the model&apos;s working memory
+          along the money direction, the average difference the sentence makes at one layer. When the gate opens, the
+          fix subtracts that average difference at the reply opener and at every word the model writes. Nothing
+          happens on a prompt without the sentence. Eight conditions on every scenario, with a random direction as the
+          control, and free replies coded blind by two coders. Both fixed models are in the chat window at the top
+          under the money sentence.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The gate works.</b> It opens on 94 to 100 percent of money prompts and on none of the emergency or
+            same-day prompts without one at layer 12. Prompts with no sentence move by at most 0.05 log-odds.
+          </li>
+          <li style={itemStyle}>
+            <b>Layer 12 restores part of the emergency instruction.</b> The money sentence had moved 7 of 16 emergency
+            replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix moves 3 of them back, 9 of 16
+            to 12 of 16, both coders. Same-day and routine advice stay where they were.
+          </li>
+          <li style={itemStyle}>
+            <b>Layer 20 cuts the over-escalation.</b> The routine &quot;High over Low&quot; shift falls from +2.37 to +1.49
+            log-odds and the same-day &quot;call 911&quot; shift from +0.54 to +0.29, with no measured change to the
+            emergency reading. In free replies, emergency first advice is unchanged and two routine replies move from a
+            same-day clinic to home care. One emergency reply, a patient with a blood sugar of 40, opens with oral
+            glucose instead of 911.
+          </li>
+          <li style={itemStyle}>
+            <b>The named risk is real.</b> Removing the part of the money direction that lies inside the model&apos;s
+            urgency subspace at layer 12 removes urgency itself: the emergency &quot;call 911&quot; reading falls by 3.3
+            log-odds. The random direction changes nothing.
+          </li>
+          <li style={itemStyle}>
+            <b>The fix is specific to the sentence it was built from.</b> On the main set the gate opens for the
+            distance, clinic-closed and no-ride sentences too, but their effects do not move. Each barrier needs its own
+            direction.
+          </li>
+        </ul>
+        <FixGrid
+          note="Each row lists what the gated fix repaired on the left and what it broke on the right, on the 48 money prompts. Benefit: emergency replies that open with call 911. Harm: non-emergencies sent to 911."
+          sets={[
+            { set: 'Layer 12, counter-shift of the urgency part', benefit: { before: '9 of 16 emergency replies open with call 911', after: '12 of 16, both coders' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16' } },
+            { set: 'Layer 20, counter-shift of the full direction', benefit: { before: '9 of 16 emergency replies open with call 911', after: '9 or 10 of 16; one reply opens with oral glucose' }, harm: { before: '0 of 16 routine and 0 of 16 same-day replies sent to 911', after: '0 of 16 and 0 of 16; the routine 911 reading moves by +0.18 instead of +0.54' } },
+          ]}
+        />
+        <p style={captionStyle}>
+          Table 4. The gated fix against the system line of Table 2. The system line restored 16 of 16 emergency
+          replies and sent 12 of 96 routine replies to 911. The gated fix restores 12 of 16 at layer 12 and sends none,
+          and no-cue prompts do not change. Coder agreement on first advice: kappa 0.84 to 0.91 on three blind sheets
+          of 96.
+        </p>
+        <Chart fig="fig7" src="/rural-triage/fig7-gated.png" alt="Dot plots of the money-sentence shift that survives each of eight conditions at layers 12 and 20, three arms, three readouts.">
+          Figure 7. The money-sentence shift that survives each condition. Pick the layer, the readout and the prompts.
+          The gated counter-shifts (green) flatten the shift in the arm their layer controls. The urgency-subspace
+          projection (orange) removes the emergency signal itself at layer 12. The random direction (grey) matches no
+          change. On prompts with no money sentence, every gated condition stays within 0.05 log-odds of no change.
+        </Chart>
+        <p>
+          Caveats. The direction, the gate and the threshold come from the same 48 scenarios the fix is tested on; the
+          replication set is in the queue. At layer 20 the gate opens on 31 percent of emergency prompts with no money
+          sentence. Those prompts did not change, but that is a false-positive rate to report. The fix leaves 4 of 16
+          emergency replies at &quot;get to the ER yourself&quot;, against the system line&apos;s 16 of 16. One model.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
         <p>
           Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
@@ -406,8 +478,8 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
           <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
-            and on frontier models through a plain chat API; fixes scored as benefit and harm on three arms (system line,
-            direction, fine-tune); a carbon-monoxide set, since a generator in the carport rarely produced a
+            and on frontier models through a plain chat API; the gated fix on the replication set and one direction per
+            barrier; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
             carbon-monoxide warning; the caregiver-voice set; de-identified real messages if an institutional path
             exists.
           </li>
@@ -417,8 +489,8 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 25 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies) will be added.
+        27 October 2026). This note condenses sections 0 to 28 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies, a 25-family breadth map) will be added.
       </p>
     </WritingLayout>
   );
