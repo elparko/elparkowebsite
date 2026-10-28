@@ -199,8 +199,9 @@ export default function CircumstanceSensitiveTriage() {
             <b>A fix that waits for the money sentence recovers part of the instruction at a lower price.</b> A gate
             opens only when the model has read a money sentence. It then subtracts the shift that sentence causes in
             the model&apos;s working memory. At layer 12 this restores &quot;call 911&quot; in 3 of the 7 emergency
-            replies the sentence had moved. At layer 20 it halves the over-escalation of same-day and routine cases.
-            Prompts with no such sentence do not change. It does not reach the other barrier sentences.
+            replies the sentence had moved. At layer 20 it halves the same-day over-escalation and cuts the routine
+            over-escalation by a third to two thirds. Prompts with no such sentence move by 0.13 log-odds or less. It
+            does not reach the other barrier sentences.
           </li>
         </ul>
         <p>
@@ -226,8 +227,8 @@ export default function CircumstanceSensitiveTriage() {
           </li>
           <li style={itemStyle}>
             <b>Score a fix by harm as well as benefit.</b> The one-line fix repaired every emergency and sent
-            borderline patients with the least access to 911. The gated fix repairs less and breaks nothing we
-            measured.
+            borderline patients with the least access to 911. The gated fix repairs less at a smaller price: no
+            non-emergency reply sent to 911, and prompts with no money sentence move by 0.13 log-odds or less.
           </li>
           <li style={itemStyle}>
             <b>The problem is not one switch inside the model.</b> The neurons that read these sentences can be
@@ -393,27 +394,30 @@ export default function CircumstanceSensitiveTriage() {
           The second fix is narrower than the system line. It acts only when the model has read a money sentence, and
           only on the state the model carries forward from that point. A gate scores the model&apos;s working memory
           along the money direction, the average difference the sentence makes at one layer. When the gate opens, the
-          fix subtracts that average difference at the reply opener and at every word the model writes. Nothing
-          happens on a prompt without the sentence. Eight conditions on every scenario, with a random direction as the
+          fix subtracts that average difference at the reply opener and at every word the model writes. On a prompt
+          that does not open the gate, nothing happens. Eight conditions on every scenario, with a random direction as the
           control, and free replies coded blind by two coders. Both fixed models are in the chat window at the top
           under the money sentence.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
             <b>The gate works.</b> It opens on 94 to 100 percent of money prompts and on none of the emergency or
-            same-day prompts without one at layer 12. Prompts with no sentence move by at most 0.05 log-odds.
+            same-day prompts without one at layer 12. Under the counter-shifts, prompts with no sentence move by 0.13
+            log-odds or less.
           </li>
           <li style={itemStyle}>
             <b>Layer 12 restores part of the emergency instruction.</b> The money sentence had moved 7 of 16 emergency
             replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix moves 3 of them back, 9 of 16
-            to 12 of 16, both coders. Same-day and routine advice stay where they were.
+            to 12 of 16, both coders. Same-day advice does not change. Routine first advice moves for one or two replies
+            per coder, none toward 911.
           </li>
           <li style={itemStyle}>
             <b>Layer 20 cuts the over-escalation.</b> The routine &quot;High over Low&quot; shift falls from +2.37 to +1.49
             log-odds and the same-day &quot;call 911&quot; shift from +0.54 to +0.29, with no measured change to the
-            emergency reading. In free replies, emergency first advice is unchanged and two routine replies move from a
-            same-day clinic to home care. One emergency reply, a patient with a blood sugar of 40, opens with oral
-            glucose instead of 911.
+            emergency reading. In free replies, 9 or 10 of 16 emergency replies still open with call 911.
+            &quot;Go to the ER yourself&quot; falls from 7 to 4 or 5, with one reply per coder moved to home care and one
+            to unclear. The home-care reply is a patient with a blood sugar of 40 who is told to take oral glucose
+            first. Two routine replies move from a same-day clinic to home care.
           </li>
           <li style={itemStyle}>
             <b>The named risk is real.</b> Removing the part of the money direction that lies inside the model&apos;s
@@ -422,8 +426,9 @@ export default function CircumstanceSensitiveTriage() {
           </li>
           <li style={itemStyle}>
             <b>The fix is specific to the sentence it was built from.</b> On the main set the gate opens for the
-            distance, clinic-closed and no-ride sentences too, but their effects do not move. Each barrier needs its own
-            direction.
+            distance, clinic-closed and no-ride sentences too at layer 20. Their emergency &quot;call 911&quot; readings move
+            by 0.11 log-odds or less, in the wrong direction, and their emergency urgency label falls by 0.2 to 0.4
+            log-odds. Each barrier needs its own direction.
           </li>
         </ul>
         <FixGrid
@@ -443,12 +448,13 @@ export default function CircumstanceSensitiveTriage() {
           Figure 7. The money-sentence shift that survives each condition. Pick the layer, the readout and the prompts.
           The gated counter-shifts (green) flatten the shift in the arm their layer controls. The urgency-subspace
           projection (orange) removes the emergency signal itself at layer 12. The random direction (grey) matches no
-          change. On prompts with no money sentence, every gated condition stays within 0.05 log-odds of no change.
+          change. On prompts with no money sentence, the gated counter-shifts move the readouts by 0.13 log-odds or
+          less; the gated removal of the urgency part moves them by up to 0.16.
         </Chart>
         <p>
           Caveats. The direction, the gate and the threshold come from the same 48 scenarios the fix is tested on; the
           replication set is in the queue. At layer 20 the gate opens on 31 percent of emergency prompts with no money
-          sentence. Those prompts did not change, but that is a false-positive rate to report. The fix leaves 4 of 16
+          sentence. Those prompts moved by 0.13 log-odds or less, but that is a false-positive rate to report. The fix leaves 4 of 16
           emergency replies at &quot;get to the ER yourself&quot;, against the system line&apos;s 16 of 16. One model.
         </p>
       </Section>

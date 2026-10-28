@@ -581,7 +581,7 @@ const CUE7 = { uninsured: 'no insurance, money tight', distance: 'hospital 90 mi
 const VIEWS7 = [
   { key: 'shift', label: 'Money prompts: what survives', note: 'Each mark is the shift the money sentence still causes under that condition: money sentence minus weather sentence, paired, 16 scenarios per arm. The dashed line is the shift with no change. A mark on zero means the fix landed the money prompt on the weather prompt’s answer.' },
   { key: 'drift', label: 'Prompts with no money sentence', note: 'What each condition does to prompts the fix must leave alone: the condition minus no change on the same prompt, 32 prompts per arm (no sentence, and the weather sentence). A mark on zero means the condition did not touch them.' },
-  { key: 'main', label: 'Other sentences, main set', note: 'The gated counter-shift was built from the money sentence. These marks are the shift each of four sentences causes on the main set before (black, hollow) and after (green) the fix. The fix does not reach the other three barriers.' },
+  { key: 'main', label: 'Other sentences, main set', note: 'The gated counter-shift was built from the money sentence. These marks are the shift each of four sentences causes on the main set before (black, hollow) and after (green) the fix. The fix does not repair the other three barriers.' },
 ];
 const MAIN7 = [{ key: 'none', color: C.black, filled: false, label: 'before the fix' }, { key: 'gated_shift_d', color: C.green, filled: true, label: 'after the fix, full direction' }, { key: 'gated_shift_u', color: '#66c2a5', filled: true, label: 'after the fix, urgency part' }];
 const strip7 = { width: '100%', height: 30, display: 'block', overflow: 'visible' };
@@ -672,7 +672,7 @@ export function Fig7({ src, alt }) {
       <div style={legendRow}>
         <span>{metricLabel}, log-odds. Horizontal lines: 95% intervals.</span>
         {view === 'shift' && <span>Dashed line: the shift with no change.</span>}
-        {view !== 'main' && <span>Hollow: applied to every prompt. Filled: only when the gate opens.</span>}
+        {view !== 'main' && <span>Black: no change. Hollow: applied to every prompt. Filled: only when the gate opens.</span>}
         {view === 'main' && MAIN7.map((m) => <Swatch key={m.key} color={m.filled ? m.color : '#f5f5dc'} label={m.label} />)}
       </div>
       <div style={{ ...hint, opacity: 0.8 }}>
