@@ -15,7 +15,7 @@ export function useCharts() {
 
 const C = { blue: '#0072b2', orange: '#d55e00', yellow: '#e69f00', green: '#009e73', sky: '#56b4e9', pink: '#cc79a7', gray: '#999999', dark: '#7f7f7f', black: '#000000', light: '#c4c4c4' };
 const ROLE = { blue: C.blue, orange: C.orange, gray: C.dark, black: C.black };
-const CAT = { ems_now: C.blue, go_to_er_yourself: C.orange, seek_immediate_care_unspecified: C.yellow, find_a_ride_or_neighbor: C.green, call_clinic_or_doctor: C.sky, home_care_or_wait: C.pink, unclear: C.gray };
+const CAT = { ems_now: C.blue, go_to_er_yourself: C.orange, seek_immediate_care_unspecified: C.yellow, find_a_ride_or_neighbor: C.green, call_clinic_or_doctor: C.sky, clinic_today_or_urgent_care: C.sky, clinic_routine_or_call_doctor: '#8c6bb1', home_care_or_wait: C.pink, unclear: C.gray };
 
 const wrap = { position: 'relative', textAlign: 'left', fontSize: '0.8rem', lineHeight: '1.5', hyphens: 'none', margin: '18px 0 10px' };
 const tipStyle = { position: 'absolute', zIndex: 5, maxWidth: '320px', padding: '8px 10px', background: '#f5f5dc', color: '#000000', border: '1px solid #000000', boxShadow: '3px 3px 0 rgba(0, 0, 0, 0.8)', fontSize: '0.74rem', lineHeight: '1.45', pointerEvents: 'none' };
@@ -47,11 +47,11 @@ function Swatch({ color, label }) {
   return <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 10, height: 10, background: color, display: 'inline-block', borderRadius: 2, border: hollow ? `2px solid ${C.dark}` : 'none', boxSizing: 'border-box' }} />{label}</span>;
 }
 
-function ModelToggle({ models, value, onChange }) {
+function ModelToggle({ models, value, onChange, keys }) {
   return (
     <div style={row}>
       <span style={small}>Model</span>
-      {Object.entries(models).map(([k, name]) => <button key={k} type="button" aria-pressed={k === value} style={chip(k === value)} onClick={() => onChange(k)}>{name}</button>)}
+      {Object.entries(models).filter(([k]) => !keys || keys.includes(k)).map(([k, name]) => <button key={k} type="button" aria-pressed={k === value} style={chip(k === value)} onClick={() => onChange(k)}>{name}</button>)}
     </div>
   );
 }
@@ -127,7 +127,7 @@ export function Fig1({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <SampleMessage prompt={f.prompts[sel]} sentence={f.sentences[sel]} label={selCue.label} longest={longestOf(f.prompts, f.cues)} />
-      <ModelToggle models={d.models} value={model} onChange={setModel} />
+      <ModelToggle models={d.models} value={model} onChange={setModel} keys={Object.keys(f.models)} />
       <div style={{ display: 'flex', alignItems: 'stretch', gap: '4px' }}>
         <div style={{ position: 'relative', width: '2.2em', height: H, flex: 'none' }}>
           {[0, 4, 8, 12, 16].map((v) => <span key={v} style={{ position: 'absolute', right: 4, bottom: `calc(${(v / 16) * 100}% - 0.6em)`, fontSize: '0.7rem', opacity: 0.6 }}>{v}</span>)}
@@ -172,6 +172,39 @@ export function Fig1({ src, alt }) {
       </div>
       <Hint />
       <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Haiku grid: two arms, six sentences, counts of 16 (coder 1 / coder 2)
+export function HaikuGrid() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const h = d.haiku;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, coder 1 / coder 2</th>
+            {h.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000' }}>{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(h.arms).map(([arm, rows]) => (
+            <Fragment key={arm}>
+              <tr><td colSpan={h.cues.length + 1} style={{ ...small, padding: '12px 0 4px', textAlign: 'left' }}>{arm === 'emergency' ? 'emergencies' : 'routine complaints'}</td></tr>
+              {rows.map((r) => (
+                <tr key={r.label}>
+                  <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+                  {r.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= 12 ? 'bold' : 'normal', background: v[0] >= 12 ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+                </tr>
+              ))}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -249,7 +282,7 @@ export function Fig2({ src, alt }) {
   const m = f.models[model];
   return (
     <div style={wrap} ref={ref}>
-      <ModelToggle models={d.models} value={model} onChange={setModel} />
+      <ModelToggle models={d.models} value={model} onChange={setModel} keys={Object.keys(f.models)} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px 16px' }}>
         {Object.keys(f.series).map((s) => f.metrics.map((met) => (
           <LinePanel key={s + met.key} title={`${s}: ${met.label}`} steps={f.series[s]} sentences={f.sentences[s]} question={met} onTip={show} onHide={hide}

@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6 } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, HaikuGrid } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -151,9 +151,10 @@ export default function CircumstanceSensitiveTriage() {
             <b>A sentence about money lowers the emergency instruction.</b> With &quot;no insurance, money is
             tight&quot;, 7 of 16 Qwen emergency replies tell a confused diabetic, a stroke patient or a septic
             80-year-old to get to the ER on their own instead of calling 911. On Gemma the same sentence halves the
-            &quot;call EMS&quot; replies and three of sixteen say wait at home. Wording matters: &quot;I pay for every
-            visit myself&quot; changes nothing, and naming the ambulance cost outright makes the model argue it down
-            and say &quot;call 911&quot; first every time.
+            &quot;call EMS&quot; replies and three of sixteen say wait at home. A larger commercial model, Claude Haiku
+            5.5, keeps &quot;call 911&quot; in 15 or 16 of 16 under every sentence. Wording matters: &quot;I pay for
+            every visit myself&quot; changes nothing, and naming the ambulance cost outright makes the model argue it
+            down and say &quot;call 911&quot; first every time.
           </li>
           <li style={itemStyle}>
             <b>Distance lowers it in proportion to the distance.</b> From 30 minutes to four hours from the hospital,
@@ -276,6 +277,32 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Findings" title="A larger model keeps the emergency instruction under every sentence">
+        <p>
+          The same 192 messages went to Claude Haiku 5.5, a much larger commercial model. It told every emergency
+          patient to call 911 first, with or without the money sentence. The one reply that said &quot;go to the
+          emergency room&quot; first said so with no added sentence too. On routine complaints its first advice stayed
+          home care or a clinic call under every sentence. So the money effect on the two small models is not a
+          property of chat models in general. At this size and tuning it is absent.
+        </p>
+        <p>
+          What the sentences did change was the content. Under the money sentence, 15 of 16 emergency replies and 10
+          of 16 routine replies talk about cost. Haiku answers the barrier instead of bending to it: it says the
+          emergency room must see the patient under EMTALA, the federal law that requires emergency screening
+          regardless of ability to pay, and points to charity care. Under &quot;nobody can take me&quot; it adds that
+          an ambulance is the ride, and 12 or 13 of 16 routine replies carry a &quot;call 911 if&quot; line, against
+          4 of 16 with no sentence. That is the one trace of circumstance-sensitivity in this model, and it runs in
+          the safe direction. Haiku is a third option in the chat window and in Figure 1.
+        </p>
+        <HaikuGrid />
+        <p style={captionStyle}>
+          Table 3. Claude Haiku 5.5 on the 32 scenarios and six added sentences, coded by two independent coders
+          (kappa 0.97 on the first advice). Caveat: the replies came through a coding-agent harness, not a plain chat
+          interface, so the paired contrasts between sentences are the comparable quantity and the absolute rates
+          depend on the harness. No next-word readouts exist for this model.
+        </p>
+      </Section>
+
       <Section eyebrow="Findings" title="The farther the hospital, the less the model says call 911">
         <p>
           An ambulance is the one thing that solves distance. The model treats a far hospital as a reason to call
@@ -368,8 +395,8 @@ export default function CircumstanceSensitiveTriage() {
       <Section eyebrow="Limits and next steps" title="What this does not show">
         <ul style={listStyle}>
           <li style={itemStyle}>
-            Two 4-billion-parameter models, author-written vignettes, AI-coded replies. No clinician has
-            labelled a case; seven close calls are flagged.
+            Two 4-billion-parameter models and one frontier model through an agent harness, author-written
+            vignettes, AI-coded replies. No clinician has labelled a case; seven close calls are flagged.
           </li>
           <li style={itemStyle}>
             Many next-word label shifts also appear for control sentences that state no barrier: a sentence about where
@@ -379,7 +406,7 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>The atlas maps what the model reads, not what moves its advice.</li>
           <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
-            and on frontier models through their APIs; fixes scored as benefit and harm on three arms (system line,
+            and on frontier models through a plain chat API; fixes scored as benefit and harm on three arms (system line,
             direction, fine-tune); a carbon-monoxide set, since a generator in the carport rarely produced a
             carbon-monoxide warning; the caregiver-voice set; de-identified real messages if an institutional path
             exists.
