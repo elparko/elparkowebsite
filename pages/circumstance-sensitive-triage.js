@@ -227,20 +227,25 @@ export default function CircumstanceSensitiveTriage() {
             family, raise it too.
           </li>
           <li style={itemStyle}>
-            <b>Where the sentence sits decides what it does.</b> The emergency harm appears only when the sentence is
-            the last thing before the question. There, &quot;no ride tonight&quot; lowers the emergency lean toward
+            <b>Where the sentence about a barrier to care sits in the message decides what it does.</b> The emergency harm,
+            a lower lean toward &quot;call 911&quot; on a true emergency, appears only when the sentence is the
+            last thing before the question. There, &quot;no ride tonight&quot; lowers the emergency lean toward
             &quot;call 911&quot; by 1.00 log-odds. When the sentence opens the message, the harm is gone. As an
             acknowledged earlier chat turn, the sentence raises the lean a little. The routine false alarm grows by 0.7 to 1.0 log-odds when the sentence comes first.
           </li>
           <li style={itemStyle}>
-            <b>Sloppier or chattier messages keep the effect.</b> With typos, in lower case with no punctuation, or with two sentences of daily detail before the symptoms, the routine false alarm does not
-            shrink. In lower case it grows by 0.5 to 0.7 log-odds. The writing alone also moves the model: typos raise a routine complaint by +0.92 log-odds toward &quot;call
+            <b>Sloppier or chattier messages do not weaken the routine false alarm.</b> The routine false alarm is the model
+            becoming more likely to say call 911 on a complaint that does not need it, when the patient adds a
+            sentence about a barrier to care. With typos, in lower case with no punctuation, or with two
+            sentences of daily detail before the symptoms, that false alarm does not shrink. In lower case it grows by 0.5 to 0.7 log-odds. The writing alone also moves the model: typos raise a routine complaint by +0.92 log-odds toward &quot;call
             911&quot;, before the patient states any barrier.
           </li>
           <li style={itemStyle}>
-            <b>The same pattern holds in six chronic conditions.</b> Type 2 diabetes, chronic obstructive pulmonary
-            disease (COPD), heart failure, kidney disease, obesity and hypertension, one emergency, one same-day case
-            and one routine question each. The no-ride sentence lowers the emergency lean toward &quot;call 911&quot;
+            <b>In six chronic conditions, the same two things happen.</b> A sentence about having no ride lowers the
+            model&apos;s lean toward &quot;call 911&quot; on a true emergency, and sentences about no ride or no
+            insurance raise the urgency rating on a routine question. The conditions are type 2 diabetes,
+            chronic obstructive pulmonary disease (COPD), heart failure, kidney disease, obesity and
+            hypertension, with one emergency, one same-day case and one routine question each. The no-ride sentence lowers the emergency lean toward &quot;call 911&quot;
             in six of six conditions. On the routine question, the no-ride and no-insurance sentences raise the
             urgency rating by 2.4 to 5.6 log-odds in five of six. New on the same-day cases: a 90-minute drive pushes
             every condition toward 911.
@@ -248,8 +253,8 @@ export default function CircumstanceSensitiveTriage() {
         </ul>
         <p>
           For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for a patient
-          who also states a barrier to care. The same holds for a patient who shows reluctance. The direction of the error depends on how sick
-          the person is. Test deployments with these sentences. Test each fix on borderline cases, not only on
+          who also states a barrier to care. The same holds for a patient who shows reluctance. The direction of the error (less likely to say call 911 on an emergency, more likely on a routine complaint)
+          depends on how sick the person is. Test deployments with these sentences. Test each fix on borderline cases, not only on
           emergencies.
         </p>
       </Section>
@@ -270,12 +275,15 @@ export default function CircumstanceSensitiveTriage() {
             person&apos;s life pushes a routine complaint toward 911, and hardship pushes it further.
           </li>
           <li style={itemStyle}>
-            <b>Score a fix for harm and for benefit.</b> The one-line fix repaired every emergency and sent
-            borderline patients with the least access to 911. The fine-tuned fix did the same, and worse on new cases.
-            The fix with the switch repairs less at a smaller price. It sends no non-emergency reply to 911, and messages with no such sentence change by 0.13 log-odds or less.
+            <b>Score a fix for harm and for benefit.</b> The one-line system instruction repaired every emergency and sent
+            borderline patients with the least access to 911. The fine-tuned fix also repaired every emergency
+            and sent even more borderline patients to 911 on new cases. The fix that acts only when the
+            no-insurance sentence is present repairs less at a smaller price. It sends no non-emergency reply to 911, and messages with no such sentence change by 0.13 log-odds or less.
           </li>
           <li style={itemStyle}>
-            <b>The problem is not one switch inside the model.</b> We can switch off the units that read these sentences with no effect. Part of the change travels along one direction in the model&apos;s internal state,
+            <b>The advice change is not one switch inside the model.</b> We can switch off the units that read sentences
+            about a patient&apos;s life with no effect on the advice. Part of the advice change travels along
+            one direction in the model&apos;s internal state,
             which is a lead for a real fix.
           </li>
         </ul>
@@ -363,7 +371,8 @@ export default function CircumstanceSensitiveTriage() {
           closed-clinic sentence moves two replies. The other sentences move none.
         </Chart>
         <p>
-          The same test on the second model family is behind the model toggle in Figure 1. On Gemma-3-4b-it the
+          The same test on the second model family, Gemma-3-4b-it, is behind the model toggle in Figure 1: the first
+          instruction in 16 emergency replies under each extra sentence. On Gemma-3-4b-it the
           no-insurance effect repeats and is larger. With the no-insurance sentence, 8 of 16 replies say call EMS
           now, 3 say go to the ER yourself, and 3 say wait at home. With no extra sentence, 14 of 16 say call EMS
           now.
@@ -404,8 +413,7 @@ export default function CircumstanceSensitiveTriage() {
       <Section eyebrow="Findings" title="The farther the hospital, the less often the model says call 911 in emergencies">
         <p>
           An ambulance is the one thing that solves distance. The model treats a far hospital as a reason to call one
-          less. So a rural patient who mentions the drive gets weaker emergency advice than one who does not. On a
-          routine complaint the same sentence raises a false alarm, so the error runs both ways.
+          less. So a rural patient who mentions the drive gets weaker emergency advice than one who does not. On a routine complaint a sentence about a far hospital raises a false alarm, so the error runs both ways.
         </p>
         <Chart fig="fig2" src="/rural-triage/fig2-dose.png" alt="Six line charts of three model answers against hospital distance and against the size of a past bill.">
           Figure 2. Graded versions of the extra sentence on Qwen3.5-4B: the nearest hospital 30 to 240 minutes away
@@ -413,7 +421,7 @@ export default function CircumstanceSensitiveTriage() {
           lean toward the named answer, in log-odds, compared with a weather sentence. Orange lines are emergency
           cases, and blue lines are routine complaints. The shaded bands are 95% intervals, the range that would hold the true value in 95 of 100 repeats. On emergency cases, the
           lean toward &quot;call 911&quot; falls with each step of distance, which is harm. On routine complaints it
-          rises, which is a false alarm. Gemma shows the same pattern with a steeper slope.
+          rises, which is a false alarm. Gemma shows the same fall on emergencies and the same rise on routine complaints, with a steeper slope.
         </Chart>
       </Section>
 
@@ -466,7 +474,7 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>we pushed the mapped units themselves.</li>
         </ul>
         <p>
-          The fifth intervention worked, and we count it as Fix 2. We removed one direction from the model&apos;s internal
+          The fifth intervention, which removes one direction, worked, and we count it as Fix 2. We removed one direction from the model&apos;s internal
           state at layer 20. That direction is the average difference that the no-insurance sentence makes. That
           removal cut the false alarms
           on routine cases by a third and removed most of the rise in &quot;call 911&quot; answers on same-day cases.
@@ -494,8 +502,8 @@ export default function CircumstanceSensitiveTriage() {
         />
         <p style={captionStyle}>
           Table 2. The system line &quot;decide from the symptoms alone whether this needs 911, before weighing
-          circumstances&quot; restores the emergency instruction. It also moves the same error onto borderline
-          patients, and the extra errors fall mostly on patients with the least access to care. In each cell,
+          circumstances&quot; restores the emergency instruction. It also moves the error, a reply that sends the patient to 911, onto borderline patients, and the extra errors
+          fall mostly on patients with the least access to care. In each cell,
           &quot;before&quot; means without the system line and &quot;after&quot; means with it. A count such as 12 of
           96 gives the replies that send the patient to 911, out of all replies in that set.
         </p>
@@ -512,13 +520,12 @@ export default function CircumstanceSensitiveTriage() {
         <ul style={listStyle}>
           <li style={itemStyle}>
             <b>The switch works.</b> At layer 12 it turns on for 94 to 100 percent of no-insurance messages and for
-            none of the emergency or same-day messages without one. Under the fix, messages with no such sentence change by 0.05 log-odds or less on the &quot;call 911&quot;
+            none of the emergency or same-day messages without one. Under the fix with the switch, messages with no such sentence change by 0.05 log-odds or less on the &quot;call 911&quot;
             answer, and by 0.13 or less on any answer.
           </li>
           <li style={itemStyle}>
             <b>Layer 12 restores part of the emergency instruction.</b> The no-insurance sentence had moved 7 of 16
-            emergency replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix moves three of
-            them back, from 9 of 16 to 12 of 16, by both readers. Same-day advice does not change. Routine first advice
+            emergency replies from &quot;call 911&quot; to &quot;get to the ER yourself&quot;. The fix with the switch at layer 12 moves three of them back, from 9 of 16 to 12 of 16, by both readers. Same-day advice does not change. Routine first advice
             changes for one or two replies per reader, none toward 911.
           </li>
           <li style={itemStyle}>
@@ -532,7 +539,7 @@ export default function CircumstanceSensitiveTriage() {
             directions the model uses to rate urgency). That removal erases emergency recognition itself. It lowers the emergency &quot;call 911&quot; answer by 3.3 log-odds.
           </li>
           <li style={itemStyle}>
-            <b>The fix works only for the sentence that we built it from.</b> On the main set the switch also turns on for
+            <b>The fix with the switch works only for the no-insurance sentence, which we built it from.</b> On the main set the switch also turns on for
             the long-drive, closed-clinic and no-ride sentences at layer 20. Their emergency &quot;call 911&quot;
             answers change by 0.11 log-odds or less, in the wrong direction. Each barrier needs its own direction.
           </li>
@@ -568,10 +575,9 @@ export default function CircumstanceSensitiveTriage() {
           on same-day cases. It leaves the emergency answer where it was. The random direction (grey) matches no fix.
         </Chart>
         <p>
-          Caveats. We built and tested the fix on the same 48 scenarios; the replication set is queued to run overnight.
+          Caveats. We built and tested the fix with the switch on the same 48 scenarios; the replication set is queued to run overnight.
           At layer 20 the switch also turns on for 31 percent of emergency messages with no such sentence. Those
-          messages changed by 0.13 log-odds or less, but that is a false-positive rate to report. The fix leaves 4 of 16
-          emergency replies at &quot;get to the ER yourself&quot;, against the system line&apos;s 16 of 16. One model.
+          messages changed by 0.13 log-odds or less, but that is a false-positive rate to report. The fix with the switch leaves 4 of 16 emergency replies at &quot;get to the ER yourself&quot;, against the system line&apos;s 16 of 16. One model.
         </p>
       </Section>
 
@@ -606,7 +612,7 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>
             <b>We do not use the next-word answers for this model.</b> The base model opens 72 percent of its replies with
             the bold heading that the next-word questions write at the start of the reply. The fine-tuned model opens 0 percent of its
-            replies that way, so its free replies, coded by two readers, are the measure in this section.
+            replies that way, so its free replies, coded by two readers, are the measure for the fine-tuned model.
           </li>
         </ul>
         <LoraTable />
@@ -724,8 +730,9 @@ export default function CircumstanceSensitiveTriage() {
           insurance (0.27) are farthest at layer 20. The median cosine between families is about 0.5.
         </p>
         <p>
-          So the no-insurance direction is partly a shared direction for &quot;personal detail stated&quot;. That shared part is why the switch of Fix 3 turned on for the other sentences about barriers to care. But 36 to
-          64 percent of each close direction&apos;s length lies outside the no-insurance line. That is why the subtraction did not move those families. A wider fix needs a direction fit on the hardship families together, or
+          These cosines show that the no-insurance direction is partly a shared direction for &quot;personal detail
+          stated&quot;. That shared part is why the switch of Fix 3 turned on for the other sentences about barriers to care. But 36 to
+          64 percent of each close direction&apos;s length lies outside the no-insurance line. That is why subtracting the no-insurance push did not move the other families. A wider fix needs a direction fit on the hardship families together, or
           one per family, each with its own switch. The race-coded name moves the model&apos;s internal state farther than any other sentence at layer 20. Its
           length is 6.30, against 1.3 to 2.9 for most sentences. Its
           direction is almost at right angles to the no-insurance direction, and its effect on the model&apos;s
@@ -746,7 +753,7 @@ export default function CircumstanceSensitiveTriage() {
       <Section eyebrow="Position and earlier chat turns" title="The 911 harm appears only when the sentence sits right before the question">
         <p>
           Every test above put the extra sentence in one place: last in the message, right before &quot;what should I
-          do?&quot;. This section moves it. The same four sentences (a 90-minute drive, the clinic closed, no ride, no
+          do?&quot;. This section moves the extra sentence. The same four sentences (a 90-minute drive, the clinic closed, no ride, no
           insurance) on the 32 main-set scenarios, next-word answers only, in three places. They sit before the final question (the main run), at the start of the message, or as an earlier chat turn. In
           the third shape the assistant acknowledges the turn: &quot;Thanks for letting me know, I&apos;ll keep
           that in mind. What&apos;s going on with your health today?&quot; There the weather sentence is also an
@@ -754,7 +761,8 @@ export default function CircumstanceSensitiveTriage() {
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>On emergency cases, the harm depends on where the sentence sits.</b> The no-ride sentence lowers the
+            <b>On emergency cases, the drop in the lean toward &quot;call 911&quot; depends on where the barrier sentence
+            sits.</b> The no-ride sentence lowers the
             lean toward &quot;call 911&quot; by 1.00 log-odds when it is the last sentence before the question. When
             it opens the message, its effect is nothing (+0.16). As an earlier chat turn, it raises the lean a little
             (+0.47). The long-drive sentence goes -0.50, +0.18 and +0.41 in the same three places. The model reads &quot;no way to get there&quot; right before &quot;what should I do&quot;, and its &quot;call
@@ -779,9 +787,11 @@ export default function CircumstanceSensitiveTriage() {
             reads the barrier.
           </li>
           <li style={itemStyle}>
-            <b>What this changes.</b> The design used above puts the sentence last before the question. That is the worst position for the emergency
-            harm and a middle position for the routine false alarm. The first-sentence position is
-            the worst for the false alarm. A deployment that collects context first and symptoms second does not show the emergency harm in these answers.
+            <b>What this changes for the study design.</b> The main tests put the barrier sentence last before the question.
+            That is the worst position for the emergency harm (a lower lean toward &quot;call 911&quot;) and a
+            middle position for the routine false alarm (a higher lean toward 911 on a routine complaint). The
+            first-sentence position is the worst for the routine false alarm. A deployment that collects context
+            first and symptoms second does not show the emergency harm in the next-word answers.
             But it carries a false alarm of its own from the format. We built Fix 3 from the first position. We have not tested whether its switch and direction carry over to the
             other two.
           </li>
@@ -799,7 +809,7 @@ export default function CircumstanceSensitiveTriage() {
           ]}
         />
         <p style={captionStyle}>
-          Table 6. The same sentence in three places, Qwen3.5-4B, 16 scenarios for each type of case. Each number is
+          Table 6. Each extra sentence in three places, Qwen3.5-4B, 16 scenarios for each type of case. Each number is
           the change in the model&apos;s lean toward the named answer, in log-odds. The first seven rows are the extra
           sentence minus the weather sentence in the same place. The last row is the weather sentence minus no extra
           sentence, which is what the format change alone does. Bold: at least 0.5 log-odds with the interval off zero. In emergency
@@ -833,14 +843,17 @@ export default function CircumstanceSensitiveTriage() {
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The false alarm on routine cases does not shrink under any copy.</b> The four extra sentences keep their
+            <b>The false alarm on routine cases does not shrink under any of the three changed copies.</b> The false alarm
+            is a higher lean toward &quot;call 911&quot; or &quot;High&quot; urgency from a barrier sentence on
+            a complaint that does not need it. The four extra sentences keep their
             &quot;call 911&quot; changes within 0.4 log-odds of the result on clean text. In lower case, the change in
             the lean toward &quot;High&quot; urgency over &quot;Low&quot; grows by 0.5 to 0.7. For the no-ride
             sentence, the change goes from +2.48 with clean text to +3.16 in lower case. For the no-insurance sentence,
             it goes from +2.37 to +2.87.
           </li>
           <li style={itemStyle}>
-            <b>The emergency harm is the least stable effect.</b> For the no-ride sentence, the -1.00 on &quot;call
+            <b>The emergency harm, a lower lean toward &quot;call 911&quot; on a true emergency, is the least stable
+            effect.</b> For the no-ride sentence, the -1.00 on &quot;call
             911&quot; is unchanged under typos (-0.99), -0.66 under a longer message, and gone in lower case (-0.06).
             The long-drive harm (-0.50) is gone under typos (+0.07) and smaller under the other two. With the
             position result above, the emergency harm needs the sentence read as a separate, well-formed statement
@@ -853,7 +866,8 @@ export default function CircumstanceSensitiveTriage() {
             urgent, by about as much as the no-insurance sentence.
           </li>
           <li style={itemStyle}>
-            <b>What this changes.</b> The main-run numbers are not an artefact of clean text. For the fix, the writing effects are a second target. A routine patient who types badly or chats first pushes the model toward High before the patient states any
+            <b>What this changes for a fix.</b> The main-run numbers are not an artefact of clean text. For a fix, the
+            effects of the writing itself are a second target. A routine patient who types badly or chats first pushes the model toward High before the patient states any
             barrier. No switch built on a barrier direction will see that.
           </li>
         </ul>
@@ -879,7 +893,7 @@ export default function CircumstanceSensitiveTriage() {
           Each cell has 16 scenarios per group of cases, with 95% intervals. Pick the sentence to see it as each copy
           saw it, then the answer. Black: clean text. Blue: typos. Orange: lower case, no punctuation. Green: two sentences of daily detail first.
           In the second view, each number is the change in log-odds from the clean message to the changed copy,
-          with no extra sentence. The same harm and false-alarm rules apply.
+          with no extra sentence. Emergency cases: below zero is harm. Routine cases: above zero is a false alarm.
         </Chart>
         <p>
           Caveats. Next-word answers only. Four sentences, one typo rule and rate. The daily-detail sentences are all southern and domestic, so length and content are mixed. A length-only control
@@ -901,13 +915,15 @@ export default function CircumstanceSensitiveTriage() {
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The emergency harm appears in every condition.</b> On emergency cases, the no-ride sentence lowers the
+            <b>The emergency harm, a lower lean toward &quot;call 911&quot; on a true emergency, appears in every
+            condition.</b> On emergency cases, the no-ride sentence lowers the
             lean toward &quot;Yes, call 911&quot; in all six conditions (change -0.68 to -1.81 log-odds). The pooled (combined) change is -1.17, with a 95% confidence interval of [-1.51, -0.85]. The long-drive sentence lowers the lean
             on emergency cases in five of six conditions (pooled -0.44). The lean toward &quot;Ambulance&quot; falls
             under every sentence on the emergencies.
           </li>
           <li style={itemStyle}>
-            <b>So does the routine false alarm.</b> On routine cases, the no-ride and no-insurance sentences raise the
+            <b>The routine false alarm, a higher urgency rating on a routine question, also appears in nearly every
+            condition.</b> On routine cases, the no-ride and no-insurance sentences raise the
             lean toward &quot;High&quot; urgency by 2.4 to 5.6 log-odds in five of six conditions. The no-insurance
             pooled change is +3.38, with a 95% confidence interval of [+3.08, +3.63]. The exception is the obesity
             routine question, a knee ache and how to start losing weight, where three of the four sentences lower the
@@ -929,7 +945,7 @@ export default function CircumstanceSensitiveTriage() {
             does not reach that line.
           </li>
           <li style={itemStyle}>
-            <b>The reply harm depends on the margin, not the disease.</b> The main set lost emergency replies because
+            <b>Whether a reply loses &quot;call 911&quot; depends on the margin, not the disease.</b> The main set lost emergency replies because
             its emergencies started lower. How loud the writer makes the emergency decides whether the drop in the lean crosses into the advice. The same sentence, the same drop, a different outcome.
           </li>
         </ul>
@@ -997,21 +1013,25 @@ export default function CircumstanceSensitiveTriage() {
         <p>
           The 4-billion-parameter model reads a patient&apos;s circumstances as part of the clinical picture, in both
           directions. In emergency cases, a sentence about a barrier to care lowers the chance that the reply opens
-          with &quot;call 911&quot;. This happens when the sentence sits right before the question. On routine
+          with &quot;call 911&quot;. That drop happens when the barrier sentence sits right before the question. On routine
           complaints, almost any personal fact raises the model&apos;s lean toward &quot;High&quot; urgency, and
-          hardship raises it most. The overnight runs set four limits on that finding.
+          hardship raises it most. The overnight runs set four limits on the finding that the model reads circumstances as part of the clinical
+          picture.
         </p>
         <ul style={listStyle}>
           <li style={itemStyle}>
-            <b>The first limit is position.</b> On emergency cases, the 911 answer changes only when the sentence sits last before the question. The ambulance
-            answer changes at all three positions. On routine cases, the false alarm grows when the sentence comes first.
+            <b>The first limit is position.</b> On emergency cases, the 911 answer changes only when the barrier sentence
+            sits last before the question. The ambulance answer changes at all three positions. On routine
+            cases, the false alarm (a higher lean toward 911) grows when the barrier sentence comes first.
           </li>
           <li style={itemStyle}>
-            <b>The second limit is writing.</b> The effect survives typos and lower case, and the writing itself moves the model. Typos add +0.9 log-odds toward &quot;call 911&quot; to a routine complaint with
+            <b>The second limit is writing.</b> The routine false alarm survives typos and lower case, and the writing
+            itself moves the model. Typos add +0.9 log-odds toward &quot;call 911&quot; to a routine complaint with
             no barrier stated.
           </li>
           <li style={itemStyle}>
-            <b>The third limit is the condition.</b> The effect holds across six chronic conditions. On same-day cases it takes a new form. A long drive pushes the lean toward &quot;Yes, call 911&quot; up in every
+            <b>The third limit is the condition.</b> The emergency harm and the routine false alarm hold across six chronic
+            conditions. On same-day cases it takes a new form. A long drive pushes the lean toward &quot;Yes, call 911&quot; up in every
             condition, by +0.8 to +3.4 log-odds (pooled mean +2.12).
           </li>
           <li style={itemStyle}>
@@ -1028,7 +1048,7 @@ export default function CircumstanceSensitiveTriage() {
           On fixes. A one-line system instruction removes the emergency harm (16 of 16) at the price of one routine patient
           in eight sent to 911. A fix that only acts when the no-insurance sentence is present recovers part of the
           emergency instruction (9 to 12 of 16 at layer 12). At layer 20 it cuts the routine false alarms by a third to two thirds. It shows no measured drift on messages
-          without the sentence. But it works only for the sentence that we built it from. A fine-tune that copies the system line reproduces its harm and enlarges it on
+          without the sentence. But the fix with the switch works only for the no-insurance sentence, which we built it from. A fine-tune that copies the system line reproduces its harm and enlarges it on
           new same-day cases, so the switch fix stays first. The map of the directions says why the switch fix did not reach the other families, and what would. The other
           families share 36 to 64 percent of their direction with the no-insurance line. The rest is their own.
         </p>
@@ -1039,16 +1059,15 @@ export default function CircumstanceSensitiveTriage() {
             direction on substance use, prior bad experience, housing, immigration status, pregnancy and the
             no-insurance sentence. Test it on held-out families and on the raise and identity families, which must not
             change. We already recorded the model&apos;s internal state for the 40-sentence test. About 20 minutes of processor time
-            to fit and 3 hours of graphics processing unit (GPU) time. This is the run
-            that answers whether the repair generalises.
+            to fit and 3 hours of graphics processing unit (GPU) time. This is the run that answers whether one fix with a switch can cover many families.
           </li>
           <li style={itemStyle}>
-            <b>The same fix at the other two sentence positions.</b> Record the internal state with the sentence first
-            and as a prior turn, then run the fix at layer 20 on each. The routine false alarm is largest in the
+            <b>A fix with a switch at the other two sentence positions.</b> Record the internal state with the barrier
+            sentence first and as a prior turn, then run the fix with a switch at layer 20 on each. The routine false alarm is largest in the
             sentence-first position, which is where a fix matters most. About 4 hours of GPU time.
           </li>
           <li style={itemStyle}>
-            <b>The same map on an 8-billion-parameter model.</b> Run the main-set and 40-sentence answers on Qwen3-8B after we free 2 GB of disk. The question is whether the emergency harm and the &quot;any personal
+            <b>The main-set and 40-sentence tests on an 8-billion-parameter model.</b> Run the main-set and 40-sentence answers on Qwen3-8B after we free 2 GB of disk. The question is whether the emergency harm and the &quot;any personal
             fact&quot; false alarm shrink with size, as the larger commercial model suggests. About 6 hours of GPU time. The
             Haiku replies through the plain API (192 replies, about two dollars) are the low-cost addition.
           </li>
