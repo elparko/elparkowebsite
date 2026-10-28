@@ -63,6 +63,46 @@ const rowLabel = { fontWeight: 'bold', marginBottom: '4px' };
 const cellRow = { display: 'grid', gridTemplateColumns: '5.5em 1fr', gap: '8px', hyphens: 'none' };
 const cellHead = { opacity: 0.6 };
 
+const fixSet = { padding: '12px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
+const fixCols = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px 24px', marginTop: '6px' };
+const fixHead = { fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.6, marginBottom: '4px' };
+const fixLine = { display: 'grid', gridTemplateColumns: '4.2em 1fr', gap: '8px', hyphens: 'none' };
+const fixArrow = { opacity: 0.6 };
+
+function FixCell({ head, value, empty }) {
+  return (
+    <div style={{ borderLeft: '2px solid #000000', paddingLeft: '10px' }}>
+      <div style={fixHead}>{head}</div>
+      {value ? (
+        <>
+          <div style={fixLine}><span style={fixArrow}>before</span><span>{value.before}</span></div>
+          <div style={fixLine}><span style={fixArrow}>after</span><span>{value.after}</span></div>
+        </>
+      ) : <div style={{ opacity: 0.6 }}>{empty}</div>}
+    </div>
+  );
+}
+
+function FixGrid({ sets }) {
+  return (
+    <div style={{ ...rowsStyle, marginBottom: '10px' }}>
+      <p style={{ ...captionStyle, margin: '8px 0' }}>
+        Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency
+        replies that open with call 911. Harm: non-emergencies sent to 911.
+      </p>
+      {sets.map((x) => (
+        <div key={x.set} style={fixSet}>
+          <div style={rowLabel}>{x.set}</div>
+          <div style={fixCols}>
+            <FixCell head="Benefit" value={x.benefit} empty="not applicable: no emergencies in this set" />
+            <FixCell head="Harm" value={x.harm} empty="not measured on this set" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Rows({ head, rows, note }) {
   return (
     <div style={rowsStyle}>
@@ -160,6 +200,38 @@ export default function CircumstanceSensitiveTriage() {
           For rural health: a chatbot that is safe for a patient who states only symptoms can be less safe for one who
           also states a barrier or a reluctance, and the direction of the error depends on how sick the person is. Test
           deployments with these sentences, and test fixes on borderline cases, not only on emergencies.
+        </p>
+      </Section>
+
+      <Section eyebrow="What this means" title="For rural patients with chronic illness">
+        <p>
+          Older people in rural areas with heart failure, COPD, diabetes or kidney disease already ask chatbots what to
+          do. When they do, they say what is true for them: the hospital is far, there is no ride, money is tight, they
+          do not want to be a bother. This study shows that those sentences change the advice. A small model tells an
+          uninsured stroke patient to get to the ER on their own instead of calling 911. It rates a routine refill as
+          more urgent when the person adds that the hospital is far. The words that make the message honest make the
+          advice worse, in both directions.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>Test a health chatbot with the sentences rural patients write,</b> not only with symptoms. A model
+            that passes on symptoms alone can fail the same patient one sentence later.
+          </li>
+          <li style={itemStyle}>
+            <b>Score a fix by harm as well as benefit.</b> The one-line fix repaired every emergency and sent
+            borderline patients with the least access to 911.
+          </li>
+          <li style={itemStyle}>
+            <b>The problem is not one switch inside the model.</b> The neurons that read these sentences can be
+            switched off with no effect. Part of the change travels along one direction in the model&apos;s working
+            memory, which is a lead for a real fix.
+          </li>
+        </ul>
+        <p>
+          Where this aims to go: a benchmark that any chatbot can be scored on before it is offered to rural
+          patients, fixes that keep the emergency instruction without sending the worried well to 911, and, with
+          clinician labels, a way to say which replies would have caused harm.
+          {/* TODO(human): one or two sentences, in your words, on the future you want this to reach for a rural patient with a chronic condition. */}
         </p>
       </Section>
 
@@ -263,13 +335,11 @@ export default function CircumstanceSensitiveTriage() {
       </Section>
 
       <Section eyebrow="Fix" title="One line of instruction, and its price">
-        <Rows
-          note="Benefit: the share of emergency replies that open with call 911. Harm: non-emergencies sent to 911."
-          head={['Set', 'Benefit', 'Harm']}
-          rows={[
-            ['Main set, 6 cues', '0.62 to 0.81 before; 16 of 16 after, every cue', '12 of 96 routine replies after (2 to 3 before)'],
-            ['Stance set, 9 cues', '0.50 to 0.88 before; 16 of 16 after, every sentence', 'not measured on this set'],
-            ['Same-day cases', 'not applicable', '0.00 to 0.12 before; 0.38 to 0.62 after under barrier sentences; 0.12 with "I have good insurance"'],
+        <FixGrid
+          sets={[
+            { set: 'Main set, 6 added sentences', benefit: { before: '10 to 13 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: { before: '2 to 3 of 96 routine replies sent to 911', after: '12 of 96' } },
+            { set: 'Stance set, 9 added sentences', benefit: { before: '8 to 14 of 16 emergency replies open with call 911', after: '16 of 16, under every sentence' }, harm: null },
+            { set: 'Same-day cases, 16 scenarios', benefit: null, harm: { before: '0 to 2 of 16 sent to 911', after: '6 to 10 of 16 under a barrier sentence; 2 of 16 with "I have good insurance"' } },
           ]}
         />
         <p style={captionStyle}>

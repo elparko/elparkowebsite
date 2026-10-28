@@ -470,7 +470,7 @@ export function Fig5({ src, alt }) {
 
 // Figure 6: dot plots with intervals, zeroing the insurance-reading units
 function DotPanel({ title, arms, armLabels, groups, values, n, onTip, onHide }) {
-  const W = 320, H = 210, L = 44, R = 10, T = 14, B = 30;
+  const W = 680, H = 260, L = 50, R = 12, T = 16, B = 34;
   const all = groups.flatMap((g) => arms.map((a) => values[g.key][a])).flatMap((v) => [v[1], v[2]]).concat([0]);
   let lo = Math.min(...all), hi = Math.max(...all);
   const pad = (hi - lo) * 0.08;
@@ -478,14 +478,14 @@ function DotPanel({ title, arms, armLabels, groups, values, n, onTip, onHide }) 
   const ticks = niceTicks(lo, hi);
   const y = (v) => T + (hi - v) / (hi - lo) * (H - T - B);
   const slot = (W - L - R) / arms.length;
-  const x = (ai, gi) => L + slot * (ai + 0.5) + (gi - (groups.length - 1) / 2) * 13;
+  const x = (ai, gi) => L + slot * (ai + 0.5) + (gi - (groups.length - 1) / 2) * 22;
   return (
     <div>
       <div style={{ fontSize: '0.74rem', marginBottom: 2, minHeight: '2.3em' }}>{title}</div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block', fontFamily: 'inherit', overflow: 'visible' }}>
-        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? '#888' : 'rgba(0,0,0,0.1)'} /><text x={L - 6} y={y(t) + 3.5} fontSize={10} textAnchor="end" fill="#444">{t}</text></g>)}
+        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? '#888' : 'rgba(0,0,0,0.1)'} /><text x={L - 7} y={y(t) + 4} fontSize={12} textAnchor="end" fill="#444">{t}</text></g>)}
         <line x1={L} x2={L} y1={T} y2={H - B} stroke="#000" />
-        {arms.map((a, ai) => <text key={a} x={L + slot * (ai + 0.5)} y={H - B + 16} fontSize={10.5} textAnchor="middle" fill="#222">{armLabels[a]}</text>)}
+        {arms.map((a, ai) => <text key={a} x={L + slot * (ai + 0.5)} y={H - B + 20} fontSize={13} textAnchor="middle" fill="#222">{armLabels[a]}</text>)}
         {arms.map((a, ai) => groups.map((g, gi) => {
           const v = values[g.key][a];
           const node = (
@@ -500,9 +500,9 @@ function DotPanel({ title, arms, armLabels, groups, values, n, onTip, onHide }) 
           return (
             <g key={g.key} tabIndex={0} onMouseMove={(e) => onTip(e, node)} onMouseLeave={onHide} onClick={(e) => onTip(e, node)} onBlur={onHide} onKeyDown={(e) => { if (e.key === 'Escape') onHide(); }}
               onFocus={(e) => { const r = e.currentTarget.getBoundingClientRect(); onTip({ clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }, node); }} style={{ cursor: 'default' }}>
-              <line x1={x(ai, gi)} x2={x(ai, gi)} y1={y(v[1])} y2={y(v[2])} stroke={color} strokeWidth={1.5} />
-              <circle cx={x(ai, gi)} cy={y(v[0])} r={5} fill={hollow ? '#f5f5dc' : color} stroke={hollow ? color : '#f5f5dc'} strokeWidth={hollow ? 2 : 1.5} />
-              <rect x={x(ai, gi) - 7} y={T} width={14} height={H - T - B} fill="transparent" />
+              <line x1={x(ai, gi)} x2={x(ai, gi)} y1={y(v[1])} y2={y(v[2])} stroke={color} strokeWidth={2} />
+              <circle cx={x(ai, gi)} cy={y(v[0])} r={7} fill={hollow ? '#f5f5dc' : color} stroke={hollow ? color : '#f5f5dc'} strokeWidth={hollow ? 2.5 : 1.5} />
+              <rect x={x(ai, gi) - 11} y={T} width={22} height={H - T - B} fill="transparent" />
             </g>
           );
         }))}
@@ -519,7 +519,7 @@ export function Fig6({ src, alt }) {
   const groups = f.groups.map((g) => ({ ...g, text: f.groupText[g.key] }));
   return (
     <div style={wrap} ref={ref}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px 16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '18px' }}>
         {f.metrics.map((m) => <DotPanel key={m.key} title={m.label} arms={f.arms} armLabels={f.armLabels} groups={groups} values={f.values[m.key]} n={f.n} onTip={show} onHide={hide} />)}
       </div>
       <div style={legendRow}>
