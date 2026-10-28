@@ -183,7 +183,7 @@ export function HaikuGrid() {
   const h = d.haiku;
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
@@ -447,7 +447,7 @@ export function Fig5({ src, alt }) {
   const vmax = 3;
   return (
     <div style={wrap} ref={ref}>
-      <div style={{ overflowX: 'auto' }}>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: `15em repeat(${f.cats.length}, minmax(34px, 1fr))`, gridAutoRows: '36px', gap: 2, fontSize: '0.72rem', minWidth: 690, paddingRight: '2.5em' }}>
           <div style={{ gridRow: '1 / span 3' }} />
           {f.cats.map((c) => <div key={c} style={{ gridRow: '1 / span 3', position: 'relative', overflow: 'visible' }}><span style={{ position: 'absolute', left: '50%', bottom: 4, transformOrigin: 'left bottom', transform: 'rotate(-60deg)', whiteSpace: 'nowrap', fontSize: '0.7rem' }}>{c}</span></div>)}
@@ -627,7 +627,7 @@ export function Fig7({ src, alt }) {
       <div style={row}><span style={small}>Readout</span>{f.metrics.map((m) => <button key={m.key} type="button" aria-pressed={m.key === metric} style={chip(m.key === metric)} onClick={() => setMetric(m.key)}>{m.label}</button>)}</div>
       <div style={row}><span style={small}>Prompts</span>{VIEWS7.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
       <p style={{ fontSize: '0.76rem', margin: '4px 0 10px', opacity: 0.85 }}>{viewNote}</p>
-      <div style={{ overflowX: 'auto' }}>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: cols, columnGap: 26, minWidth: 540, alignItems: 'center' }}>
           <div />
           {arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM7[a]}</div>)}
@@ -785,7 +785,7 @@ export function BreadthTable({ keys }) {
   const cols = [['ems2', 'routine', 'routine, call 911'], ['urgency2', 'routine', 'routine, High over Low'], ['ems2', 'emergency', 'emergency, call 911'], ['ride2', 'emergency', 'emergency, ambulance over drive']];
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
@@ -896,7 +896,7 @@ export function Fig9({ src, alt }) {
         </>
       ) : (
         <>
-          <div style={{ overflowX: 'auto' }}>
+          <div className="scrollX" style={{ overflowX: 'auto' }}>
             <div style={{ display: 'grid', gridTemplateColumns: `12em repeat(${f.families.length}, minmax(18px, 1fr))`, gridAutoRows: '18px', gap: 1, fontSize: '0.64rem', minWidth: 600, paddingRight: '2.5em' }}>
               <div style={{ gridRow: '1 / span 6' }} />
               {f.families.map((fam) => <div key={fam.key} style={{ gridRow: '1 / span 6', position: 'relative', overflow: 'visible' }}><span style={{ position: 'absolute', left: '50%', bottom: 2, transformOrigin: 'left bottom', transform: 'rotate(-60deg)', whiteSpace: 'nowrap' }}>{fam.label}</span></div>)}
@@ -973,7 +973,7 @@ export function Fig10({ src, alt }) {
       </div>
       <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
       <div style={row}><span style={small}>Against</span>{AGAINST10.map((v) => <button key={v.key} type="button" aria-pressed={v.key === against} style={chip(v.key === against)} onClick={() => setAgainst(v.key)}>{v.label}</button>)}</div>
-      <div style={{ overflowX: 'auto' }}>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
           <div />
           {f.arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM10[a]}</div>)}
@@ -1032,7 +1032,7 @@ export function OrderTable({ rows }) {
   const f = d.fig10;
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
@@ -1113,7 +1113,7 @@ export function Fig11({ src, alt }) {
       </div>
       <div style={row}><span style={small}>Show</span>{VIEWS11.map((v) => <button key={v.key} type="button" aria-pressed={v.key === view} style={chip(v.key === view)} onClick={() => setView(v.key)}>{v.label}</button>)}</div>
       {view === 'effect' && <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>}
-      <div style={{ overflowX: 'auto' }}>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: `minmax(9em, 12em) repeat(${f.arms.length}, minmax(0, 1fr))`, columnGap: 26, minWidth: 480, alignItems: 'center' }}>
           <div />
           {f.arms.map((a) => <div key={a} style={{ fontSize: '0.74rem', textAlign: 'center', fontWeight: 'bold', paddingBottom: 4 }}>{ARM10[a]}</div>)}
@@ -1195,7 +1195,7 @@ export function RealismTable({ rows }) {
   const keys = Object.keys(TR11).slice(1);
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
@@ -1300,7 +1300,7 @@ export function ConditionTable({ cols }) {
   const f = d.fig12;
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 520 }}>
         <thead>
           <tr>
@@ -1333,7 +1333,7 @@ export function ConditionReplies() {
   const names = { none: 'no sentence', filler: 'weather', distance: 'hospital 90 min', clinic_closed: 'clinic closed', no_transport: 'no ride', uninsured: 'no insurance' };
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
@@ -1361,7 +1361,7 @@ export function BreadthReplies() {
   const r = d.fig8.replies;
   const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
-    <div style={{ ...wrap, overflowX: 'auto' }}>
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 720 }}>
         <thead>
           <tr>

@@ -11,3 +11,24 @@ body {
 }
 
 /* Add any other global styles here */
+/* horizontal scroll wrappers on the triage page: a thin bar in the page colours */
+.scrollX {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #f5f5dc;
+  padding-bottom: 4px;
+}
+
+.scrollX::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollX::-webkit-scrollbar-track {
+  background: #f5f5dc;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.scrollX::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 0;
+}
