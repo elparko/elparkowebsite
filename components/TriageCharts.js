@@ -447,6 +447,21 @@ export function Fig5({ src, alt }) {
         <span>3 and above</span>
         <span style={{ opacity: 0.6 }}>mean activation, in multiples of the unit&apos;s largest activation on ordinary web text</span>
       </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the axes are.</div>
+        <div style={{ marginLeft: 12 }}>
+          Rows: 16 single neurons inside Qwen3.5-4B, each with its layer and index. The name says what the neuron
+          responds to. Each name was tested with paired sentences, one that fires the neuron and one that does not.
+        </div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>
+          Columns: 13 kinds of text from a bank of 474 test texts fed to the model while every neuron was recorded,
+          grouped by what the text is about.
+        </div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>
+          Cells: how strongly the neuron fired on average on that kind of text, divided by its largest activation on
+          ordinary web text. 1.0 is as strong as it ever gets on normal text. 10.5 is ten times that.
+        </div>
+      </div>
       <Hint />
       <Tip tip={tip} />
     </div>
