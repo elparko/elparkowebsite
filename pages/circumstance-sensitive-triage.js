@@ -902,7 +902,7 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
-      <Section eyebrow="Six chronic conditions" title="Six chronic conditions show the same pattern, and a long drive raises the lean toward 'Yes, call 911' on same-day cases">
+      <Section eyebrow="Six chronic conditions" title="In six chronic conditions, a no-ride sentence lowers the emergency lean toward 'call 911', and a long drive raises it on same-day cases">
         <p>
           The main set mixes conditions inside each group of cases. Does the sentence effect depend on which chronic
           disease the patient has? We tested six chronic conditions. Each has one emergency, one same-day case and one routine question, under four
