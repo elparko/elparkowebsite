@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, Fig14, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable, RepTable, RepReplies, SelfDirTable, BankTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, Fig14, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable, RepTable, RepReplies, SelfDirTable, BankTable, ControlTable, GemmaRerunTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -224,6 +224,13 @@ export default function CircumstanceSensitiveTriage() {
             <b>The self-reliance sentence has its own direction inside the model.</b> Removing the direction that &quot;I never want to ask anybody for help&quot; creates at layer 12 removes its effect on the emergency ambulance answer (-0.89 to -0.04 log-odds). A random direction leaves it at -0.98. A bank of 180 chronic-care texts shows that the candidate units read the patient&apos;s situation, such as a message written by a family member, not the disease.
           </li>
           <li style={itemStyle}>
+            <b>A sentence about good access moves the first instruction as much as the no-insurance sentence.</b>
+            &quot;The hospital is five minutes away and my daughter can drive me there&quot; moves 7 of 16 emergency
+            replies from &quot;call 911&quot; to &quot;get driven to the emergency room&quot;. Ten control sentences
+            with no route to care in them move none or one. The model reads &quot;a way to get there&quot;, not
+            &quot;barrier&quot;, and uses the route the message supplies instead of an ambulance.
+          </li>
+          <li style={itemStyle}>
             <b>The no-insurance sentence is one of a crowd.</b> We tested 40 sentences about the patient&apos;s life
             in 25 families, each against a weather sentence of the same length. All 25 families raise the model&apos;s lean toward &quot;call 911&quot; on routine cases, by +1.0 log-odds on
             average. Hardship
@@ -276,8 +283,9 @@ export default function CircumstanceSensitiveTriage() {
         <ul style={listStyle}>
           <li style={itemStyle}>
             <b>Test a health chatbot with the sentences rural patients write,</b> not only with symptoms. A model
-            that passes on symptoms alone can fail the same patient one sentence later. Any stated fact about the
-            person&apos;s life pushes a routine complaint toward 911, and hardship pushes it further.
+            that passes on symptoms alone can fail the same patient one sentence later. Any stated fact about the person&apos;s life pushes a routine complaint toward 911, and hardship pushes it
+            further. On an emergency, a stated route to care, even a good one, replaces the ambulance in the
+            reply.
           </li>
           <li style={itemStyle}>
             <b>Score a fix for harm and for benefit.</b> The one-line system instruction repaired every emergency and sent
@@ -381,6 +389,26 @@ export default function CircumstanceSensitiveTriage() {
           no-insurance effect repeats and is larger. With the no-insurance sentence, 8 of 16 replies say call EMS
           now, 3 say go to the ER yourself, and 3 say wait at home. With no extra sentence, 14 of 16 say call EMS
           now.
+        </p>
+        <p>
+          The Gemma next-word answers on the 32 main scenarios ran again with a wider list of answer words, because
+          Gemma answers the ambulance-or-drive question with &quot;911&quot; and &quot;Immediately&quot;, which the
+          first list did not include. The call-911 column is unchanged to the last digit. The no-insurance sentence
+          lowers Gemma&apos;s lean toward &quot;Yes, call 911&quot; on emergencies by 4.41 log-odds, and the
+          clinic-closed sentence by 2.56. The no-ride sentence raises it (+0.76). On routine complaints the no-ride
+          sentence raises it by 7.91. The urgency column keeps every sign and moves by at most 0.6 on emergencies and
+          1.6 on routine cases. The ambulance column can now be read for the four sentence conditions, where the listed
+          words cover 48 to 95 percent of Gemma&apos;s probability. It is provisional, because the no-sentence and
+          weather conditions still cover only 27 to 37 percent. On emergencies Gemma leans more toward
+          &quot;Ambulance&quot; when the hospital is far (+2.75) or there is no ride (+5.94). That is the direction a
+          clinician would want, and the opposite of Qwen3.5-4B under the same sentences (-0.46 each).
+        </p>
+        <GemmaRerunTable />
+        <p style={captionStyle}>
+          Table 15. Gemma-3-4b-it on the 32 main scenarios. Each number is the change in the model&apos;s lean toward
+          the named answer, in log-odds, with the sentence minus a weather sentence of the same length, paired over 16
+          scenarios. On emergency cases below zero is harm; on routine cases above zero is a false alarm. The last
+          column is provisional. Bold: at least 2 log-odds. Intervals are in notebook section 39.
         </p>
       </Section>
 
@@ -747,6 +775,64 @@ export default function CircumstanceSensitiveTriage() {
           Caveats. One model. Sixteen scenarios per group of cases, and the readers saw the first 900 characters of
           each reply. The new emergencies are written more clearly than the main set, so the reply result bounds the
           no-insurance effect on clear-cut emergencies only.
+        </p>
+      </Section>
+
+      <Section eyebrow="Control sentences, free replies" title="A hospital five minutes away and a clinic that reopens Monday move the first instruction as much as the barrier sentences">
+        <p>
+          Two independent readers coded the free replies to the 16 main emergencies under twelve control sentences
+          that state no barrier to care. Reader agreement (Cohen&apos;s kappa) was 1.00 on every sheet. Two of the
+          twelve sentences move the first instruction. The replies under five of these sentences are in the chat
+          window at the top, on the five emergency patients.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>Good access moves the first instruction as much as the no-insurance sentence.</b> &quot;The hospital is
+            five minutes away and my daughter can drive me there&quot; moves 7 of 16 emergency replies from &quot;call
+            911&quot; to &quot;get driven to the emergency room&quot;. The no-insurance sentence moved 6 or 7 of 16.
+            This sentence also gives the largest next-word change of any sentence tested: -2.91 log-odds on the lean
+            toward &quot;Yes, call 911&quot;.
+          </li>
+          <li style={itemStyle}>
+            <b>A clinic that reopens Monday, stated as a fact, moves 5 of 16 replies</b> from &quot;call 911&quot; to
+            &quot;get driven to the emergency room&quot;. Its next-word change is -0.89 log-odds.
+          </li>
+          <li style={itemStyle}>
+            <b>Ten other control sentences move none or one reply.</b> They are an oak table, a negation, one car the
+            daughter uses, a hospital gift shop, the price of gasoline, where the heart pills are kept, a garden hose,
+            a late evening, feeling stressed, and living on a farm.
+          </li>
+          <li style={itemStyle}>
+            <b>What the model reads.</b> The model is not reading &quot;barrier&quot;. It is reading &quot;a way to get
+            there&quot;. When the message supplies a route to care, the reply uses that route instead of an ambulance.
+            For the confused diabetic or the stroke patient that is the wrong call, and no reply weighed the two.
+          </li>
+          <li style={itemStyle}>
+            <b>The always-on direction removal from Fix 2, in free replies.</b> At layer 12 it restores &quot;call
+            911&quot; in 12 of 16 replies under the no-insurance sentence, the same three cases as the fix with the
+            switch (Fix 3). At layer 20 it restores 10 of 16. Four cases stay at &quot;get driven to the ER&quot; under
+            every version: black stools on warfarin, a fall on warfarin, a surgical wound six days after gallbladder
+            removal, and a catheter patient with kidney disease. Both versions are in the chat window under the
+            no-insurance sentence.
+          </li>
+          <li style={itemStyle}>
+            <b>Two knowledge errors surfaced while the readers coded.</b> A meter reading of &quot;HI&quot; (very high
+            blood sugar) is called severe low blood sugar in 5 of 48 base-model replies to that case. Six of 64
+            no-insurance emergency replies say emergency care is covered or the hospital must treat the patient, which
+            is not true for an uninsured patient beyond stabilisation.
+          </li>
+        </ul>
+        <ControlTable />
+        <p style={captionStyle}>
+          Table 14. The 16 main emergencies under control sentences that state no barrier. Middle column: replies whose
+          first concrete advice is &quot;call 911 now&quot;, by two independent readers, out of 16; the rest open with
+          &quot;get driven to the emergency room&quot;, so a lower count is harm. Right column: the change in the
+          model&apos;s lean toward &quot;Yes, call 911&quot;, in log-odds, with the sentence minus a weather sentence
+          of the same length; below zero is harm. Shaded rows: the two sentences that move the first instruction.
+        </p>
+        <p>
+          Caveats. Sixteen emergencies, one model, two readers who saw the first 900 characters. The twelve control
+          sentences are author-written, one per feature.
         </p>
       </Section>
 
@@ -1157,8 +1243,10 @@ export default function CircumstanceSensitiveTriage() {
         </ul>
         <p>
           Replies change less than the model&apos;s next-word answers when the emergency is loud. Then 35 of 36 condition
-          replies and 122 of 128 life-fact replies open with &quot;call 911&quot;. Replies change more when the case is borderline, as in the main set. On 32 new scenarios, 22 of 26 sentence
-          effects repeat, and the drop in the emergency lean toward &quot;call 911&quot; is larger. A larger
+          replies and 122 of 128 life-fact replies open with &quot;call 911&quot;. Replies change more when the case is borderline, as in the main set. On 32 new scenarios, 22 of 26 sentence effects repeat, and the drop in the emergency lean toward &quot;call
+          911&quot; is larger. Control sentences show that the model reads &quot;a way to get there&quot;, not
+          &quot;barrier&quot;: a hospital five minutes away with a daughter to drive moves 7 of 16 emergency
+          replies off &quot;call 911&quot;. A larger
           commercial model does not have the emergency problem.
         </p>
         <p>
@@ -1231,6 +1319,10 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>
             The direction test in section 37 covers one sentence. The chronic-care bank has 180 author-written texts,
             and the 1.5 threshold for a unit that singles out a kind of text is a convention.
+          </li>          <li style={itemStyle}>
+            The control-sentence replies cover the 16 main emergencies on one model, with one author-written sentence
+            per feature. The Gemma ambulance column is provisional until the answer-word list covers the no-sentence
+            conditions.
           </li>
           <li style={itemStyle}>
             The fine-tuned fix comes from one run with no learning-rate sweep. We cannot use its next-word answers, because
@@ -1249,7 +1341,7 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook has every run, interval and negative result. The scenario and text-bank files, the
         code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook
-        of 27 October 2026). This note condenses sections 0 to 37 of that notebook. We will add more overnight runs as they land. They are the control-sentence replies, a Gemma rerun, and a softer system line.
+        of 27 October 2026). This note condenses sections 0 to 39 of that notebook. We will add more overnight runs as they land. They are a softer system line, and a medication bank that asks which units track how dangerous a named drug is.
       </p>
     </WritingLayout>
   );

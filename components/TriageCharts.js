@@ -1710,3 +1710,71 @@ export function BankTable() {
     </div>
   );
 }
+
+// Table 14: control sentences that state no barrier, first advice in the 16 main emergencies, with the next-word change
+export function ControlTable() {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const t = d.tab14;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }} ref={ref}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>extra sentence (hover for its wording)</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>“call 911” first, of {t.n} (reader 1 / reader 2)</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>change in the lean toward “Yes, call 911”, log-odds [95% interval]</th>
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r) => {
+            const moved = Math.max(...r.counts) <= 11;
+            const node = <div><div><b>{r.label}</b></div>{r.sentence ? <div style={{ marginTop: 3 }}>“{r.sentence}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}<div style={{ opacity: 0.6, marginTop: 3 }}>{t.n - Math.min(...r.counts)} to {t.n - Math.max(...r.counts)} of {t.n} replies open with something other than call 911.</div></div>;
+            return (
+              <tr key={r.key} {...mark(show, hide, node)} style={{ cursor: 'default', background: moved ? 'rgba(0,0,0,0.06)' : 'transparent' }}>
+                <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: moved ? 'bold' : 'normal' }}>{r.label}</td>
+                <td style={{ ...cell, fontWeight: moved ? 'bold' : 'normal' }}>{r.counts[0] === r.counts[1] ? r.counts[0] : `${r.counts[0]} / ${r.counts[1]}`}</td>
+                <td style={{ ...cell, fontWeight: r.change && r.change[2] < 0 && Math.abs(r.change[0]) >= 0.5 ? 'bold' : 'normal' }}>{r.change ? <>{fmt(r.change[0])}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(r.change[1])}, {fmt(r.change[2])}]</div></> : <span style={{ opacity: 0.5 }}>reference</span>}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 15: the Gemma rerun with the wider answer-word list
+export function GemmaRerunTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const t = d.tab15;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 600 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases, sentence; change, log-odds</th>
+            {t.head.slice(1).map((h) => <th key={h} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{h}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r, i) => (
+            <Fragment key={r.label}>
+              {(i === 0 || i === 4) && <tr><td colSpan={5} style={{ ...small, padding: '12px 0 4px', textAlign: 'left' }}>{i === 0 ? 'emergency cases: below zero is harm' : 'routine cases: above zero is a false alarm'}</td></tr>}
+              <tr>
+                <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+                {r.values.map((v, j) => <td key={j} style={{ ...cell, fontWeight: Math.abs(v) >= 2 ? 'bold' : 'normal', opacity: j === 3 ? 0.8 : 1 }}>{fmt(v)}</td>)}
+              </tr>
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
