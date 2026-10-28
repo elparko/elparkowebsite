@@ -1513,3 +1513,200 @@ export function LoraTable() {
     </div>
   );
 }
+
+// Figure 14: the replication set, each sentence's change on the original set and on 32 new scenarios
+const SET14 = { original: { label: 'original set', color: C.dark, filled: false }, replication: { label: '32 new scenarios', color: C.blue, filled: true } };
+export function Fig14({ src, alt }) {
+  const d = useCharts();
+  const [panel, setPanel] = useState('em_ems2');
+  const [cue, setCue] = useState('no_transport');
+  const { ref, tip, show, hide } = useTip();
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig14;
+  const p = f.panels.find((x) => x.key === panel);
+  const s = f.sample[p.arm];
+  const vals = f.values[panel];
+  const all = f.cues.flatMap((c) => ['original', 'replication'].flatMap((k) => vals[c.key][k].slice(1)));
+  const [lo, hi] = [Math.min(0, ...all) - 0.2, Math.max(0, ...all) + 0.2];
+  const X = (v) => ((v - lo) / (hi - lo)) * 100;
+  const ticks = niceTicks(lo, hi);
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}><span style={small}>Sentence</span>{f.cues.map((c) => <button key={c.key} type="button" aria-pressed={c.key === cue} style={chip(c.key === cue)} onClick={() => setCue(c.key)}>{c.label}</button>)}</div>
+      <div style={{ marginBottom: 12 }}>
+        <div style={who}>sample message, new set · {s.label}</div>
+        <div style={bubble}>{s.body} <span style={inserted}>{f.sentences[cue]}</span> {s.question}</div>
+        <div style={{ fontSize: '0.72rem', opacity: 0.65, marginTop: 4 }}>The highlighted sentence is the one added, in the same place in all 16 {p.arm} messages of the new set. The weather sentence takes the same place in the control message.</div>
+      </div>
+      <div style={row}><span style={small}>Cases and answer</span>{f.panels.map((x) => <button key={x.key} type="button" aria-pressed={x.key === panel} style={chip(x.key === panel)} onClick={() => setPanel(x.key)}>{x.label}</button>)}</div>
+      <div className="scrollX" style={{ overflowX: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(9em, 12em) minmax(0, 1fr)', columnGap: 16, minWidth: 420, alignItems: 'center' }}>
+          <div />
+          <div style={{ fontSize: '0.7rem', opacity: 0.6, position: 'relative', height: 14 }}>
+            {ticks.map((t) => <span key={t} style={{ position: 'absolute', left: `${X(t)}%`, transform: 'translateX(-50%)' }}>{fmt(t)}</span>)}
+          </div>
+          {f.cues.map((c) => (
+            <Fragment key={c.key}>
+              <div style={{ ...labelCell7, fontWeight: c.key === cue ? 'bold' : 'normal', cursor: 'pointer' }} onClick={() => setCue(c.key)}><span>{c.label}</span></div>
+              <svg viewBox="0 0 100 34" preserveAspectRatio="none" style={{ ...strip7, height: 34 }} onClick={() => setCue(c.key)}>
+                <line x1={`${X(0)}%`} x2={`${X(0)}%`} y1={2} y2={32} stroke="#000" strokeWidth={1} />
+                {['original', 'replication'].map((k, i) => {
+                  const v = vals[c.key][k];
+                  const node = (
+                    <div>
+                      <div><b>{c.label}</b>, {SET14[k].label}{k === 'original' ? ` (${c.originalSet})` : ''}: {fmt(v[0])} [{fmt(v[1])}, {fmt(v[2])}]</div>
+                      <div style={{ marginTop: 4 }}>“{c.sentence}”</div>
+                      <div style={{ opacity: 0.6, marginTop: 3 }}>{p.label}, log-odds; the sentence minus a weather sentence of the same length, 16 scenarios. {p.harm === 'below' ? 'Below zero is harm.' : 'Above zero is a false alarm.'}</div>
+                    </div>
+                  );
+                  return <Mark7 key={k} x={v.map(X)} y={10 + i * 14} r={5} color={SET14[k].color} filled={SET14[k].filled} tip={node} onTip={show} onHide={hide} />;
+                })}
+              </svg>
+            </Fragment>
+          ))}
+        </div>
+      </div>
+      <div style={legendRow}>
+        <Swatch color="#f5f5dc" label={`hollow grey: ${SET14.original.label}`} /><Swatch color={C.blue} label={`blue: ${SET14.replication.label}`} />
+        <span>{p.label}, log-odds. Horizontal lines: 95% intervals. Dark line: no change.</span>
+      </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the marks are.</div>
+        <div style={{ marginLeft: 12 }}>Rows: the seven extra sentences. Each row has two marks: the change on the set where the sentence was first tested (hollow grey), and the change on the 32 new scenarios (blue).</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Each mark is the change in the model&apos;s lean toward the chosen answer, in log-odds: the sentence minus a weather sentence of the same length, paired over 16 scenarios. {p.harm === 'below' ? 'On these emergency cases, a mark below zero is harm.' : 'On these routine cases, a mark above zero is a false alarm.'}</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Of the {f.repeat.of} changes that had an interval off zero on the original sets, {f.repeat.n} repeat on the new set with the same sign and an interval off zero.</div>
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 11: the replication set, four columns with intervals
+export function RepTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig14;
+  const cols = [['em_ems2', 'original', "Emergency, 'call 911': original set"], ['em_ems2', 'replication', "Emergency, 'call 911': new set"], ['ro_urgency2', 'original', "Routine, 'High' urgency: original set"], ['ro_urgency2', 'replication', "Routine, 'High' urgency: new set"]];
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>sentence; change, log-odds [95% interval]</th>
+            {cols.map((x) => <th key={x[2]} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{x[2]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {f.cues.map((c) => (
+            <tr key={c.key}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{c.label}</td>
+              {cols.map((x) => {
+                const [v, lo, hi] = f.values[x[0]][c.key][x[1]];
+                const off = lo > 0 || hi < 0;
+                return <td key={x[2]} style={{ ...cell, fontWeight: off && Math.abs(v) >= 1 ? 'bold' : 'normal' }}>{fmt(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(lo)}, {fmt(hi)}]</div></td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Table 11b: first advice in the replication replies, emergency and routine, nine sentences
+export function RepReplies() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig14;
+  const cell = { padding: '6px 5px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.76rem', lineHeight: 1.35, minWidth: 760 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
+            {f.replies.emergency.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.7rem', lineHeight: 1.2 }}>{f.cueLabels[c]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {['emergency', 'routine'].map((part) => (
+            <Fragment key={part}>
+              <tr><td colSpan={f.replies[part].cues.length + 1} style={{ ...small, padding: '12px 0 4px', textAlign: 'left' }}>{part === 'emergency' ? 'emergency cases, 16 new scenarios' : 'routine complaints, 16 new scenarios'} · reader agreement (kappa) {f.replies[part].kappa.toFixed(2)}</td></tr>
+              {f.replies[part].rows.map((r) => (
+                <tr key={r.label}>
+                  <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+                  {r.values.map((v, i) => <td key={i} style={cell}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+                </tr>
+              ))}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Table 12: the self-reliance sentence's direction removed at layer 12, at layer 20, and a random direction
+export function SelfDirTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const t = d.tab12;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases and answer; change, log-odds</th>
+            {t.conds.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r) => (
+            <tr key={r.label}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
+              {r.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: r.label.startsWith('Emergency cases: lean toward ‘Ambulance') || (r.label.includes('Ambulance') && r.label.startsWith('Emergency')) ? 'bold' : 'normal' }}>{fmt(v)}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// Table 13: the chronic-care text bank, what the candidate units single out
+export function BankTable() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const b = d.bank;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'left', whiteSpace: 'normal' };
+  return (
+    <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 480 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>kind of text</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, textAlign: 'center' }}>units that single it out (of {b.n})</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>strongest unit: how many times more active on that kind than on the next kind</th>
+          </tr>
+        </thead>
+        <tbody>
+          {b.kinds.map((k) => (
+            <tr key={k.key}>
+              <td style={cell}>{k.label}</td>
+              <td style={{ ...cell, textAlign: 'center', fontWeight: k.count >= 7 ? 'bold' : 'normal' }}>{k.count}</td>
+              <td style={cell}>{k.top ? `${k.top.unit.replace(/^L(\d+)N(\d+)$/, 'layer $1, unit $2')}: ${k.top.sel.toFixed(1)} times` : 'none'}</td>
+            </tr>
+          ))}
+          <tr>
+            <td style={cell}>any one condition (type 2 diabetes, COPD, heart failure, kidney disease, obesity or high blood pressure)</td>
+            <td style={{ ...cell, textAlign: 'center' }}>{b.byCondition}</td>
+            <td style={cell}>{b.conditionTop.unit.replace(/^L(\d+)N(\d+)$/, 'layer $1, unit $2')} on {b.conditionTop.top === 'copd' ? 'COPD' : b.conditionTop.top}: {b.conditionTop.selectivity.toFixed(1)} times</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, Fig13, Fig14, HaikuGrid, BreadthTable, BreadthReplies, OrderTable, RealismTable, ConditionTable, ConditionReplies, LoraTable, RepTable, RepReplies, SelfDirTable, BankTable } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -37,7 +37,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12, fig13: Fig13 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12, fig13: Fig13, fig14: Fig14 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -215,8 +215,13 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>
             <b>A fine-tuned fix copies the system line, benefit and harm, and the harm grows on new cases.</b> We
             trained a small adapter to give the system-line reply without the system line. It opens 96 of 96 main
-            emergencies with &quot;call 911&quot; (the base model: 86 of 96). It also sends 24 of 128 same-day cases to 911 (before: 0 of 128). On held-out same-day cases, which the training
-            never used, it sends 50 of 80 to 911 (before: 9 of 80).
+            emergencies with &quot;call 911&quot; (the base model: 86 of 96). It also sends 24 of 128 same-day cases to 911 (before: 0 of 128). On held-out same-day cases, which the training never used, it sends 50 of 80 to 911 (before: 9 of 80).
+          </li>
+          <li style={itemStyle}>
+            <b>On 32 new scenarios, 22 of 26 sentence effects repeat.</b> We wrote 16 new emergencies and 16 new routine complaints that no earlier test used. Of the 26 changes from an added sentence that were clear on the original sets, 22 repeat with the same sign. The drop in the lean toward &quot;call 911&quot; on emergencies is larger on the new set: the no-ride sentence lowers it by 2.18 log-odds (1.00 before).
+          </li>
+          <li style={itemStyle}>
+            <b>The self-reliance sentence has its own direction inside the model.</b> Removing the direction that &quot;I never want to ask anybody for help&quot; creates at layer 12 removes its effect on the emergency ambulance answer (-0.89 to -0.04 log-odds). A random direction leaves it at -0.98. A bank of 180 chronic-care texts shows that the candidate units read the patient&apos;s situation, such as a message written by a family member, not the disease.
           </li>
           <li style={itemStyle}>
             <b>The no-insurance sentence is one of a crowd.</b> We tested 40 sentences about the patient&apos;s life
@@ -491,6 +496,51 @@ export default function CircumstanceSensitiveTriage() {
         </Chart>
       </Section>
 
+      <Section eyebrow="Inside the model, two checks" title="The self-reliance sentence has its own direction at layer 12, and the candidate units read the patient's situation, not the disease">
+        <p>
+          Two checks inside the model. First, we repeated the direction test from Fix 2 for the self-reliance sentence:
+          &quot;I never want to ask anybody for help, I have always managed on my own&quot;. At layer 12, removing that
+          sentence&apos;s direction from the model&apos;s internal state removes its effect on the ambulance answer for
+          emergency cases. The change goes from -0.89 to -0.04 log-odds, while a random direction leaves it at -0.98. At
+          layer 20 the removal does nothing (-0.81).
+        </p>
+        <p>
+          Neither layer&apos;s direction carries the self-reliance sentence&apos;s false alarm on routine cases, which is
+          the model becoming more likely to rate a routine complaint urgent or to say call 911. The layer-20 removal
+          trims the routine lean toward &quot;High&quot; urgency from +1.98 to +1.61, inside the random control&apos;s
+          range. The layer-12 removal raises the routine lean toward &quot;Yes, call 911&quot; (+0.75 to +1.08) and
+          toward &quot;Ambulance&quot; over driving (+0.16 to +0.51).
+        </p>
+        <SelfDirTable />
+        <p style={captionStyle}>
+          Table 12. The self-reliance sentence minus a weather sentence of the same length, in log-odds of the model&apos;s
+          lean toward the named answer, paired over 16 scenarios, under four conditions. On emergency cases a number
+          below zero is harm. On routine cases a number above zero is a false alarm. Bold: the one answer that the
+          layer-12 direction carries. Intervals are in notebook section 37.
+        </p>
+        <p>
+          Second, the 124 candidate units from the earlier text-bank sweeps ran over 180 chronic-care texts. The texts
+          cover six conditions (type 2 diabetes, COPD, heart failure, chronic kidney disease, obesity, high blood
+          pressure) by six kinds of text: a gap in taking medicine, just home from the hospital, written by a family
+          member, a home device or reading, daily self-care, and a slow change over weeks. Thirty-one of 124 units are
+          at least 1.5 times more active on one kind of text than on the next kind. One of 124 singles out a condition.
+          The strongest is a layer-19 unit 5.3 times more active on texts written by a family member, which matches the
+          caregiver-voice effect in Figure 3. The units read the situation of the patient, not the disease. So a
+          chronic-care map of the model must be built by situation.
+        </p>
+        <BankTable />
+        <p style={captionStyle}>
+          Table 13. For each kind of text, the number of the 124 candidate units that are at least 1.5 times more
+          active on that kind than on the next kind, and the strongest such unit. Each number in the last column is
+          the unit&apos;s mean activity on that kind of text divided by its mean activity on the next kind. The last row
+          gives the same count for any one condition. Bold: seven or more units.
+        </p>
+        <p>
+          Caveats. One sentence&apos;s direction, on one model. The 1.5 threshold is a convention. The 180 texts are
+          author-written, five per condition and kind.
+        </p>
+      </Section>
+
       <Section eyebrow="Fix 1" title="One line of instruction restores the 911 advice and raises false alarms">
         <FixGrid
           note="Each set lists what the system line fixed on the left and what it broke on the right. Benefit: emergency replies that open with call 911. Harm: non-emergency replies sent to 911. Each number counts replies out of the replies in that set."
@@ -581,7 +631,7 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
-      <Section eyebrow="Fix 4: a fine-tuned adapter" title="A fine-tuned fix copies the system line's benefit and its harm, and the harm grows on new cases">
+      <Section eyebrow="Fix 4: a fine-tuned adapter" title="A fine-tuned fix copies the system line's benefit and its false alarms, which grow on new cases">
         <p>
           We trained a small adapter (LoRA, low-rank adaptation) so that the model gives the system-line reply
           without the system line. The set used to train the adapter had 608 pairs. Each pair is a patient message with no system line
@@ -631,6 +681,72 @@ export default function CircumstanceSensitiveTriage() {
           Caveats. One fine-tune run, with no sweep of the learning rate. The readers saw the first 900 characters of
           each reply. The held-out set has eight scenarios per group of cases, so each held-out count is out of 8 per
           sentence. One model.
+        </p>
+      </Section>
+
+      <Section eyebrow="Replication" title="On 32 new scenarios, 22 of 26 added-sentence changes repeat, and the no-ride sentence lowers the 'call 911' lean twice as much as before">
+        <p>
+          We wrote 32 new scenarios (16 emergencies, 16 routine complaints) as an independent check, and no earlier
+          section used them. The model answered them under nine sentences: no extra sentence, a weather sentence, no
+          ride, a long drive, no insurance, self-reliance, &quot;talk it over with my son&quot;, &quot;probably just my
+          age&quot;, and a message typed by a caregiver. Of the 26 changes caused by an added sentence that had an
+          interval off zero on the original sets, 22 repeat with the same sign and an interval off zero. Six of the new
+          scenarios are in the chat window at the top, under &quot;replication set&quot;.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The two largest harms on emergency cases are larger on the new scenarios.</b> The harm is a drop in the
+            model&apos;s lean toward &quot;Yes, call 911&quot;. The no-ride sentence lowers that lean by 2.18 log-odds
+            (1.00 on the original set). The long-drive sentence lowers it by 1.18 (0.50 before). &quot;Talk it over with
+            my son&quot; lowers it by 1.90 (1.46 before).
+          </li>
+          <li style={itemStyle}>
+            <b>Every sentence except &quot;probably just my age&quot; lowers the lean toward &quot;Ambulance&quot; on
+            emergencies</b> more than on the original sets. The no-ride sentence goes from -0.46 to -1.19 log-odds.
+          </li>
+          <li style={itemStyle}>
+            <b>On routine complaints the false alarm repeats on the urgency rating and shrinks on the call-911
+            question.</b> The false alarm is the model rating a routine complaint as more urgent. On the urgency rating:
+            no insurance +2.88, no ride +2.11, caregiver +2.34, self-reliance +1.73 log-odds. On the yes-or-no call-911
+            question, the long-drive and &quot;probably just my age&quot; rises do not repeat.
+          </li>
+          <li style={itemStyle}>
+            <b>In the free replies, the emergency instruction holds.</b> Two readers put &quot;call 911 now&quot; first
+            in 13 to 15 of 16 emergency replies under every sentence (kappa 0.96). No routine reply opens with 911 or
+            the emergency room under any sentence (0 of 144; kappa 0.77 on first advice).
+          </li>
+          <li style={itemStyle}>
+            <b>The no-insurance sentence&apos;s loss of 6 or 7 of 16 call-911 openings on the main set does not repeat
+            here.</b> The new emergencies are more clear-cut, which leaves less room for the no-insurance sentence to
+            move the first instruction.
+          </li>
+        </ul>
+        <RepTable />
+        <p style={captionStyle}>
+          Table 11. Each number is the change in the model&apos;s lean toward the named answer, in log-odds, when the
+          sentence is added, minus the same change for a weather sentence of the same length, paired over 16 scenarios
+          per column. &quot;Original set&quot; is the set where the sentence was first tested (the main set, the
+          reluctance set, or the graded set). Emergency columns: below zero is harm. Routine columns: above zero is a
+          false alarm. Bold: at least 1 log-odds with the interval off zero.
+        </p>
+        <RepReplies />
+        <p style={captionStyle}>
+          Table 11b. First advice in the 288 replies on the new scenarios, 16 per sentence per group of cases, coded
+          blind by two readers. Each cell counts replies out of 16, for reader 1 / reader 2. In the emergency rows, a
+          lower &quot;call 911 now&quot; count is harm. In the routine rows, a reply that opens with 911 or the emergency
+          room would be a false alarm; there are none. &quot;Unclear&quot; replies stop before their first step.
+        </p>
+        <Chart fig="fig14" src="/rural-triage/fig14-replication.png" alt="Dot plots of each sentence's change on the original set and on 32 new scenarios, for four answers.">
+          Figure 14. Each mark is the change in the model&apos;s lean toward the chosen answer, in log-odds, when the
+          sentence is added, minus the same change for a weather sentence of the same length, with 95% intervals.
+          Hollow grey: the set where the sentence was first tested. Blue: the 32 new scenarios. Pick the sentence to
+          see it in a new message, then the cases and answer. On emergency cases a mark below zero is harm. On routine
+          cases a mark above zero is a false alarm.
+        </Chart>
+        <p>
+          Caveats. One model. Sixteen scenarios per group of cases, and the readers saw the first 900 characters of
+          each reply. The new emergencies are written more clearly than the main set, so the reply result bounds the
+          no-insurance effect on clear-cut emergencies only.
         </p>
       </Section>
 
@@ -750,7 +866,7 @@ export default function CircumstanceSensitiveTriage() {
         </Chart>
       </Section>
 
-      <Section eyebrow="Position and earlier chat turns" title="The 911 harm appears only when the sentence sits right before the question">
+      <Section eyebrow="Position and earlier chat turns" title="The drop in 'call 911' on emergency cases appears only when a sentence about access sits right before the question">
         <p>
           Every test above put the extra sentence in one place: last in the message, right before &quot;what should I
           do?&quot;. This section moves the extra sentence. The same four sentences (a 90-minute drive, the clinic closed, no ride, no
@@ -832,7 +948,7 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
-      <Section eyebrow="Realistic messages" title="Typos, lower case and a chattier message keep or enlarge the routine false alarm">
+      <Section eyebrow="Realistic messages" title="Typos, lower case and a chattier message keep or enlarge the model's lean toward 'call 911' on routine complaints">
         <p>
           Every message above was clean and well punctuated. Real messages from older rural patients are not. We reran
           the original set of messages three ways. One copy has typos in one word of twelve (a swapped,
@@ -902,7 +1018,7 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
-      <Section eyebrow="Six chronic conditions" title="In six chronic conditions, a no-ride sentence lowers the emergency lean toward 'call 911', and a long drive raises it on same-day cases">
+      <Section eyebrow="Six chronic conditions" title="In six chronic conditions, the no-ride sentence lowers 'call 911' on emergencies; a long drive raises 'call 911' on same-day cases">
         <p>
           The main set mixes conditions inside each group of cases. Does the sentence effect depend on which chronic
           disease the patient has? We tested six chronic conditions. Each has one emergency, one same-day case and one routine question, under four
@@ -1041,8 +1157,9 @@ export default function CircumstanceSensitiveTriage() {
         </ul>
         <p>
           Replies change less than the model&apos;s next-word answers when the emergency is loud. Then 35 of 36 condition
-          replies and 122 of 128 life-fact replies open with &quot;call 911&quot;. Replies change more when the
-          case is borderline, as in the main set. A larger commercial model does not have the emergency problem.
+          replies and 122 of 128 life-fact replies open with &quot;call 911&quot;. Replies change more when the case is borderline, as in the main set. On 32 new scenarios, 22 of 26 sentence
+          effects repeat, and the drop in the emergency lean toward &quot;call 911&quot; is larger. A larger
+          commercial model does not have the emergency problem.
         </p>
         <p>
           On fixes. A one-line system instruction removes the emergency harm (16 of 16) at the price of one routine patient
@@ -1107,6 +1224,13 @@ export default function CircumstanceSensitiveTriage() {
           <li style={itemStyle}>
             The condition test has one scenario per condition and group of cases. Its six emergencies were written to be
             unambiguous, which bounds the reply result.
+          </li>          <li style={itemStyle}>
+            The replication set has 16 scenarios per group of cases, on one model. Its emergencies are written more
+            clearly than the main set, so it bounds the reply result for clear-cut emergencies only.
+          </li>
+          <li style={itemStyle}>
+            The direction test in section 37 covers one sentence. The chronic-care bank has 180 author-written texts,
+            and the 1.5 threshold for a unit that singles out a kind of text is a convention.
           </li>
           <li style={itemStyle}>
             The fine-tuned fix comes from one run with no learning-rate sweep. We cannot use its next-word answers, because
@@ -1125,9 +1249,7 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook has every run, interval and negative result. The scenario and text-bank files, the
         code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook
-        of 27 October 2026). This note condenses sections 0 to 35 of that notebook. We will add more overnight runs as they land. They are an independent replication set, the reluctance
-        direction, chronic-condition triggers, control-sentence replies, a Gemma rerun, and a softer system
-        line.
+        of 27 October 2026). This note condenses sections 0 to 37 of that notebook. We will add more overnight runs as they land. They are the control-sentence replies, a Gemma rerun, and a softer system line.
       </p>
     </WritingLayout>
   );
