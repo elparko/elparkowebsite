@@ -1226,3 +1226,129 @@ export function RealismTable({ rows }) {
     </div>
   );
 }
+
+// Figure 12: the four main sentences on six chronic conditions
+const ARM12 = { emergency: 'Emergency', urgent: 'Same-day case', routine: 'Routine question' };
+const CUE12 = { distance: 'hospital 90 minutes away', clinic_closed: 'clinic closed until Monday', no_transport: 'no ride tonight', uninsured: 'no insurance, money tight' };
+
+export function Fig12({ src, alt }) {
+  const d = useCharts();
+  const { ref, tip, show, hide } = useTip();
+  const [readout, setReadout] = useState('ems2');
+  const [arm, setArm] = useState('emergency');
+  if (!d) return <Loading ok={d} src={src} alt={alt} />;
+  const f = d.fig12;
+  const label = f.readouts.find((r) => r.key === readout).label;
+  const vals = f.conditions.flatMap((c) => f.cues.map((q) => Math.abs(f.cell[readout][c.key][arm][q])));
+  const max = Math.max(...vals, ...f.cues.map((q) => Math.abs(f.pooled[readout][arm][q][0])));
+  const cellStyle = (v) => ({ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '8px 2px', cursor: 'default' });
+  return (
+    <div style={wrap} ref={ref}>
+      <div style={row}><span style={small}>Readout</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
+      <div style={row}><span style={small}>Arm</span>{f.arms.map((a) => <button key={a} type="button" aria-pressed={a === arm} style={chip(a === arm)} onClick={() => setArm(a)}>{ARM12[a]}</button>)}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: `minmax(7.5em, 10em) repeat(${f.cues.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.72rem' }}>
+        <div />
+        {f.cues.map((q) => <div key={q} style={{ textAlign: 'center', padding: '0 2px 4px', lineHeight: 1.2 }}>{CUE12[q]}</div>)}
+        {f.conditions.map((c) => {
+          const s = c.scenarios[arm];
+          return (
+            <Fragment key={c.key}>
+              <div style={{ alignSelf: 'center', lineHeight: 1.15, paddingRight: 6, hyphens: 'none' }}>{c.label}</div>
+              {f.cues.map((q) => {
+                const v = f.cell[readout][c.key][arm][q];
+                const node = (
+                  <div>
+                    <div><b>{c.label}</b>, {ARM12[arm].toLowerCase()} · {CUE12[q]}: {fmt(v)} log-odds</div>
+                    <div style={{ marginTop: 4 }}>“{s.body} <span style={inserted}>{d.fig10.sample.sentences[q]}</span> {s.question}”</div>
+                    <div style={{ opacity: 0.6, marginTop: 3 }}>{label}: with the weather sentence {fmt(f.level[readout][c.key][arm])}, one scenario, no interval</div>
+                  </div>
+                );
+                return <div key={q} {...mark(show, hide, node)} style={cellStyle(v)}>{fmt(v)}</div>;
+              })}
+            </Fragment>
+          );
+        })}
+        <div style={{ alignSelf: 'center', lineHeight: 1.15, paddingRight: 6, fontWeight: 'bold', borderTop: '1.5px solid #000', paddingTop: 4, marginTop: 2 }}>pooled, six conditions</div>
+        {f.cues.map((q) => {
+          const [v, lo, hi] = f.pooled[readout][arm][q];
+          const node = <div><div><b>Pooled over the six conditions</b>, {ARM12[arm].toLowerCase()} · {CUE12[q]}: {fmt(v)} [{fmt(lo)}, {fmt(hi)}]</div><div style={{ opacity: 0.6, marginTop: 3 }}>{label}, mean and bootstrap 95% interval over the six conditions</div></div>;
+          return <div key={q} {...mark(show, hide, node)} style={{ ...cellStyle(v), fontWeight: 'bold', marginTop: 2 }}>{fmt(v)}</div>;
+        })}
+      </div>
+      <div style={{ ...legendRow, alignItems: 'center' }}>
+        <span>−{max.toFixed(1)}</span>
+        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
+        <span>+{max.toFixed(1)}</span>
+        <span style={{ opacity: 0.6 }}>{label}, the sentence minus the weather sentence, log-odds. Red raises the reading, blue lowers it.</span>
+      </div>
+      <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
+        <div style={{ marginBottom: 4 }}>What the axes are.</div>
+        <div style={{ marginLeft: 12 }}>Rows: six chronic conditions, one scenario each per arm, and the mean over the six. Columns: the four barrier sentences.</div>
+        <div style={{ marginLeft: 12, marginTop: 3 }}>Cells: the reading with the sentence minus the reading with the weather sentence on the same scenario. One scenario per cell, so a cell has no interval; the pooled row has one.</div>
+      </div>
+      <Hint />
+      <Tip tip={tip} />
+    </div>
+  );
+}
+
+// Table 8: six conditions and the pooled row, three readings
+export function ConditionTable({ cols }) {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const f = d.fig12;
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 520 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>shift, log-odds</th>
+            {cols.map((c) => <th key={c.label} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {f.conditions.map((c) => (
+            <tr key={c.key}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{c.label}</td>
+              {cols.map((x) => { const v = f.cell[x.readout][c.key][x.arm][x.cue]; return <td key={x.label} style={{ ...cell, fontWeight: Math.abs(v) >= 1 ? 'bold' : 'normal' }}>{fmt(v)}</td>; })}
+            </tr>
+          ))}
+          <tr>
+            <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: 'bold', borderTop: '1.5px solid #000' }}>pooled, six conditions</td>
+            {cols.map((x) => { const [v, lo, hi] = f.pooled[x.readout][x.arm][x.cue]; return <td key={x.label} style={{ ...cell, fontWeight: 'bold', borderTop: '1.5px solid #000' }}>{fmt(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(lo)}, {fmt(hi)}]</div></td>; })}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// the coded replies for the six condition emergencies
+export function ConditionReplies() {
+  const d = useCharts();
+  if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
+  const r = d.fig12.replies;
+  const names = { none: 'no sentence', filler: 'weather', distance: 'hospital 90 min', clinic_closed: 'clinic closed', no_transport: 'no ride', uninsured: 'no insurance' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  return (
+    <div style={{ ...wrap, overflowX: 'auto' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
+        <thead>
+          <tr>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, coder 1 / coder 2</th>
+            {r.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal' }}>{names[c]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {r.rows.map((x) => (
+            <tr key={x.label}>
+              <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
+              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

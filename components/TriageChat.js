@@ -145,7 +145,7 @@ export default function TriageChat() {
         <div style={row}>
           <span style={label}>Patient</span>
           <Dropdown label="Patient" value={sid} onChange={setSid}
-            options={data.scenarios.map((s) => ({ value: s.id, label: s.label, group: s.arm === 'emergency' ? 'emergencies' : 'routine complaints' }))} />
+            options={data.scenarios.map((s) => ({ value: s.id, label: s.label, group: s.group || (s.arm === 'emergency' ? 'emergencies' : 'routine complaints') }))} />
         </div>
         <div style={row}>
           <span style={label}>Added</span>

@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 import TriageChat from '../components/TriageChat';
-import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, HaikuGrid, BreadthTable, OrderTable, RealismTable } from '../components/TriageCharts';
+import { Fig1, Fig2, Fig3, Fig4, Fig5, Fig6, Fig7, Fig8, Fig9, Fig10, Fig11, Fig12, HaikuGrid, BreadthTable, OrderTable, RealismTable, ConditionTable, ConditionReplies } from '../components/TriageCharts';
 
 const eyebrowStyle = {
   fontSize: '0.7rem',
@@ -36,7 +36,7 @@ function Section({ eyebrow, title, children }) {
   );
 }
 
-const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11 };
+const CHARTS = { fig1: Fig1, fig2: Fig2, fig3: Fig3, fig4: Fig4, fig5: Fig5, fig6: Fig6, fig7: Fig7, fig8: Fig8, fig9: Fig9, fig10: Fig10, fig11: Fig11, fig12: Fig12 };
 
 function Chart({ fig, src, alt, children }) {
   const C = CHARTS[fig];
@@ -229,6 +229,15 @@ export default function CircumstanceSensitiveTriage() {
             lower case. The writing alone moves the model: typing errors raise a routine complaint by +0.92 log-odds of
             &quot;call 911&quot;, and two sentences about game shows and a casserole raise its urgency reading by 2.1,
             before any barrier is stated.
+          </li>
+          <li style={itemStyle}>
+            <b>The same pattern holds in six chronic conditions.</b> Type 2 diabetes, COPD, heart failure, kidney
+            disease, obesity and hypertension, one emergency, one same-day case and one routine question each. The
+            no-ride sentence lowers the emergency &quot;call 911&quot; reading in six of six and the distance sentence
+            in five of six. On the routine question the no-ride and money sentences raise the urgency label by 2.4 to
+            5.6 log-odds in five of six. New on the same-day cases: a 90-minute drive pushes every condition toward 911.
+            The 36 emergency replies hold at 35 of 36 &quot;call 911&quot;, because these emergencies start 4 to 7
+            log-odds above the line where the reply changes.
           </li>
         </ul>
         <p>
@@ -722,6 +731,84 @@ export default function CircumstanceSensitiveTriage() {
         </p>
       </Section>
 
+      <Section eyebrow="Findings" title="The same pattern holds in six chronic conditions, and the reply harm is a property of the margin">
+        <p>
+          The main set mixes conditions inside each arm. Does the sentence effect depend on which chronic disease the
+          patient has? Eighteen new scenarios: for each of type 2 diabetes, COPD, heart failure, chronic kidney disease,
+          obesity and hypertension, one emergency, one same-day case and one routine question, in the voice of a patient
+          aged 66 to 82, under the four main sentences, the weather sentence and no sentence. Readouts on all 108
+          prompts; free replies for the six emergencies, 36 in all, coded blind by two coders. One scenario per
+          condition and arm, so a per-condition number is a single paired difference and only the pooled rows carry
+          an interval. The six emergency conversations are in the chat window at the top, under &quot;emergencies, by
+          condition&quot;.
+        </p>
+        <ul style={listStyle}>
+          <li style={itemStyle}>
+            <b>The emergency harm appears in every condition.</b> The no-ride sentence lowers the emergency &quot;call
+            911&quot; reading in six of six (-0.68 to -1.81 log-odds; pooled -1.17, interval -1.51 to -0.85) and the
+            distance sentence in five of six (pooled -0.44). &quot;Ambulance over drive&quot; falls under every
+            sentence on the emergencies (distance pooled -0.76; hypertension with distance -1.54).
+          </li>
+          <li style={itemStyle}>
+            <b>So does the routine over-escalation.</b> The no-ride and money sentences raise the routine urgency label
+            by 2.4 to 5.6 log-odds in five of six conditions; the money sentence in all six (pooled +3.38). The
+            exception is the obesity routine question, a knee ache and how to start losing weight, where three of the
+            four barriers lower the label. A barrier on a question the model reads as lifestyle advice does not raise
+            the alarm.
+          </li>
+          <li style={itemStyle}>
+            <b>New on the same-day cases: a long drive pushes the model toward 911.</b> &quot;Hospital 90 minutes
+            away&quot; raises the same-day &quot;call 911&quot; reading in every condition, by +0.8 to +3.4 log-odds
+            (pooled +2.12), most for the obese patient with a skin-fold infection and the heart-failure patient with
+            two and a half pounds of fluid. On a same-day case the model answers distance with an ambulance; on an
+            emergency it answers it by lowering the ambulance reading.
+          </li>
+          <li style={itemStyle}>
+            <b>The 36 emergency replies hold.</b> Thirty-five open with &quot;call 911&quot; under both coders, kappa
+            1.00 on first advice. The exception is the obesity emergency under &quot;the clinic is closed&quot;, which
+            opens &quot;go to the nearest ER or call 911&quot;. Cost comes up in four of the six replies to the money
+            sentence. These emergencies start 4 to 7 log-odds above the line where the reply changes (weather-sentence
+            levels +4.2 to +6.6), so a drop of one to two log-odds does not reach the reply.
+          </li>
+          <li style={itemStyle}>
+            <b>The reply harm is a property of the margin, not the disease.</b> The main set lost emergency replies
+            because its emergencies started lower. How loud the emergency is written decides whether the readout drop
+            crosses into the advice. The same sentence, the same drop, a different outcome.
+          </li>
+        </ul>
+        <ConditionTable
+          cols={[
+            { label: 'emergency, call 911: no ride tonight', readout: 'ems2', arm: 'emergency', cue: 'no_transport' },
+            { label: 'same-day, call 911: hospital 90 minutes away', readout: 'ems2', arm: 'urgent', cue: 'distance' },
+            { label: 'routine, High over Low: no insurance', readout: 'urgency2', arm: 'routine', cue: 'uninsured' },
+          ]}
+        />
+        <p style={captionStyle}>
+          Table 8. Three readings per condition, the sentence minus the weather sentence on the same scenario,
+          Qwen3.5-4B. One scenario per cell, so the per-condition rows have no interval; the pooled row is the mean over
+          the six conditions with a bootstrap 95 percent interval. Bold: at least 1 log-odds. Every sentence, arm and
+          readout is in Figure 12.
+        </p>
+        <ConditionReplies />
+        <p style={captionStyle}>
+          Table 9. First advice in the 36 emergency replies, six per sentence, coded blind by two coders (kappa 1.00 on
+          first advice, EMS anywhere and cost; 0.62 on how the reply handles the stated constraint). The one non-911
+          opening is the obesity emergency under &quot;the clinic is closed&quot;.
+        </p>
+        <Chart fig="fig12" src="/rural-triage/fig12-conditions.png" alt="Heat maps of the shift from each barrier sentence per chronic condition, for the emergency, same-day and routine arms.">
+          Figure 12. The sentence minus the weather sentence per condition, log-odds. Pick the readout and the arm.
+          Red raises the reading, blue lowers it. One scenario per cell; the bottom row pools the six. Hover a cell for
+          the patient&apos;s message with the sentence in place. On the emergency &quot;call 911&quot; readout the
+          no-ride column is blue in every row; on the same-day arm the distance column is red in every row.
+        </Chart>
+        <p>
+          Caveats. One scenario per condition and arm, so a per-condition cell is a single difference with no
+          interval, and the pooled intervals are over six conditions. The six emergencies were written to be
+          unambiguous, which bounds the reply result. Readouts for four sentences. The coders saw the first 900
+          characters of each reply, so a late mention of cost or of the constraint is missed.
+        </p>
+      </Section>
+
       <Section eyebrow="Knowledge" title="What the model knows about the rural safety net">
         <p>
           Sixteen factual questions: EMTALA, ambulance response and billing, charity care, community health centers,
@@ -758,6 +845,10 @@ export default function CircumstanceSensitiveTriage() {
             the longer-message effect may be a content effect as much as a length effect.
           </li>
           <li style={itemStyle}>
+            The condition test has one scenario per condition and arm, and its six emergencies were written to be
+            unambiguous, which bounds the reply result.
+          </li>
+          <li style={itemStyle}>
             Next: clinician labels on a four-level scale with harm ratings; the same benchmark on larger local models
             and on frontier models through a plain chat API; the gated fix on the replication set and a direction fit on
             the hardship families together, or one per family; a fine-tuned fix scored the same way; a carbon-monoxide set, since a generator in the carport rarely produced a
@@ -770,9 +861,9 @@ export default function CircumstanceSensitiveTriage() {
       <p style={noteStyle}>
         Full record: the lab notebook with every run, interval and negative result, the scenario and text-bank files,
         the code and the neuron handoff for the explorer are in the project repository (<i>interp-lab</i>, notebook of
-        27 October 2026). This note condenses sections 0 to 31 of that notebook; overnight runs (a fine-tuned fix, an
-        independent replication set, control-sentence replies, the coded replies for three breadth families, the
-        condition families) will be added.
+        27 October 2026). This note condenses sections 0 to 32 of that notebook; overnight runs (a fine-tuned fix, an
+        independent replication set, control-sentence replies, the coded replies for three breadth families) will be
+        added.
       </p>
     </WritingLayout>
   );
