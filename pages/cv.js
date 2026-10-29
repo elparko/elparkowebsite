@@ -10,7 +10,7 @@ const SECTIONS = [
       ['2026–', <>AI in facial reconstruction and rhinoplasty planning, VUMC Department of Otolaryngology: whether data can augment surgical planning.</>],
       ['2026–', <>Discharge disposition after free flap reconstruction for head and neck cancer, using Epic Cosmos data.</>],
       ['2026–', <>&ldquo;What Survivors Find Online&rdquo;: the readability, quality, and sources of web information on late effects of head and neck cancer.</>],
-      ['2025–', <><Link href="/crswne-keto-research">Diet and chronic rhinosinusitis</Link> in a mouse model, Rom Lab, LSU Health Shreveport. AΩA Carolyn L. Kuckein Research Fellow.</>],
+      ['2025–', <><Link href="/crswnp-keto-research">Diet and chronic rhinosinusitis</Link> in a mouse model, Rom Lab, LSU Health Shreveport. AΩA Carolyn L. Kuckein Research Fellow.</>],
       ['2026–', <>Founder of <Link href="/pereste-health">Pereste Health</Link>, building AI tools that explain health information at the reader's literacy level.</>],
       ['2026–', <><Link href="/tools">Tools for myself</Link>: a <Link href="/mirror">mirror</Link> display, a <Link href="/voice-assistant">voice assistant</Link>, and <a href="https://github.com/elparko/fa-reader">fa-reader</a>, a Mac app for annotating First Aid.</>],
     ],

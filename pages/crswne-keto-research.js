@@ -1,11 +1,20 @@
-import WritingLayout from '../components/WritingLayout';
+import Head from 'next/head';
+import Link from 'next/link';
+import { SITE_URL } from '@/lib/pages.mjs';
 
-export default function CRSwNPKetoResearch() {
+// Old, misspelled address. Kept so existing links still land on the page.
+const TO = '/crswnp-keto-research/';
+
+export default function CRSwNPKetoResearchRedirect() {
   return (
-    <WritingLayout>
-      <p style={{marginBottom: '20px', textAlign: 'center'}}>
-        Ongoing research investigating whether ketogenic diets can reduce inflammation in chronic rhinosinusitis with nasal polyps (CRSwNP), using a mouse model to compare metabolic and inflammatory effects of different dietary interventions.
-      </p>
-    </WritingLayout>
+    <div style={{minHeight: '100vh', backgroundColor: '#f5f5dc', color: '#000000', padding: '4rem 2rem', textAlign: 'center'}}>
+      <Head>
+        <title>CRSwNP & Keto Research - Parker Smith</title>
+        <meta httpEquiv="refresh" content={`0; url=${TO}`} />
+        <meta name="robots" content="noindex" />
+        <link rel="canonical" href={SITE_URL + TO} />
+      </Head>
+      <p>This page moved to <Link href={TO}>{TO}</Link>.</p>
+    </div>
   );
 }
