@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-110 -70 320 230" width="320" height="230">
+  <style>
+    polygon, polyline, path, line { stroke: #3c3c36; stroke-width: 1; stroke-linejoin: round; }
+    .t      { fill: #e5e5ce; }
+    .l      { fill: #e9e9d1; }
+    .pane   { fill: #f2f2da; fill-opacity: 0.72; }
+    .gate   { fill: #d6d6bb; }
+    .open   { fill: #f5f5dc; }
+    .unit   { fill: #3c3c36; stroke: none; }
+    .hair   { fill: none; stroke: #4a4a43; stroke-width: 0.75; }
+    .tiny   { fill: #35352f; font-family: ui-monospace, Menlo, monospace; font-size: 7px; stroke: none; }
+  </style>
+  <!-- the stream: an isometric slab with a channel of tokens -->
+  <polygon class="pane" points="-100,20 20,-50 140,20 20,90"/>
+  <polygon class="l" points="-100,20 20,90 20,96 -100,26"/>
+  <polygon class="t" points="20,90 140,20 140,26 20,96"/>
+  <polyline class="hair" points="-70,20 20,-32 110,20"/>
+  <polyline class="hair" points="-70,36 20,-16 110,36"/>
+  <!-- tokens flowing in -->
+  <path class="unit" d="M-66,24 l6,-3.5 l0,4 l-6,3.5 Z M-54,17 l6,-3.5 l0,4 l-6,3.5 Z M-42,10 l6,-3.5 l0,4 l-6,3.5 Z M-30,3 l6,-3.5 l0,4 l-6,3.5 Z"/>
+  <!-- gate one: the advice gate, raised (open) -->
+  <polygon class="gate" points="-8,-20 4,-27 4,-2 -8,5"/>
+  <polygon class="open" points="-8,-20 4,-27 4,-44 -8,-37"/>
+  <line x1="-2" y1="-20" x2="-2" y2="-37" class="hair"/>
+  <text class="tiny" x="-34" y="-46">advice gate: open</text>
+  <!-- gate two: the emergency gate, down (shut) -->
+  <polygon class="gate" points="28,-40 40,-47 40,-22 28,-15"/>
+  <line x1="34" y1="-40" x2="34" y2="-22" class="hair"/>
+  <text class="tiny" x="24" y="-54">emergency gate: shut</text>
+  <!-- the push: an arrow into the stream after the gates -->
+  <polyline class="hair" points="62,-62 62,-30"/>
+  <polygon class="unit" points="58,-32 66,-32 62,-24"/>
+  <text class="tiny" x="52" y="-66">push</text>
+  <!-- tokens flowing out, lighter: the reply -->
+  <path class="unit" d="M70,-6 l6,-3.5 l0,4 l-6,3.5 Z M82,1 l6,-3.5 l0,4 l-6,3.5 Z M94,8 l6,-3.5 l0,4 l-6,3.5 Z"/>
+  <text class="tiny" x="-96" y="66">a reply that explains, not advises</text>
+  <text class="tiny" x="-96" y="76">emergencies pass through unchanged</text>
+</svg>

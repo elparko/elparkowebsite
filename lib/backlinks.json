@@ -5,9 +5,13 @@
   "open-slx": [],
   "pereste-health": [
     "circumstance-sensitive-triage",
+    "education-not-advice",
     "cv"
   ],
-  "circumstance-sensitive-triage": [],
+  "circumstance-sensitive-triage": [
+    "education-not-advice"
+  ],
+  "education-not-advice": [],
   "crswnp-keto-research": [
     "cv"
   ],
