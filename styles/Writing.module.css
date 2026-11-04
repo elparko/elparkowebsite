@@ -284,3 +284,16 @@
   object-fit: contain;
   margin: 0 auto 2rem;
 }
+
+.plain {
+  hyphens: none;
+}
+
+.plain p,
+.plain li {
+  max-width: 34em;
+}
+
+.plain p {
+  margin-bottom: 1em;
+}

@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { AREAS, PAGES, byline, pageBySlug, slugFromHref } from '@/lib/pages.mjs';
 import backlinks from '@/lib/backlinks.json';
 import SocialMeta from '@/components/SocialMeta';
+import { Dial, LiteracyProvider, useTier } from '@/components/Literacy';
 
 function PageList({ heading, slugs }) {
   if (!slugs.length) return null;
@@ -27,6 +28,15 @@ function PageList({ heading, slugs }) {
 export default function WritingLayout({ children }) {
   const slug = useRouter().pathname.slice(1);
   const page = pageBySlug[slug];
+  return (
+    <LiteracyProvider enabled={!!page.literacy}>
+      <Layout slug={slug} page={page}>{children}</Layout>
+    </LiteracyProvider>
+  );
+}
+
+function Layout({ slug, page, children }) {
+  const { tier } = useTier();
   const [showArrow, setShowArrow] = useState(false);
   const [preview, setPreview] = useState(null);
   const contentRef = useRef(null);
@@ -123,7 +133,9 @@ export default function WritingLayout({ children }) {
 
         <img src={`/drawings/${slug}.svg`} alt="" className={styles.drawing} />
 
-        <div ref={contentRef} className={styles.content} style={{textAlign: 'justify', lineHeight: '1.8', maxWidth: '100%', wordWrap: 'break-word'}}>
+        {page.literacy && <Dial />}
+
+        <div ref={contentRef} className={`${styles.content} ${tier === 'plain' ? styles.plain : ''}`} style={{textAlign: tier === 'plain' ? 'left' : 'justify', lineHeight: tier === 'plain' ? '1.85' : '1.8', fontSize: tier === 'plain' ? '1.12rem' : undefined, maxWidth: '100%', wordWrap: 'break-word'}}>
           {children}
           {page.log?.length > 0 && (
             <div className={styles.pageList}>
