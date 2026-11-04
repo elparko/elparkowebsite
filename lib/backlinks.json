@@ -6,12 +6,18 @@
   "pereste-health": [
     "circumstance-sensitive-triage",
     "education-not-advice",
+    "proofs-for-the-edit",
     "cv"
   ],
   "circumstance-sensitive-triage": [
     "education-not-advice"
   ],
-  "education-not-advice": [],
+  "education-not-advice": [
+    "proofs-for-the-edit"
+  ],
+  "proofs-for-the-edit": [
+    "education-not-advice"
+  ],
   "crswnp-keto-research": [
     "cv"
   ],

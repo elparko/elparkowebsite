@@ -228,16 +228,17 @@ export default function EducationNotAdvice() {
         </p>
       </Section>
 
-      <Section eyebrow="What could be proved" title="Where a proof assistant would help, and where it cannot">
+      <Section eyebrow="What was proved" title="Eleven theorems, checked by machine, say what the permanent version guaranteed">
         <p>
-          Three claims on this page are linear algebra, and a proof assistant such as Lean could check them by machine. First, removing a unit
-          direction from a vector leaves no component along that direction. Second, a direction built orthogonal to the emergency directions leaves
-          every emergency coordinate unchanged under the removal, at every depth of a network whose embedding and block writes have all been edited.
-          Third, on a message where the switch is shut, the changed model is the unchanged model. The first two claims are exactly what the permanent
-          version guaranteed, and the experiment shows the guarantee was about the wrong quantity: the coordinates were preserved and the call-911
-          answer still broke. The third claim is the one the switch-and-push version rests on, and it is trivial, which is the point. What cannot be
-          proved is anything about the model&apos;s behaviour: where the switch opens on messages it has not seen, whether the explanation it writes is
-          true, or what two readers will call it. Those stay empirical.
+          Three claims on this page are linear algebra, and they have now been proved in the Lean proof assistant, on a
+          <a href="/proofs-for-the-edit"> separate page</a>. Removing a unit direction from a vector leaves no component along that direction. A
+          direction built orthogonal to the emergency directions leaves every emergency coordinate unchanged under the removal, at every depth of
+          a network whose embedding and layer writes have all been edited. And on a message where the switch is shut, the changed model is the
+          unchanged model. The first two are exactly what the permanent version guaranteed, and the measurements confirm it held in the real model
+          to within rounding; the call-911 answer broke anyway, because that answer is not read off the protected coordinates. The third is the
+          one-line reason the switch-and-push version is safe. What cannot be proved is anything about the model&apos;s behaviour: where the
+          switch opens on messages it has not seen, whether the explanation it writes is true, or what two readers will call it. Those stay
+          empirical.
         </p>
       </Section>
 
