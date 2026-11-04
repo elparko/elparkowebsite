@@ -123,7 +123,7 @@ export default function EduChat() {
   }, []);
 
   if (data === false) return <p style={{ opacity: 0.7 }}>The example conversations did not load.</p>;
-  if (!data) return <div style={frame}><div style={bar}><span>prompt</span><span>loading</span></div><div style={thread}>Loading the example conversations.</div></div>;
+  if (!data) return <div style={frame}><div style={bar}><span>message</span><span>loading</span></div><div style={thread}>Loading the example conversations.</div></div>;
 
   const red = set === 'redteam';
   const items = red ? data.redteam.items : data.items;
@@ -145,18 +145,18 @@ export default function EduChat() {
   return (
     <div style={frame}>
       <div style={bar}>
-        <span>{red ? `red team · ${FAMILY[item.family]}` : `prompt · ${data.classes[item.cls]}`}</span>
-        <span>{ed && ed.fire ? 'gate open' : 'gate shut: reply unchanged'}</span>
+        <span>{red ? `break the switch · ${FAMILY[item.family]}` : `message · ${data.classes[item.cls]}`}</span>
+        <span>{ed && ed.fire ? 'switch open: the reply was changed' : 'switch shut: the reply is unchanged'}</span>
       </div>
       <div style={controls}>
         <div style={row}>
           <span style={label}>Set</span>
-          <button type="button" style={chip(!red)} onClick={() => switchSet('study')}>the study prompts</button>
-          {data.redteam.items.length > 0 && <button type="button" style={chip(red)} onClick={() => switchSet('redteam')}>the red-team prompts</button>}
+          <button type="button" style={chip(!red)} onClick={() => switchSet('study')}>the study messages</button>
+          {data.redteam.items.length > 0 && <button type="button" style={chip(red)} onClick={() => switchSet('redteam')}>the messages written to break the switch</button>}
         </div>
         <div style={row}>
-          <span style={label}>Prompt</span>
-          <Dropdown label="Prompt" value={item.id} onChange={setPid} options={options} />
+          <span style={label}>Message</span>
+          <Dropdown label="Message" value={item.id} onChange={setPid} options={options} />
         </div>
         <div style={row}>
           <span style={label}>Compare</span>
@@ -169,14 +169,14 @@ export default function EduChat() {
             ? <div key={i} style={patient}><div style={who}>person{turns.length > 1 ? ` · turn ${Math.floor(i / 2) + 1}` : ''}</div>{t.content}</div>
             : <div key={i} style={assistant}><div style={who}>model, earlier turn (written for the test)</div>{t.content}</div>
         ))}
-        <div style={assistant}><div style={who}>base model</div><Reply text={base.reply} /></div>
+        <div style={assistant}><div style={who}>unchanged model</div><Reply text={base.reply} /></div>
         {ed && (ed.fire
           ? <div style={edited}><div style={who}>{conds[useCond]}</div><Reply text={ed.reply} /></div>
-          : <div style={{ ...assistant, opacity: 0.7 }}><div style={who}>{conds[useCond]}</div>The gate did not open on this prompt, so the edited model gives the base model&apos;s reply, unchanged.</div>)}
+          : <div style={{ ...assistant, opacity: 0.7 }}><div style={who}>{conds[useCond]}</div>The switch did not open on this message, so the changed model gives the unchanged model&apos;s reply, word for word.</div>)}
       </div>
       {(base.stance.length > 0 || (ed && ed.stance.length > 0)) && (
         <div style={coded}>
-          {base.stance.length > 0 && <div>Base model, two readers: <Codes r={base} /></div>}
+          {base.stance.length > 0 && <div>Unchanged model, two readers: <Codes r={base} /></div>}
           {ed && ed.fire && ed.stance.length > 0 && <div>{conds[useCond]}, two readers: <Codes r={ed} /></div>}
         </div>
       )}

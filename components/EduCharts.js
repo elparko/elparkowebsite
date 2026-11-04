@@ -63,7 +63,7 @@ const mark = (show, hide, node) => ({
   onKeyDown: (e) => { if (e.key === 'Escape') hide(); },
 });
 function Hint() {
-  return <div style={hint}>Hover, tap or tab to a mark for the numbers.</div>;
+  return <div style={hint}>Hover, tap or tab to a bar for the numbers.</div>;
 }
 function Loading({ ok, src, alt, children }) {
   if (ok === false) return <img src={src} alt={alt} style={{ display: 'block', width: '100%', height: 'auto', background: '#fff', border: '1px solid rgba(0, 0, 0, 0.15)' }} />;
@@ -96,7 +96,7 @@ function stanceNode(classLabel, condLabel, b) {
       <div style={{ marginTop: 3 }}>
         Of {b.n} replies, mean of two readers: {Object.entries(b.stance).filter(([, v]) => v > 0).map(([k, v]) => `${v} ${STANCE_LABEL[k]}`).join(', ')}.
         Explanation score {b.explains} of 3; {b.false} replies with a false statement.
-        {b.fired != null && b.fired < b.n ? ` The gate fired on ${b.fired} of ${b.n}.` : ''}
+        {b.fired != null && b.fired < b.n ? ` The switch opened on ${b.fired} of ${b.n}.` : ''}
       </div>
     </div>
   );
@@ -114,13 +114,13 @@ export function GateFig({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <div style={gridStyle}>
-        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of prompts in each class on which the gate opens (the edit then fires)</div>
+        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of messages in each class on which the switch opened and the reply was changed</div>
         <div />
         {axis}
         {classes.map((c) => {
           const g = d.gate[c.key];
           const share = g.fires / g.n;
-          const node = <div><div><b>{c.label}</b></div><div style={{ marginTop: 3 }}>The gate opened on {g.fires} of {g.n} prompts. {c.about}</div></div>;
+          const node = <div><div><b>{c.label}</b></div><div style={{ marginTop: 3 }}>The switch opened on {g.fires} of {g.n} messages. {c.about}</div></div>;
           return (
             <Fragment key={c.key}>
               <div style={{ lineHeight: 1.2, hyphens: 'none', paddingRight: 4 }}>{c.label}</div>
@@ -134,22 +134,22 @@ export function GateFig({ src, alt }) {
           );
         })}
       </div>
-      <div style={{ ...small, marginTop: 16 }}>The one-word answer to &ldquo;should this person call 911 right now?&rdquo;, by condition</div>
+      <div style={{ ...small, marginTop: 16 }}>The one-word answer to &ldquo;should this person call 911 right now?&rdquo;, by version of the model</div>
       <div style={{ ...row, marginTop: 6 }}>
-        <span style={small}>Condition</span>
+        <span style={small}>Version</span>
         {conds.map(([k, label]) => <button key={k} type="button" aria-pressed={k === cond} style={chip(k === cond)} onClick={() => setCond(k)}>{label}</button>)}
       </div>
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 420 }}>
           <thead>
-            <tr><th style={th}>class</th><th style={{ ...th, textAlign: 'right' }}>base model</th><th style={{ ...th, textAlign: 'right' }}>{conds.find(([k]) => k === cond)[1]}</th><th style={{ ...th, textAlign: 'right' }}>change</th><th style={{ ...th, textAlign: 'right' }}>cases at even odds or above</th></tr>
+            <tr><th style={th}>class</th><th style={{ ...th, textAlign: 'right' }}>unchanged model</th><th style={{ ...th, textAlign: 'right' }}>{conds.find(([k]) => k === cond)[1]}</th><th style={{ ...th, textAlign: 'right' }}>change</th><th style={{ ...th, textAlign: 'right' }}>cases at even odds or above</th></tr>
           </thead>
           <tbody>
             {withReadout.map((c) => {
               const r = d.gate[c.key].readout;
               const b = r.none; const v = r[cond];
               const delta = v.mean - b.mean;
-              const node = <div><div><b>{c.label}</b></div><div style={{ marginTop: 3 }}>Log-odds of &ldquo;Yes&rdquo; against &ldquo;No&rdquo;, mean over the class: base {b.mean > 0 ? '+' : ''}{b.mean}, under this condition {v.mean > 0 ? '+' : ''}{v.mean}. Share of cases at even odds or above: base {(b.share_yes * 100).toFixed(0)} percent, this condition {(v.share_yes * 100).toFixed(0)} percent.</div></div>;
+              const node = <div><div><b>{c.label}</b></div><div style={{ marginTop: 3 }}>The model&apos;s lean toward &ldquo;Yes&rdquo; on the call-911 question, in log-odds, averaged over the class: unchanged model {b.mean > 0 ? '+' : ''}{b.mean}, this version {v.mean > 0 ? '+' : ''}{v.mean}. Share of cases at even odds or above: unchanged {(b.share_yes * 100).toFixed(0)} percent, this version {(v.share_yes * 100).toFixed(0)} percent.</div></div>;
               return (
                 <tr key={c.key} {...mark(show, hide, node)}>
                   <td style={td}>{c.label}</td>
@@ -181,7 +181,7 @@ export function StanceFig({ src, alt }) {
   return (
     <div style={wrap} ref={ref}>
       <div style={gridStyle}>
-        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>What the reply does for the person, as coded by two readers blind to condition (share of replies)</div>
+        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>What the reply does for the person, as coded by two readers who did not know the version (share of replies)</div>
         <div />
         {axis}
         {d.classes.map((c) => (
@@ -201,13 +201,13 @@ export function StanceFig({ src, alt }) {
         {Object.entries(STANCE_LABEL).map(([k, label]) => <Swatch key={k} color={STANCE[k]} label={label} />)}
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
-        Each class has four bars, one per condition in this order: base model, gated shift, gated random direction, always-on removal. Select a class for its numbers.
+        Each class has four bars, one per version in this order: the unchanged model, the switch-and-push change, a random push through the same switch, the permanent removal with no switch. Select a class for its numbers.
       </div>
-      <div style={{ ...small, marginTop: 12 }}>{cls.label}, {block.none.n} prompts: {cls.about}</div>
+      <div style={{ ...small, marginTop: 12 }}>{cls.label}, {block.none.n} messages: {cls.about}</div>
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 520, marginTop: 4 }}>
           <thead>
-            <tr><th style={th}>condition</th><th style={th}>gate fired</th><th style={th}>education only</th><th style={th}>individualized</th><th style={th}>emergency redirect</th><th style={th}>explains (1 to 3)</th><th style={th}>false statements</th><th style={th}>911 on first line</th><th style={th}>you, your per 100 words</th></tr>
+            <tr><th style={th}>version</th><th style={th}>switch opened</th><th style={th}>education only</th><th style={th}>individualized</th><th style={th}>emergency redirect</th><th style={th}>explains (1 to 3)</th><th style={th}>false statements</th><th style={th}>911 on first line</th><th style={th}>you, your per 100 words</th></tr>
           </thead>
           <tbody>
             {conds.map((k) => {
@@ -262,13 +262,13 @@ function ArmFig({ src, alt, block, title, extra }) {
         {Object.entries(STANCE_LABEL).map(([k, label]) => <Swatch key={k} color={STANCE[k]} label={label} />)}
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
-        Each class has one bar per arm in this order: {f.conds.map((k) => k.label).join(', ')}. Select a class for its numbers.
+        Each class has one bar per version in this order: {f.conds.map((k) => k.label).join(', ')}. Select a class for its numbers.
       </div>
-      <div style={{ ...small, marginTop: 12 }}>{cls.label}, {f.classes[sel].none.n} prompts</div>
+      <div style={{ ...small, marginTop: 12 }}>{cls.label}, {f.classes[sel].none.n} messages</div>
       <div className="scrollX" style={{ overflowX: 'auto' }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 520, marginTop: 4 }}>
           <thead>
-            <tr><th style={th}>arm</th><th style={th}>education only</th><th style={th}>individualized</th><th style={th}>explains (1 to 3)</th><th style={th}>false statements</th><th style={th}>names a clinician</th><th style={th}>you, your per 100 words</th>{extra && <th style={th}>{extra.head}</th>}</tr>
+            <tr><th style={th}>version</th><th style={th}>education only</th><th style={th}>individualized</th><th style={th}>explains (1 to 3)</th><th style={th}>false statements</th><th style={th}>names a clinician</th><th style={th}>you, your per 100 words</th>{extra && <th style={th}>{extra.head}</th>}</tr>
           </thead>
           <tbody>
             {f.conds.map((k) => {
@@ -291,10 +291,10 @@ function ArmFig({ src, alt, block, title, extra }) {
   );
 }
 export function DoseFig(props) {
-  return <ArmFig {...props} block="dose" title="Stance by dose on the three advice classes, as coded by a second pair of readers" extra={{ head: 'replies that loop', cell: (b) => `${b.degenerate} of ${b.n}` }} />;
+  return <ArmFig {...props} block="dose" title="The stance of the reply by strength of the push on the three advice classes, as coded by a second pair of readers" extra={{ head: 'replies that loop', cell: (b) => `${b.degenerate} of ${b.n}` }} />;
 }
 export function ReferralFig(props) {
-  return <ArmFig {...props} block="referral" title="Stance under the two ways of keeping a referral, as coded by a third pair of readers" />;
+  return <ArmFig {...props} block="referral" title="The stance of the reply under two ways of keeping a referral, as coded by a third pair of readers" />;
 }
 
 // Figure 5: the red team, one row per attack family
@@ -302,19 +302,19 @@ export function RedTeamFig({ src, alt }) {
   const d = useEdu();
   const { ref, tip, show, hide } = useTip();
   if (!d) return <Loading ok={d} src={src} alt={alt} />;
-  if (!d.redteam) return <div style={{ ...wrap, opacity: 0.6 }}>The red-team numbers are not published yet.</div>;
+  if (!d.redteam) return <div style={{ ...wrap, opacity: 0.6 }}>The numbers for this figure are not published yet.</div>;
   const fams = d.redteam.families;
   const LABEL = { disguised_advice: 'advice disguised as a general question', third_person_proxy: 'advice for a named other person', advice_inside_education: 'advice attached to an education question', student_framing: 'a student asks about a patient', calm_emergency: 'an emergency phrased as minor', emergency_in_education: 'a live emergency inside an education question', two_turn: 'the request in a second turn', sloppy_advice: 'typos, run-on text, no question mark', cued_emergency: 'an emergency with an access sentence in front', education_with_dose: 'education questions about doses' };
   return (
     <div style={wrap} ref={ref}>
       <div style={gridStyle}>
-        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of prompts in each attack family on which the gate opens</div>
+        <div style={{ gridColumn: '1 / -1', opacity: 0.6 }}>Share of messages in each family on which the switch opened</div>
         <div />
         {axis}
         {fams.map((f) => {
           const emergency = ['calm_emergency', 'emergency_in_education', 'cued_emergency'].includes(f.key);
           const share = f.fires / f.n;
-          const node = <div><div><b>{LABEL[f.key]}</b></div><div style={{ marginTop: 3 }}>{f.about}. Expected: {f.expected}. The gate opened on {f.fires} of {f.n}. Base model: 911 on the first line in {f.none.ems_first_line}, individualized markers in {f.none.individualized}, a clinician named in {f.none.referral}. Edited model: {f.shift_prefill.ems_first_line}, {f.shift_prefill.individualized} and {f.shift_prefill.referral}.</div></div>;
+          const node = <div><div><b>{LABEL[f.key]}</b></div><div style={{ marginTop: 3 }}>{f.about}. Expected: {f.expected}. The switch opened on {f.fires} of {f.n}. Unchanged model: 911 on the first line in {f.none.ems_first_line}, individualized-advice wording in {f.none.individualized}, a clinician named in {f.none.referral}. Changed model: {f.shift_prefill.ems_first_line}, {f.shift_prefill.individualized} and {f.shift_prefill.referral}.</div></div>;
           return (
             <Fragment key={f.key}>
               <div style={{ lineHeight: 1.2, hyphens: 'none', paddingRight: 4 }}>{LABEL[f.key]}</div>
@@ -328,11 +328,11 @@ export function RedTeamFig({ src, alt }) {
           );
         })}
       </div>
-      <div style={legendRow}><Swatch color={C.blue} label="families where the gate should open" /><Swatch color={C.orange} label="emergency families where it must stay shut" /></div>
+      <div style={legendRow}><Swatch color={C.blue} label="families where the switch should open" /><Swatch color={C.orange} label="emergency families where it must stay shut" /></div>
       <div className="scrollX" style={{ overflowX: 'auto', marginTop: 12 }}>
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 560 }}>
           <thead>
-            <tr><th style={th}>family</th><th style={th}>n</th><th style={th}>gate opens</th><th style={th}>911 first line, base → edited</th><th style={th}>individualized markers, base → edited</th><th style={th}>names a clinician, base → edited</th>{fams[0].readers && <th style={th}>readers: education only, base → edited</th>}{fams[0].readers && <th style={th}>readers: emergency redirect, base → edited</th>}</tr>
+            <tr><th style={th}>family</th><th style={th}>n</th><th style={th}>switch opened</th><th style={th}>911 on the first line, unchanged → changed</th><th style={th}>individualized-advice wording, unchanged → changed</th><th style={th}>names a clinician, unchanged → changed</th>{fams[0].readers && <th style={th}>readers: education only, unchanged → changed</th>}{fams[0].readers && <th style={th}>readers: emergency redirect, unchanged → changed</th>}</tr>
           </thead>
           <tbody>
             {fams.map((f) => (
