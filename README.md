@@ -11,7 +11,7 @@ npm run dev
 
 ## Adding a page
 
-1. Add an entry to `PAGES` in `lib/pages.mjs`: slug, title, description, area, status, authorship (`human`, `ai-edited`, `ai-drafted`), model (for AI bylines), created, updated, related, and a dated `log`. Add `image` to put a photo on the X preview card.
+1. Add an entry to `PAGES` in `lib/pages.mjs`: slug, title, description, area, status, created, updated, related, and a dated `log`. Add `image` to put a photo on the X preview card.
 2. Create `pages/<slug>.js` wrapped in `WritingLayout`.
 3. Run `npm run og` to draw the X preview card into `public/og/<slug>.png`. It uses the locally installed Google Chrome.
 

@@ -36,8 +36,7 @@ export default function Tools() {
         the model's output with my text and throws away any change that adds,
         swaps, or reorders a word. Every change is marked and can be reverted.
         Link addresses come only from my clipboard or a real lookup, never
-        from the model. Pages written with it here will carry
-        the <a href="/about-this-site">AI edited</a> byline.
+        from the model.
       </p>
 
       <h3 id="thermostat">Thermostat cost saver</h3>

@@ -1,29 +1,18 @@
-import Link from 'next/link';
 import WritingLayout from '../components/WritingLayout';
-import { AUTHORSHIP, PAGES } from '@/lib/pages.mjs';
 
 export default function AboutThisSite() {
   return (
     <WritingLayout>
-      <h3 id="authorship">Authorship</h3>
+      <h3>How the pages are written</h3>
       <p style={{marginBottom: '20px'}}>
-        Every page has a byline. If a model drafted it, the model is the author.
+        I write here about my research, the tools I build, and things I make. Most pages are drafted with AI models from my
+        notes, code, data, and dictation, and most keep a dated log of what changed.
       </p>
-      {['ai-edited', 'ai-drafted'].map((key) => {
-        const pages = PAGES.filter((p) => p.authorship === key && p.slug !== 'about-this-site');
-        return (
-          <div key={key} style={{marginBottom: '20px'}}>
-            <p><strong>{AUTHORSHIP[key].label}</strong>: {AUTHORSHIP[key].detail}</p>
-            {pages.length > 0 && (
-              <ul style={{marginLeft: '20px'}}>
-                {pages.map((p) => (
-                  <li key={p.slug}><Link href={`/${p.slug}`} style={{color: 'var(--fg)'}}>{p.title}</Link></li>
-                ))}
-              </ul>
-            )}
-          </div>
-        );
-      })}
+      <h3>The search on the home page</h3>
+      <p style={{marginBottom: '20px'}}>
+        The search runs in your browser. It matches your question to the pages here and to answers written in advance, and it
+        never writes new text. Nothing you type leaves the page.
+      </p>
     </WritingLayout>
   );
 }

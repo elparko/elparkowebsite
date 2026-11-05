@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "@/styles/Writing.module.css";
 import { useState, useEffect, useRef } from 'react';
-import { AREAS, PAGES, byline, formatDate, pageBySlug, slugFromHref } from '@/lib/pages.mjs';
+import { AREAS, PAGES, formatDate, pageBySlug, slugFromHref } from '@/lib/pages.mjs';
 import backlinks from '@/lib/backlinks.json';
 import SocialMeta from '@/components/SocialMeta';
 import { Dial, LiteracyProvider } from '@/components/Literacy';
@@ -110,7 +110,7 @@ function Layout({ slug, page, children }) {
           {AREAS[page.area]}
           {' · '}{page.status.replace('-', ' ')}
           <br />
-          {page.authorship === 'human' ? byline(page) : <Link href="/about-this-site#authorship">{byline(page)}</Link>}
+          by Parker
           <br />
           created {formatDate(page.created)} · updated {formatDate(page.updated)}
         </p>
@@ -143,7 +143,7 @@ function Layout({ slug, page, children }) {
         <div className={styles.preview} style={{top: preview.top, left: preview.left, transform: preview.above ? 'translateY(-100%)' : 'none'}}>
           <strong>{previewPage.title}</strong>
           <p>{previewPage.description}</p>
-          <small>{AREAS[previewPage.area]} · {previewPage.status.replace('-', ' ')} · {byline(previewPage)} · updated {formatDate(previewPage.updated)}</small>
+          <small>{AREAS[previewPage.area]} · {previewPage.status.replace('-', ' ')} · updated {formatDate(previewPage.updated)}</small>
         </div>
       )}
 
