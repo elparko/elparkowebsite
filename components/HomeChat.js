@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import styles from '@/styles/HomeChat.module.css';
-import { EMBED_DTYPE, EMBED_MODEL, answerableNow, reply } from '@/lib/guide.mjs';
+import { EMBED_DTYPE, EMBED_MODEL, answerReply, answerableNow, decodeAnswerVectors, reply } from '@/lib/guide.mjs';
 import EMBEDDINGS from '@/lib/embeddings.json';
 
 // The runtime comes from a CDN on the visitor's first keystroke, so the site's own bundle stays small.
@@ -19,6 +19,7 @@ const LEAD = {
 };
 
 const HOW = {
+  answer: 'A written answer. Nothing here is generated.',
   meaning: 'Matched by meaning and by words.',
   words: 'Matched by words only. The search model had not loaded.',
 };
@@ -38,15 +39,31 @@ function Items({ items, className }) {
   );
 }
 
-function Reply({ r }) {
+function Reply({ r, onPick }) {
   return (
     <>
       {LEAD[r.kind] && <p className={styles.lead}>{LEAD[r.kind]}</p>}
+      {r.kind === 'answer' && (
+        <>
+          <p className={styles.answering}>Answering: {r.question}</p>
+          <p className={styles.answer}>{r.answer}</p>
+        </>
+      )}
       {r.items.length > 0 && <Items items={r.items} className={styles.items} />}
       {r.related?.length > 0 && (
         <>
           <p className={styles.relatedLead}>Related</p>
           <Items items={r.related} className={`${styles.items} ${styles.related}`} />
+        </>
+      )}
+      {r.suggest?.length > 0 && (
+        <>
+          <p className={styles.relatedLead}>{r.kind === 'answer' ? 'Other written answers' : 'Questions with written answers'}</p>
+          <div className={styles.suggest}>
+            {r.suggest.map((s) => (
+              <button key={s.id} type="button" onClick={() => onPick(s)}>{s.question}</button>
+            ))}
+          </div>
         </>
       )}
       {HOW[r.kind] && <p className={styles.how}>{HOW[r.kind]}</p>}
@@ -60,6 +77,7 @@ export default function HomeChat() {
   const [status, setStatus] = useState('idle'); // idle | loading | ready | failed
   const [progress, setProgress] = useState('');
   const extractor = useRef(null);
+  const answerVectors = useRef(null);
   const loading = useRef(null);
   const nextId = useRef(0);
   const inputRef = useRef(null);
@@ -83,7 +101,8 @@ export default function HomeChat() {
     setStatus('loading');
     loading.current = (async () => {
       try {
-        const tf = await loadRuntime();
+        const [tf, av] = await Promise.all([loadRuntime(), import('@/lib/answer-vectors.json')]);
+        answerVectors.current = decodeAnswerVectors(av.default, (b) => Uint8Array.from(atob(b), (c) => c.charCodeAt(0)).buffer);
         tf.env.allowLocalModels = false;
         const seen = new Map();
         extractor.current = await tf.pipeline('feature-extraction', EMBED_MODEL, {
@@ -111,11 +130,16 @@ export default function HomeChat() {
     if (!extractor.current) return reply(query, null, VECTORS);
     try {
       const out = await extractor.current(query, { pooling: 'mean', normalize: true });
-      return reply(query, out.data, VECTORS);
+      return reply(query, out.data, VECTORS, answerVectors.current);
     } catch (e) {
       console.error(e);
       return reply(query, null, VECTORS);
     }
+  }
+
+  function pick(s) {
+    const id = nextId.current++;
+    setLog((l) => [...l, { id, q: s.question, r: answerReply(s.id) }]);
   }
 
   async function ask(e) {
@@ -125,8 +149,15 @@ export default function HomeChat() {
     const id = nextId.current++;
     setQ('');
     setLog((l) => [...l, { id, q: query, r: null }]);
+    const set = (r) => setLog((l) => l.map((m) => (m.id === id ? { ...m, r } : m)));
     const r = await answer(query);
-    setLog((l) => l.map((m) => (m.id === id ? { ...m, r } : m)));
+    set(r);
+    // A strong word match answers before the model has loaded. Once it loads, the reply is redone with
+    // meaning, which is what finds written answers.
+    if (r.kind === 'words') {
+      await loadModel();
+      if (extractor.current) set(await answer(query));
+    }
   }
 
   function onChange(e) {
@@ -185,7 +216,7 @@ export default function HomeChat() {
           <li key={m.id} className={styles.turn}>
             <p className={styles.you}>{m.q}</p>
             <div className={styles.them}>
-              {m.r ? <Reply r={m.r} /> : <p className={styles.wait}>Looking…</p>}
+              {m.r ? <Reply r={m.r} onPick={pick} /> : <p className={styles.wait}>Looking…</p>}
             </div>
           </li>
         ))}

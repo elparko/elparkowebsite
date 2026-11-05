@@ -151,7 +151,7 @@ export default function Home() {
       <section className={`${styles.hero} ${styles.night}`} id="top" ref={hero}>
         <header className={styles.side}>
           <h1>Parker Smith</h1>
-          <p>Medical student, builds things.</p>
+          <p>Medical student;<br />builds things.</p>
           <p className={styles.company}><Link href="/pereste-health">Pereste Health, Inc.</Link></p>
         </header>
 

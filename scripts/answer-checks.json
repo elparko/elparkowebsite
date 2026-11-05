@@ -1,0 +1,111 @@
+{
+ "off_topic": [
+  "What is the weather in Shreveport today?",
+  "Who won the Super Bowl this year?",
+  "What dose of ibuprofen should I take for a headache?",
+  "Tell me a joke.",
+  "How old is Parker?",
+  "Is Parker married or dating anyone?",
+  "Where does Parker live? What is his home address?",
+  "What is Parker's salary?",
+  "Who is Parker voting for?",
+  "What is the capital of France?",
+  "How do I treat a sprained ankle?",
+  "Can I take Tylenol and ibuprofen together?",
+  "What is Parker's phone number?",
+  "Who is Parker's favorite NBA team?",
+  "What should I cook for dinner tonight?",
+  "Write me a poem about the ocean.",
+  "What is the price of Bitcoin?",
+  "Who is the president of the United States?",
+  "How many calories are in a banana?",
+  "What is the best programming language to learn first?",
+  "Does Parker have siblings?",
+  "What is Parker's political party?",
+  "How tall is Parker?",
+  "Recommend a good restaurant in Shreveport.",
+  "How do I lose 20 pounds fast?"
+ ],
+ "near_miss": [
+  {
+   "question": "Is Parker hiring?",
+   "why": "The site describes his work and Pereste Health but says nothing about open positions or hiring."
+  },
+  {
+   "question": "Can I invest in Pereste Health?",
+   "why": "Pereste Health has a page, but it does not discuss funding or investment."
+  },
+  {
+   "question": "What is Parker's Step 1 score?",
+   "why": "The CV lists education, not board exam scores."
+  },
+  {
+   "question": "Does SMILE-MSI run on Linux?",
+   "why": "The page mentions Windows packaging only in its log, and says nothing about Linux support."
+  },
+  {
+   "question": "What did the mice eat exactly in the keto study?",
+   "why": "The keto page covers the question and mouse model, but exact feed composition is not given in the sources read."
+  },
+  {
+   "question": "Which residency programs did Parker apply to?",
+   "why": "The CV gives his MD class of 2029, with no residency applications or specialty choice."
+  },
+  {
+   "question": "Is the Pereste Health iOS app available on the App Store?",
+   "why": "The company page only says the iOS app was started in May 2026, not released."
+  },
+  {
+   "question": "How much does Pereste Health charge per patient?",
+   "why": "The site gives no pricing or billing details for Pereste Health."
+  },
+  {
+   "question": "What is Parker's GPA at LSU Health Shreveport?",
+   "why": "The CV lists degrees and dates but no grades."
+  },
+  {
+   "question": "Has the SMILE-MSI paper been accepted by the Journal of Open Source Software?",
+   "why": "The log says only that a paper was drafted for that journal, not that it was submitted or accepted."
+  },
+  {
+   "question": "Does open-slx work with Waters or Thermo imaging data?",
+   "why": "open-slx is described as converting SCiLS Lab projects only, and no other vendors are mentioned."
+  },
+  {
+   "question": "Is Parker going into otolaryngology or plastic surgery?",
+   "why": "The CV shows research in otolaryngology and a plastic surgery journal club, but states no career choice."
+  },
+  {
+   "question": "Can I hire Parker as a freelance developer?",
+   "why": "The site lists tools and projects but says nothing about freelance availability."
+  },
+  {
+   "question": "Is the keto diet safe for people with chronic sinusitis?",
+   "why": "The keto page is a mouse model study and does not give advice for people."
+  },
+  {
+   "question": "How many patients use the Pereste Health app?",
+   "why": "The company page does not give any user counts, and the app is still being built."
+  },
+  {
+   "question": "Does the education-not-advice edit work on GPT or Llama models?",
+   "why": "The page covers a small Qwen model edit and does not claim results on other model families."
+  },
+  {
+   "question": "What is the exact number of lipids SMILE-MSI can annotate?",
+   "why": "The description says it annotates tissue lipids but this question asks for a count the site may not state."
+  },
+  {
+   "question": "Which Hippocratic Collective issue comes after Ex Vivo issue one?",
+   "why": "The Mohs Map page mentions only the inaugural issue of Ex Vivo."
+  },
+  {
+   "question": "What books does Parker recommend most?",
+   "why": "The Book Log lists what he has read and is reading, but a ranked recommendation is not stated."
+  },
+  {
+   "question": "How much did the sauna build cost?",
+   "why": "The sauna page is described as a hand build, and a total cost is not confirmed in the descriptions read."
+  }
+ ]
+}

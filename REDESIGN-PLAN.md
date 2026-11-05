@@ -7,7 +7,7 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
 - Home: two full screens, as in the first version of the site. Between them the page settles on one: scrolling down more
   than a quarter of the way lands on the second screen, less returns to the top, and scrolling up works the same in
   reverse (`useSnapBetween` in `pages/index.js`). Below the top of the second screen, scrolling is free. The first is always dark:
-  the name, "Medical student, builds things." and a link to Pereste Health, Inc. on the left, the links (CV, GitHub, X,
+  the name, "Medical student;" with "builds things." on the line below and a link to Pereste Health, Inc. on the left, the links (CV, GitHub, X,
   Email, About this site) stacked on the right, and one centered search bar that becomes a chat window after the first
   question. The second follows the site theme and shows every page as a card, grouped by type (Research, Projects,
   Company, Builds, Web, Essays, Art, Log), newest first, with dates as month, day, year. On a phone the links sit in a
@@ -20,6 +20,13 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
 - Each page in `lib/pages.mjs` has `topics`: words a visitor might use for it that the title and description lack (the
   CV lists education, schools, jobs and awards). Topics go into the word index and the embedded text. A reply also lists
   up to two of the top page's `related` pages under "Related".
+- Written answers: `lib/answers.mjs` holds 99 pre-answered questions drafted from the pages (each with 5 to 7
+  phrasings, the answer, and links), plus 6 personal ones with empty answers for Parker to fill in. Once the model
+  has loaded, a question gets a written answer directly when it is close in meaning to a phrasing, its own words
+  appear in that entry, and no other entry is about as close. Otherwise up to three entries are offered as buttons.
+  On 198 reworded test questions: 37 answered directly and correctly, 4 given a closely related entry's answer,
+  99 offered the right question, 58 found nothing; none of 25 off-topic questions got an answer. Answer vectors
+  (`lib/answer-vectors.json`, signed bytes, 181 KB compressed) load only after the model.
 - Search tolerates typos ("sauana", "lipdis"), matches the start of a word ("spectro"), and no longer mistakes topic
   questions that contain "email", "reach" or "latest" for a contact or "what's new" request.
 - The reading dial changes only the words: both levels use the same alignment, size and line height. Writing pages are

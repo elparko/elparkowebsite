@@ -169,6 +169,45 @@
   margin-top: 0.5rem;
 }
 
+.answering {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.answer {
+  margin-top: 0.3rem !important;
+  margin-bottom: 0.75rem !important;
+  line-height: 1.6;
+}
+
+.suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.suggest button {
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.suggest button:hover {
+  border-color: var(--fg);
+}
+
+.suggest button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
 .relatedLead {
   margin-top: 0.85rem !important;
   padding-top: 0.6rem;
