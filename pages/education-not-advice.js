@@ -52,11 +52,11 @@ export default function EducationNotAdvice() {
       </Plain>
       <Plain plain={
         <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
-          An early research note from 3 November 2026. The answers were graded by other computer programs, not by doctors. This is shared so people can check it. It is not medical advice.
+          An early research note from 3 November 2026, corrected and extended on 4 November 2026. The answers were graded by other computer programs, not by doctors. This is shared so people can check it. It is not medical advice.
         </p>
       }>
         <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
-          Preliminary research note, 3 November 2026. One open chat model with 4 billion parameters (Qwen3.5-4B), prompts written by the author,
+          Preliminary research note, 3 November 2026; counts corrected and plain-words results added 4 November 2026. One open chat model with 4 billion parameters (Qwen3.5-4B), prompts written by the author,
           replies coded by pairs of independent artificial intelligence (AI) readers who did not know which version of the model wrote each reply.
           No clinician labels yet. Shared to invite scrutiny. Not medical advice.
         </p>
@@ -90,17 +90,18 @@ export default function EducationNotAdvice() {
           <p>
             The chat window shows the real messages and the real replies. Pick a message, then pick which version of the model to compare with the
             unchanged model. The models wrote each reply to a fixed length, so some replies stop mid-sentence. In the final version, a reply that the
-            model was told to change starts with one fixed sentence, shown with a box around it.
+            model was told to change starts with one fixed sentence, shown with a box around it. We wrote that sentence, so no count of clinicians
+            on this page includes it. Reader counts from panels that saw the sentence are marked where they appear.
           </p>
         </Plain>
         <EduChat />
         <Plain plain={
           <ul style={listStyle}>
             <li style={itemStyle}>Before the change, the program gave personal advice to 12 of 16 people who asked about their own case. After the change, to 2 of 16.</li>
-            <li style={itemStyle}>For 118 messages that were not asking for personal advice, the changed program wrote exactly the same words as before.</li>
+            <li style={itemStyle}>For 118 messages that were not asking for personal advice, including the emergencies, the changed program wrote exactly the same words as before.</li>
             <li style={itemStyle}>Every one of 48 emergency messages still got the same answer to &quot;should this person call 911 right now?&quot;</li>
             <li style={itemStyle}>A cruder version of the same idea, baked into the program for good, failed. It lectured a stroke patient about strokes instead of saying call 911.</li>
-            <li style={itemStyle}>The change has a cost. When the program explains instead of advising, it sometimes makes things up, and it stops telling people to see a doctor. Adding one fixed sentence that names a clinician fixes the second problem and helps with the first.</li>
+            <li style={itemStyle}>The change has a cost. When the program explains instead of advising, it sometimes makes things up, and it stops telling people to see a doctor. The final version starts each changed answer with a fixed sentence that names a clinician, but we wrote that sentence. In the program&apos;s own words, only 3 of 36 changed answers mention a doctor.</li>
             <li style={itemStyle}>We wrote 96 messages meant to trick the change. None of the emergencies fooled it.</li>
           </ul>
         }>
@@ -115,8 +116,8 @@ export default function EducationNotAdvice() {
             </li>
             <li style={itemStyle}>
               <b>The emergency answer does not move.</b> The model&apos;s one-word answer to &quot;should this person call 911 right now?&quot; is identical
-              under the change on 24 emergencies and on 24 more written afterwards in new wording. Two readers coded the same number of emergency
-              replies as a call-911 redirect under both versions: 21 of 24 and 23 of 24. The change never fires on an emergency, so it cannot
+              under the change on 24 emergencies and on 24 more written afterwards in new wording. Two readers coded about the same number of emergency
+              replies as a call-911 redirect under both versions: a mean of 20.5 and 21 of 24, and 23 of 24 under both on the new wording. The change never fires on an emergency, so it cannot
               touch the emergency reply.
             </li>
             <li style={itemStyle}>
@@ -127,10 +128,11 @@ export default function EducationNotAdvice() {
             </li>
             <li style={itemStyle}>
               <b>The cost is invented facts and a lost referral.</b> When the change pushes the model to explain a case it was asked to judge, the
-              model makes up mechanism. Replies with a false statement rose from 0 to 7 of 16 routine cases (&quot;a cold often becomes pneumonia&quot;;
-              a bump on a bed rail called pressure necrosis). And the advice to contact a provider disappears along with the advice about the case.
-              Starting each changed reply with one fixed sentence that names a clinician puts the referral back in every reply and lowers the
-              invented facts without removing them.
+              model makes up mechanism. In the first reader panel, replies with a false statement rose from 0 to 7 of 16 routine cases (&quot;a URI often becomes pneumonia&quot;;
+              a bump on a bed rail called pressure necrosis). And the advice to contact a provider disappears along with the advice about the case:
+              a clinician is named in 34 of 36 unchanged replies and in 2 of 36 replies changed without a fixed first sentence. The final version
+              starts each changed reply with one fixed sentence that names a clinician. We wrote that sentence, so it is not a result: in that
+              version, with the sentence cut off, the model&apos;s own words name a clinician in 3 of 36 changed replies.
             </li>
             <li style={itemStyle}>
               <b>Ninety-six messages written to break the switch did not open it on any emergency.</b> Advice disguised as a general question, advice
@@ -154,7 +156,7 @@ export default function EducationNotAdvice() {
               The change is a switch and a push. The switch has two checks. Does this message lean toward advice? And does it look like an emergency? Only when the answers are yes and no does the push happen. The push nudges the summary away from the advice direction, and the program then writes as if it had been asked a general question.
             </p>
             <p>
-              In the final version, every changed answer also starts with one fixed sentence: &quot;This is general information, not advice about your own case; a clinician who can examine you should decide what applies to you.&quot;
+              In the final version, every changed answer also starts with one fixed sentence: &quot;This is general information, not advice about your own case; a clinician who can examine you should decide what applies to you.&quot; We wrote that sentence, so nothing on this page counts it as the program&apos;s words.
             </p>
             <p>
               The whole change is a file of 52 kilobytes that runs alongside the unchanged program.
@@ -183,12 +185,13 @@ export default function EducationNotAdvice() {
             <div style={stepNum}>4</div>
             <div style={stepText}>The referral line. In the final version, a reply on a message where the switch opened starts with one fixed sentence:
               &quot;This is general information, not advice about your own case; a clinician who can examine you should decide what applies to
-              you.&quot;</div>
+              you.&quot; It is not scored: every count of clinicians on this page is on the model&apos;s own words, with the sentence cut off.</div>
           </div>
           <p>
             The whole change is a 52 kilobyte file: the layer, two directions, two reference points, two thresholds and the push. It runs as a small
             piece of code attached to the unchanged model. A version that reads the checks during the model&apos;s own first pass over the message made
-            the same decision as the offline analysis on 238 of 238 messages.
+            the same decision as the offline analysis on 238 of 238 messages for the two checks; with the one-word 911 check that the offline
+            analysis also applies, the two differ on 2 of 238.
           </p>
           <div style={keyStyle}>
             <b>A key to the numbers on this page.</b> &quot;Switch opens&quot; counts the messages on which the change fires. A reply&apos;s <i>stance</i> is
@@ -211,7 +214,9 @@ export default function EducationNotAdvice() {
         >
           Figure 1. Top: each bar is the share of messages in one class on which the switch opened and the reply was changed. Of 238 messages, the
           switch opened on 16 of 20 general advice requests, 16 of 16 routine cases and 6 of 24 same-day cases, and on none of the 48 emergencies,
-          none of the 70 education questions and none of the 20 education questions with personal context. Bottom: each number is the model&apos;s
+          none of the 70 education questions, none of the 20 education questions with personal context and 1 of 30 patient-bank questions. The
+          bars count the version that reads the checks during the model&apos;s own first pass; the offline analysis behind the replies on this page
+          also applies the one-word 911 check and opened the switch on 14 of the 16 routine cases. Bottom: each number is the model&apos;s
           lean toward &quot;Yes&quot; on &quot;should this person call 911 right now?&quot;, in log-odds, averaged over the class, under six versions of the
           model. Select a version. On emergencies, a lower number is harm. The permanent removal (the version with no switch) costs emergencies a full
           log-odd and drops two of 24 below even odds. A random direction of the same size costs nothing. Removing the emergency direction itself
@@ -249,7 +254,7 @@ export default function EducationNotAdvice() {
               Asked &quot;what should I take for this cough?&quot;, the original program gives a disclaimer, says to contact a provider, then says what the symptoms sound like. The changed program writes &quot;A cough with yellow phlegm that lasts for ten days is typically a sign of a respiratory infection&quot; and keeps explaining, without saying &quot;you&quot;.
             </p>
             <p>
-              The cost: of 36 changed answers, only 3 mentioned a doctor, clinic, or emergency service, down from 34. The changed answers also contained more false statements. When the program is pushed to explain a case it was asked to judge, it sometimes invents the explanation.
+              The cost: of 36 changed answers, only 2 mentioned a doctor, clinic, or emergency service, down from 34. The changed answers also contained more false statements. When the program is pushed to explain a case it was asked to judge, it sometimes invents the explanation.
             </p>
           </>
         }>
@@ -257,12 +262,12 @@ export default function EducationNotAdvice() {
             What a changed reply looks like. The unchanged model answers &quot;what should I take for this cough?&quot; with a disclaimer and &quot;you should
             contact your healthcare provider&quot;, then says what the symptoms sound like. The changed model writes &quot;A cough with yellow phlegm that lasts
             for ten days is typically a sign of a respiratory infection&quot; and goes on in the third person. Words addressed to the reader (you, your)
-            fall from about five per hundred words to about one. On two same-day cases the model&apos;s judgment survived in the third person: &quot;an
+            fall from 5.3 to 1.1 per hundred words on routine cases and from 4.0 to 1.4 on general requests. On two same-day cases the model&apos;s judgment survived in the third person: &quot;an
             80-year-old with diabetes should have a urinary tract infection checked today.&quot;
           </p>
           <p>
             The cost. Of the 36 messages the switch opened on, a word naming a doctor, clinic, provider or emergency service appears in 34 unchanged
-            replies and in 3 changed replies. The readers also found more false statements in the changed replies: 4.5 against 0.5 of 20 general
+            replies and in 2 changed replies. The readers also found more false statements in the changed replies: 4.5 against 0.5 of 20 general
             requests, and 7 against 0 of 16 routine cases. The explanation score on routine cases (1 to 3, where 3 is a clear and correct explanation)
             fell from 2.66 to 2.22. The model explains a case it was asked to judge, and invents mechanism to do it.
           </p>
@@ -284,20 +289,24 @@ export default function EducationNotAdvice() {
         </Chart>
       </Section>
 
-      <Section eyebrow="Keeping a referral" title="A fixed first line keeps the clinician in every reply; delaying the push gives the model's verdict back" plainTitle="Keeping the doctor in the answer">
+      <Section eyebrow="Keeping a referral" title="A fixed first line puts a clinician in every reply only because we wrote it; delaying the push gives the model's verdict back" plainTitle="Keeping the doctor in the answer">
         <Chart
           C={ReferralFig}
           src="/education-not-advice/fig-stance.png"
           alt="Stacked bars of reader stance on the three advice classes under two ways of keeping a referral"
-          plain="Starting every changed answer with one fixed sentence that names a clinician keeps the doctor in all 36 answers, keeps the explaining style, and cuts the false statements, though not all the way back to the original. That is the version shown in the chat window."
+          plain="Starting every changed answer with one fixed sentence that names a clinician puts a doctor in all 36 answers, but only because we wrote that sentence. In the program's own words, 3 of 36 answers mention a doctor. The sentence is the version shown in the chat window, as a wrapper around the program, not something the program learned."
         >
           Figure 4. Each bar splits the replies on one class of message by the stance two readers gave them, for two ways of keeping a referral under
-          the switch-and-push change, coded by a third pair of readers. A delayed push lets the unchanged model write its first 30 or 60 words before
+          the switch-and-push change, coded by a third pair of readers. A delayed push lets the unchanged model write its first 30 or 60 tokens before
           the subtraction begins. That keeps the referral (33 or 34 of 36 changed replies name a clinician), but the model&apos;s first sentences already
-          carry its verdict (&quot;you are likely experiencing a COPD exacerbation&quot;), so at 60 words the stance is the unchanged model&apos;s again. A
-          fixed first line on the changed replies keeps a clinician in 36 of 36, keeps the education stance (17.5 of 20 general requests and 12.5 of 16
-          routine cases coded education only) and lowers the count of routine replies with a false statement from 8.5 to 5.5, still above the
-          unchanged model&apos;s 2. The fixed line is the version shown in the chat window.
+          carry its verdict (&quot;you are likely experiencing an acute exacerbation of COPD&quot;), so at 60 tokens the stance stays close to the unchanged model&apos;s: 12 of 20 general requests and 6.5 of 16 routine
+          cases are coded education only, against 9 and 3 for the unchanged model. A
+          fixed first line on the changed replies names a clinician in every changed reply because the line itself names one. With the line cut
+          off, the model&apos;s own words name a clinician in 3 of 36 changed replies (notebook section 46). The table&apos;s clinician column counts the same way over every message in each class, including messages on
+          which the switch stayed shut.
+          The readers coded this version with the line in view: 17.5 of 20 general requests and 12.5 of 16 routine cases education only, and 5.5
+          routine replies with a false statement, against 8.5 without the line and 2 for the unchanged model. Those reader counts describe replies
+          shown with the line, not the model alone. The fixed line is the version shown in the chat window.
         </Chart>
       </Section>
 
@@ -314,9 +323,10 @@ export default function EducationNotAdvice() {
           and advice attached to an education question (7 of 8) open it. The second turn of a conversation (3 of 6) and sloppy text with typos (4 of
           6) open it less often, and in every one of those cases the advice score was past its threshold and the emergency check held the push back,
           on a symptomatic low blood sugar or a heart-failure weight gain. No emergency opened it: 0 of 8 phrased as minor, 0 of 8 buried inside an
-          education question, 0 of 32 with a sentence about money or transport in front. A fourth pair of readers coded the replies (agreement on
-          stance 0.71 to 1.00). On advice disguised as a general question, replies coded education only go from 4 to 8 of 8; on advice for a named
-          other person from 3.5 to 7.5 of 8; on every emergency family the counts are identical under both versions. Hover a bar for the counts.
+          education question, 0 of 32 with a sentence about money or transport in front. A fourth pair of readers coded the replies, with the fixed line in view on the changed ones (agreement on
+          stance 0.71 to 1.00), so the reader counts here describe replies shown with the line. On advice disguised as a general question, replies coded education only go from 4 to 8 of 8; on advice for a named
+          other person from 3.5 to 7.5 of 8; on every emergency family the reader counts and the 911 counts are identical under both versions. The clinician counts in the table are on the model&apos;s own
+          words, with the fixed line cut off. Hover a bar for the counts.
         </Chart>
         <Plain plain="One thing the change cannot fix: the original program is already uneven on tricky emergencies. When an emergency is hidden inside a lesson, the original names 911 first in only 1 of 8 answers. The changed program gives the same answers in those cases, so it neither helps nor hurts there.">
           <p>
@@ -326,6 +336,51 @@ export default function EducationNotAdvice() {
             transport in front, 21 of 32 unchanged replies open with 911, the same loss the triage study measured. The changed model gives the same
             replies in all 48 of these cases, so it neither repairs nor worsens them. A product that needs a stronger emergency floor needs a different
             fix than the one on this page.
+          </p>
+        </Plain>
+      </Section>
+
+      <Section eyebrow="Plain words" title="A second direction at layer 16 lowers the reading grade; on advice requests it holds up only on top of the switch, at half strength" plainTitle="Simpler words">
+        <Plain plain={
+          <>
+            <p>
+              The changed program explains instead of advising, but it explains like a textbook. A second change, found the same way, makes it use plain words.
+            </p>
+            <p>
+              On 16 health questions written the way an older rural patient might ask them (&quot;Why do I have to take a water pill every morning?&quot;), the original program wrote at about an 8th-grade level. The plain-words change brought it to about a 5th-grade level, the same as telling the program to use plain words. A random change of the same size did nothing.
+            </p>
+            <p>
+              On its own, the plain-words change is not safe: it made advice more personal and weakened the 911 answer on some emergencies. On top of the switch at half strength, it kept call 911 as the first step on the same 45 of 48 emergencies as the original program and lowered the reading level of the changed answers from about 10th grade to about 7th grade. Stronger settings made the text repeat, dropped call 911 as the first step on some emergencies, or added false statements.
+            </p>
+            <p>
+              Simpler words do not fix a misread question. Every version, including the original, read &quot;my heart&apos;s got a fib&quot; as a lump of scar tissue instead of atrial fibrillation.
+            </p>
+          </>
+        }>
+          <p>
+            Notebook section 44 fits a plain-words direction the way the advice direction was fitted. The unchanged model answered 32 education
+            questions written in an older rural adult&apos;s own words three times: with no system line, with a line asking for a medical-student
+            explanation, and with a line asking for plain words for someone who left school early. Those replies score at Flesch-Kincaid reading
+            grades 8.4, 15.3 and 4.8. The direction is the difference between the model&apos;s averaged layer-16 state over the plain-line replies and
+            over the no-line replies, fitted on half the questions. Added at every generated token with no system line, it lowers the grade on the
+            other 16 questions from 8.4 to 4.8, the same as the plain system line, while a random direction of the same size leaves it between 8.5 and 10.1. Two blind
+            readers rated plainness on a 1 to 5 scale at 2.47 for the unchanged model, 4.19 for the plain system line and 4.06 for the direction, and
+            flagged a false statement in 6, 5 and 4 of 32 ratings. No single neuron reproduces it: of 12 candidates, the best one whose text stayed coherent
+            (layer 17, neuron 3082) lowered the grade by 2.1, against 3.6 for the direction.
+          </p>
+          <p>
+            Plain output does not repair a misread question. In every version, including the unchanged model, the model read &quot;my heart&apos;s got
+            a fib&quot; as a fibroma or scar tissue, not atrial fibrillation.
+          </p>
+          <p>
+            Section 45 tests the direction together with the switch. On its own, at the strength that works on education questions, it makes advice
+            replies more personal (27 of 36 coded as individualized advice, from 22) and lowers the readers&apos; mean count of &quot;call 911&quot; as the first
+            instruction on the 48 emergencies from 45 to 39. On top of the switch at half that strength, it keeps &quot;call 911&quot; first on the same 45
+            of 48 emergencies as the unchanged model, keeps the education stance on 30 of 36 changed advice replies (33 for the switch alone; the
+            readers saw the fixed line), lowers the replies with a false statement from 13 to 9 of 36 (also coded with the fixed line in view), and lowers the reading grade of the
+            model&apos;s own words from 9.9 to 6.6 (section 46). Stronger settings repeat (11 of 36 replies at 1.5 times the half strength, 26 of 36 at
+            full strength) or drop the 911 opening (41 of 48 at 1.5 times). Each edit works only in a narrow range of strength, and two edits that
+            each sit inside their own range can fall outside it together.
           </p>
         </Plain>
       </Section>
@@ -361,17 +416,19 @@ export default function EducationNotAdvice() {
         }>
           <ul style={listStyle}>
             <li style={itemStyle}>One model, one layer (16; layers 13 to 17 looked the same when the direction was fitted and were not run), one fit of
-              the direction on 80 messages, one decoding (the most likely word each time), replies cut at 160 words and read to 900 characters.</li>
+              the direction on 80 messages, one decoding (the most likely word each time), replies cut at 160 tokens and read to 900 characters.</li>
             <li style={itemStyle}>The advice and education messages differ in format as well as intent (a first-person case against a general question),
               so the direction may partly encode the format. The 20 education questions with personal context are the check on that, and the switch
               opened on none of them.</li>
             <li style={itemStyle}>The readers are language models, not clinicians, and their notes on false statements are judgment calls. Agreement
-              between readers fell in the later panels (0.50 to 0.70 on the advice sheets).</li>
+              between readers fell in the later panels (0.50 to 0.70 on the advice sheets of the dose panel).</li>
             <li style={itemStyle}>No emergency opened the switch, in 48 emergencies from the study and 48 more from the break-the-switch set. That bounds the
               miss rate at a few percent, not at zero. The two checks are the whole safeguard; an emergency they both miss would be explained rather than
               redirected.</li>
-            <li style={itemStyle}>The referral line is one wording, not a sweep, and the count of invented facts was measured on 36 changed replies per
-              version.</li>
+            <li style={itemStyle}>The referral line is one wording, not a sweep. Every count of clinicians on this page is on the model&apos;s own words, with the
+              line cut off (notebook section 46); the reader panels on the referral, plain-words and break-the-switch versions were coded with the
+              line in view. The count of invented facts was measured on the 20 general and 16 routine advice replies per version, of which the switch
+              changed 30.</li>
             <li style={itemStyle}>Next steps. A clinician read of the false-statement notes. The same switch on a second model family. A prompt-only
               comparison (an instruction to explain and never advise) against the change, with the same readers. A fix for the unchanged model&apos;s own
               weakness on emergencies that are phrased as minor or buried in a lesson.</li>
