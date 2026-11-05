@@ -22,3 +22,10 @@ for (const { slug } of PAGES) {
 }
 
 writeFileSync(new URL('../lib/backlinks.json', import.meta.url), JSON.stringify(backlinks, null, 2) + '\n');
+
+const { DOCS, embedText, hashText } = await import('../lib/guide.mjs');
+const vectors = JSON.parse(readFileSync(new URL('../lib/embeddings.json', import.meta.url), 'utf8')).pages;
+const stale = DOCS.filter((d) => vectors[d.href]?.hash !== hashText(embedText(d))).map((d) => d.href);
+if (stale.length) {
+  console.warn(`The home chat's page vectors are out of date. Run \`npm run embed\`:\n  ${stale.join('\n  ')}`);
+}

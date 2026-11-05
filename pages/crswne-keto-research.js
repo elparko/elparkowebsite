@@ -7,7 +7,7 @@ const TO = '/crswnp-keto-research/';
 
 export default function CRSwNPKetoResearchRedirect() {
   return (
-    <div style={{minHeight: '100vh', backgroundColor: '#f5f5dc', color: '#000000', padding: '4rem 2rem', textAlign: 'center'}}>
+    <div style={{minHeight: '100vh', backgroundColor: 'var(--bg)', color: 'var(--fg)', padding: '4rem 2rem', textAlign: 'center'}}>
       <Head>
         <title>CRSwNP & Keto Research - Parker Smith</title>
         <meta httpEquiv="refresh" content={`0; url=${TO}`} />

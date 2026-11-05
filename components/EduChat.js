@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
-const frame = { border: '1px solid #000000', boxShadow: '4px 4px 0 rgba(0, 0, 0, 0.8)', background: '#f5f5dc', margin: '20px 0 28px', textAlign: 'left', fontSize: '0.85rem', lineHeight: '1.6' };
-const bar = { display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '8px 14px', background: '#000000', color: '#f5f5dc', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase' };
-const controls = { padding: '12px 14px', borderBottom: '1px solid rgba(0, 0, 0, 0.2)', display: 'flex', flexDirection: 'column', gap: '10px' };
+const frame = { border: '1px solid var(--fg)', boxShadow: '4px 4px 0 light-dark(rgba(0, 0, 0, 0.8), var(--shadow))', background: 'var(--bg)', margin: '20px 0 28px', textAlign: 'left', fontSize: '0.85rem', lineHeight: '1.6' };
+const bar = { display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '8px 14px', background: 'var(--fg)', color: 'var(--bg)', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase' };
+const controls = { padding: '12px 14px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)', display: 'flex', flexDirection: 'column', gap: '10px' };
 const row = { display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' };
 const label = { fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.6, minWidth: '6.5em' };
-const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid #000000', borderRadius: '999px', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
+const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid var(--fg)', borderRadius: '999px', background: on ? 'var(--fg)' : 'transparent', color: on ? 'var(--bg)' : 'var(--fg)', cursor: 'pointer' });
 const thread = { padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' };
-const patient = { alignSelf: 'flex-end', maxWidth: '88%', padding: '10px 14px', background: '#e6e6d2', color: '#000000', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '14px 14px 3px 14px', hyphens: 'none' };
-const assistant = { alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', background: '#ffffff', color: '#000000', border: '1px solid #000000', borderRadius: '14px 14px 14px 3px', hyphens: 'none' };
+const patient = { alignSelf: 'flex-end', maxWidth: '88%', padding: '10px 14px', background: 'light-dark(#e6e6d2, color-mix(in srgb, var(--fg) 14%, var(--bg)))', color: 'var(--fg)', border: '1px solid color-mix(in srgb, var(--fg) 25%, transparent)', borderRadius: '14px 14px 3px 14px', hyphens: 'none' };
+const assistant = { alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', background: 'light-dark(#ffffff, var(--raised))', color: 'var(--fg)', border: '1px solid var(--fg)', borderRadius: '14px 14px 14px 3px', hyphens: 'none' };
 const edited = { ...assistant, borderWidth: '2px', boxShadow: '3px 3px 0 rgba(0, 114, 178, 0.55)' };
 const who = { fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
 const coded = { fontSize: '0.75rem', opacity: 0.7, padding: '0 14px 12px' };
-const prefillMark = { background: '#ffffff', color: '#000000', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px #000000' };
+const prefillMark = { background: 'light-dark(#ffffff, var(--raised))', color: 'var(--fg)', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px var(--fg)' };
 const PREFILL = 'This is general information, not advice about your own case; a clinician who can examine you should decide what applies to you.';
 const STANCE_LABEL = { education_only: 'education only', individualized_advice: 'individualized advice', emergency_redirect: 'emergency redirect', refusal_only: 'refusal only', unclear: 'unclear' };
 const FIRST_LABEL = { ems_now: 'call 911', go_to_er_yourself: 'go to the ER yourself', clinic_today_or_urgent_care: 'clinic today', clinic_routine_or_call_doctor: 'call the doctor', home_care_or_wait: 'home care or wait', unclear: 'unclear' };
@@ -53,10 +53,10 @@ function Reply({ text }) {
   );
 }
 
-const ddButton = { font: 'inherit', fontSize: '0.8rem', padding: '4px 10px', border: '1px solid #000000', borderRadius: '4px', background: 'transparent', color: '#000000', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', maxWidth: '100%', textAlign: 'left' };
-const ddPanel = { position: 'absolute', zIndex: 6, top: 'calc(100% + 6px)', left: 0, minWidth: '18em', maxWidth: 'calc(100vw - 48px)', background: '#f5f5dc', border: '1px solid #000000', boxShadow: '3px 3px 0 rgba(0, 0, 0, 0.8)', padding: '6px 0', maxHeight: '60vh', overflowY: 'auto' };
+const ddButton = { font: 'inherit', fontSize: '0.8rem', padding: '4px 10px', border: '1px solid var(--fg)', borderRadius: '4px', background: 'transparent', color: 'var(--fg)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', maxWidth: '100%', textAlign: 'left' };
+const ddPanel = { position: 'absolute', zIndex: 6, top: 'calc(100% + 6px)', left: 0, minWidth: '18em', maxWidth: 'calc(100vw - 48px)', background: 'var(--bg)', border: '1px solid var(--fg)', boxShadow: '3px 3px 0 light-dark(rgba(0, 0, 0, 0.8), var(--shadow))', padding: '6px 0', maxHeight: '60vh', overflowY: 'auto' };
 const ddGroup = { fontSize: '0.66rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.55, padding: '8px 12px 2px' };
-const ddItem = (on, active) => ({ display: 'block', width: '100%', font: 'inherit', fontSize: '0.8rem', textAlign: 'left', padding: '6px 12px', border: 'none', background: active ? 'rgba(0, 0, 0, 0.08)' : 'transparent', color: '#000000', cursor: 'pointer', fontWeight: on ? 'bold' : 'normal', whiteSpace: 'normal' });
+const ddItem = (on, active) => ({ display: 'block', width: '100%', font: 'inherit', fontSize: '0.8rem', textAlign: 'left', padding: '6px 12px', border: 'none', background: active ? 'color-mix(in srgb, var(--fg) 8%, transparent)' : 'transparent', color: 'var(--fg)', cursor: 'pointer', fontWeight: on ? 'bold' : 'normal', whiteSpace: 'normal' });
 
 function Dropdown({ label: ariaLabel, value, options, onChange }) {
   const [open, setOpen] = useState(false);

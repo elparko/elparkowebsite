@@ -82,7 +82,7 @@ export default function SmileMSI() {
           href="https://github.com/elparko/SMILE-MSI"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: '#000000', textDecoration: 'underline' }}
+          style={{ color: 'var(--fg)', textDecoration: 'underline' }}
         >
           View source code on GitHub
         </a>

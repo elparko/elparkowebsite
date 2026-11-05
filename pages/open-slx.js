@@ -1,6 +1,6 @@
 import WritingLayout from '../components/WritingLayout';
 
-const linkStyle = { color: '#000000', textDecoration: 'underline' };
+const linkStyle = { color: 'var(--fg)', textDecoration: 'underline' };
 const listStyle = { marginTop: '12px', marginBottom: '24px', marginLeft: '20px', lineHeight: '1.6' };
 const itemStyle = { marginBottom: '0.6em' };
 const codeBlockStyle = {
@@ -11,7 +11,7 @@ const codeBlockStyle = {
   lineHeight: '1.5',
   margin: '12px 0 20px',
   padding: '10px 12px',
-  background: '#f4f4f4',
+  backgroundColor: 'light-dark(#f4f4f4, #201f1b)',
   borderRadius: '4px',
 };
 const headingStyle = { marginTop: '1.8em', marginBottom: '0.5em' };

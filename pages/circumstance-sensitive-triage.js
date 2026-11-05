@@ -15,17 +15,17 @@ const headingStyle = {
   marginTop: 0,
   marginBottom: '0.7em',
   paddingTop: '0.4em',
-  borderTop: '1.5px solid #000000',
+  borderTop: '1.5px solid var(--fg)',
   textAlign: 'left',
   fontSize: '1.25rem',
 };
 const listStyle = { marginTop: '12px', marginBottom: '20px', marginLeft: '20px', lineHeight: '1.7' };
 const itemStyle = { marginBottom: '0.7em' };
 const figureStyle = { margin: '24px 0 28px' };
-const imageStyle = { display: 'block', width: '100%', height: 'auto', background: '#ffffff', border: '1px solid rgba(0, 0, 0, 0.15)' };
+const imageStyle = { display: 'block', width: '100%', height: 'auto', background: 'light-dark(#ffffff, var(--raised))', border: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)' };
 const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
-const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
-const keyStyle = { border: '1.5px solid #000000', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
+const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)' };
+const keyStyle = { border: '1.5px solid var(--fg)', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
 
 function Section({ eyebrow, title, children }) {
   return (
@@ -58,13 +58,13 @@ function Figure({ src, alt, children }) {
   );
 }
 
-const rowsStyle = { margin: '14px 0 6px', borderTop: '1.5px solid #000000' };
-const rowStyle = { padding: '10px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
+const rowsStyle = { margin: '14px 0 6px', borderTop: '1.5px solid var(--fg)' };
+const rowStyle = { padding: '10px 0', borderBottom: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
 const rowLabel = { fontWeight: 'bold', marginBottom: '4px' };
 const cellRow = { display: 'grid', gridTemplateColumns: '5.5em 1fr', gap: '8px', hyphens: 'none' };
 const cellHead = { opacity: 0.6 };
 
-const fixSet = { padding: '12px 0', borderBottom: '1px solid rgba(0, 0, 0, 0.2)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
+const fixSet = { padding: '12px 0', borderBottom: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)', fontSize: '0.85rem', lineHeight: '1.55', textAlign: 'left' };
 const fixCols = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px 24px', marginTop: '6px' };
 const fixHead = { fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.6, marginBottom: '4px' };
 const fixLine = { display: 'grid', gridTemplateColumns: '4.2em 1fr', gap: '8px', hyphens: 'none' };
@@ -72,7 +72,7 @@ const fixArrow = { opacity: 0.6 };
 
 function FixCell({ head, value, empty }) {
   return (
-    <div style={{ borderLeft: '2px solid #000000', paddingLeft: '10px' }}>
+    <div style={{ borderLeft: '2px solid var(--fg)', paddingLeft: '10px' }}>
       <div style={fixHead}>{head}</div>
       {value ? (
         <>

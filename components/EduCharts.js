@@ -13,21 +13,21 @@ export function useEdu() {
   return data;
 }
 
-const C = { blue: '#0072b2', orange: '#d55e00', yellow: '#e69f00', green: '#009e73', sky: '#56b4e9', pink: '#cc79a7', gray: '#999999', dark: '#7f7f7f', black: '#000000' };
+const C = { blue: '#0072b2', orange: '#d55e00', yellow: '#e69f00', green: '#009e73', sky: '#56b4e9', pink: '#cc79a7', gray: '#999999', dark: '#7f7f7f', black: 'var(--fg)' };
 export const COND = { none: C.dark, gated_shift_L16_a1: C.blue, gated_random_L16_a1: C.sky, removal_L16_a1: C.orange, 'gated_shift_L16_a0.5': C.sky, gated_shift_L16_a2: C.black, gated_shift_L16_a1_s30: C.yellow, gated_shift_L16_a1_s60: C.orange, gated_shift_L16_a1_prefill: C.green };
 const STANCE = { education_only: C.green, individualized_advice: C.pink, emergency_redirect: C.blue, refusal_only: C.yellow, unclear: C.gray };
 const STANCE_LABEL = { education_only: 'education only', individualized_advice: 'individualized advice', emergency_redirect: 'emergency redirect', refusal_only: 'refusal only', unclear: 'unclear' };
-const READOUT = { none: C.dark, removal: C.orange, removal_unguarded: '#a04000', random: C.sky, emergency_removal: C.yellow, gated_shift: C.blue };
+const READOUT = { none: C.dark, removal: C.orange, removal_unguarded: 'light-dark(#a04000, #f08a4b)', random: C.sky, emergency_removal: C.yellow, gated_shift: C.blue };
 
 const wrap = { position: 'relative', textAlign: 'left', fontSize: '0.8rem', lineHeight: '1.5', hyphens: 'none', margin: '18px 0 10px' };
-const tipStyle = { position: 'absolute', zIndex: 5, maxWidth: '320px', padding: '8px 10px', background: '#f5f5dc', color: '#000000', border: '1px solid #000000', boxShadow: '3px 3px 0 rgba(0, 0, 0, 0.8)', fontSize: '0.74rem', lineHeight: '1.45', pointerEvents: 'none' };
+const tipStyle = { position: 'absolute', zIndex: 5, maxWidth: '320px', padding: '8px 10px', background: 'var(--bg)', color: 'var(--fg)', border: '1px solid var(--fg)', boxShadow: '3px 3px 0 light-dark(rgba(0, 0, 0, 0.8), var(--shadow))', fontSize: '0.74rem', lineHeight: '1.45', pointerEvents: 'none' };
 const small = { fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.6 };
 const row = { display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginBottom: '10px' };
-const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid #000000', borderRadius: '999px', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
+const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid var(--fg)', borderRadius: '999px', background: on ? 'var(--fg)' : 'transparent', color: on ? 'var(--bg)' : 'var(--fg)', cursor: 'pointer' });
 const legendRow = { display: 'flex', flexWrap: 'wrap', gap: '4px 14px', fontSize: '0.74rem', marginTop: '8px' };
 const hint = { fontSize: '0.72rem', opacity: 0.6, marginTop: '6px' };
-const th = { padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, fontSize: '0.68rem', lineHeight: 1.2 };
-const td = { padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' };
+const th = { padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, fontSize: '0.68rem', lineHeight: 1.2 };
+const td = { padding: '6px', borderBottom: '1px solid var(--line)', whiteSpace: 'nowrap' };
 
 function useTip() {
   const ref = useRef(null);
@@ -66,7 +66,7 @@ function Hint() {
   return <div style={hint}>Hover, tap or tab to a bar for the numbers.</div>;
 }
 function Loading({ ok, src, alt, children }) {
-  if (ok === false) return <img src={src} alt={alt} style={{ display: 'block', width: '100%', height: 'auto', background: '#fff', border: '1px solid rgba(0, 0, 0, 0.15)' }} />;
+  if (ok === false) return <img src={src} alt={alt} style={{ display: 'block', width: '100%', height: 'auto', background: 'light-dark(#ffffff, var(--bg))', border: '1px solid var(--line)' }} />;
   if (!ok) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the numbers.</div>;
   return children;
 }
@@ -74,7 +74,7 @@ function Loading({ ok, src, alt, children }) {
 function StackedBar({ parts, n, height = 14, outline, show, hide, node }) {
   let x = 0;
   return (
-    <div {...mark(show, hide, node)} style={{ height, position: 'relative', outline: outline ? '1px solid #000' : 'none' }}>
+    <div {...mark(show, hide, node)} style={{ height, position: 'relative', outline: outline ? '1px solid var(--fg)' : 'none' }}>
       {parts.map(([key, v]) => {
         const w = (v / n) * 100;
         const el = <div key={key} style={{ position: 'absolute', left: `${x}%`, top: 1, height: height - 2, width: `${w}%`, background: STANCE[key] }} />;
@@ -86,7 +86,8 @@ function StackedBar({ parts, n, height = 14, outline, show, hide, node }) {
 }
 
 const gridStyle = { display: 'grid', gridTemplateColumns: 'minmax(9em, 14em) minmax(0, 1fr)', gap: '4px 10px', fontSize: '0.74rem', alignItems: 'center' };
-const barsCell = { display: 'grid', gap: 2, padding: '2px 0', borderLeft: '1px solid #000', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)' };
+function barLabel(share) { return share >= 0.9 ? { right: 4, color: 'var(--bg)' } : { left: `calc(${share * 100}% + 4px)` }; }
+const barsCell = { display: 'grid', gap: 2, padding: '2px 0', borderLeft: '1px solid var(--fg)', background: 'linear-gradient(to right, var(--line) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid var(--line)' };
 const axis = <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}><span>0%</span><span>50%</span><span>100%</span></div>;
 
 function stanceNode(classLabel, condLabel, b) {
@@ -127,7 +128,7 @@ export function GateFig({ src, alt }) {
               <div style={barsCell}>
                 <div {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
                   <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${share * 100}%`, background: c.key.startsWith('advice_emergency') ? C.orange : C.blue }} />
-                  <span style={{ position: 'absolute', left: `calc(${share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap' }}>{g.fires} of {g.n}</span>
+                  <span style={{ position: 'absolute', top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', ...barLabel(share) }}>{g.fires} of {g.n}</span>
                 </div>
               </div>
             </Fragment>
@@ -155,7 +156,7 @@ export function GateFig({ src, alt }) {
                   <td style={td}>{c.label}</td>
                   <td style={{ ...td, textAlign: 'right' }}>{b.mean > 0 ? '+' : ''}{b.mean.toFixed(2)}</td>
                   <td style={{ ...td, textAlign: 'right', color: READOUT[cond], fontWeight: 'bold' }}>{v.mean > 0 ? '+' : ''}{v.mean.toFixed(2)}</td>
-                  <td style={{ ...td, textAlign: 'right', background: Math.abs(delta) >= 0.5 ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{delta > 0 ? '+' : ''}{delta.toFixed(2)}</td>
+                  <td style={{ ...td, textAlign: 'right', background: Math.abs(delta) >= 0.5 ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{delta > 0 ? '+' : ''}{delta.toFixed(2)}</td>
                   <td style={{ ...td, textAlign: 'right' }}>{(b.share_yes * 100).toFixed(0)}% → {(v.share_yes * 100).toFixed(0)}%</td>
                 </tr>
               );
@@ -321,7 +322,7 @@ export function RedTeamFig({ src, alt }) {
               <div style={barsCell}>
                 <div {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
                   <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${share * 100}%`, background: emergency ? C.orange : C.blue }} />
-                  <span style={{ position: 'absolute', left: `calc(${share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap' }}>{f.fires} of {f.n}</span>
+                  <span style={{ position: 'absolute', top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', ...barLabel(share) }}>{f.fires} of {f.n}</span>
                 </div>
               </div>
             </Fragment>

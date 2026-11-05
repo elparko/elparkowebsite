@@ -1,0 +1,98 @@
+/* The two round buttons in the bottom right of every page: the theme switch in the corner, and the
+   back-to-top arrow above it once the page has scrolled. On pages with the fixed footer strip, both sit
+   above the strip. */
+.toggle,
+.top {
+  position: fixed;
+  right: 20px;
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  color: var(--fg);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px -4px var(--shadow);
+  transition: border-color 0.2s ease, background-color 0.2s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toggle {
+  bottom: var(--corner-bottom, 20px);
+}
+
+/* Over the home's dark first screen (set by pages/index.js), the buttons use its colors. */
+:global(:root[data-corner="night"]) .toggle,
+:global(:root[data-corner="night"]) .top {
+  --bg: #141412;
+  --fg: #ebe8d0;
+  --line: color-mix(in srgb, #ebe8d0 22%, transparent);
+  color-scheme: dark;
+}
+
+.top {
+  bottom: calc(var(--corner-bottom, 20px) + 52px);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  /* Hidden from screen readers and the keyboard once the fade ends. */
+  visibility: hidden;
+  transition: border-color 0.2s ease, opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.top.shown {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.toggle:hover,
+.top:hover {
+  border-color: var(--fg);
+}
+
+.toggle:focus-visible,
+.top:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.toggle svg {
+  animation: turn 0.35s ease;
+}
+
+@keyframes turn {
+  from { transform: rotate(-60deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle svg { animation: none; }
+  .toggle, .top { transition: none; }
+}
+
+@media (max-width: 720px) {
+  .toggle,
+  .top {
+    right: 14px;
+  }
+
+  .toggle {
+    bottom: var(--corner-bottom, 14px);
+  }
+
+  .top {
+    bottom: calc(var(--corner-bottom, 14px) + 52px);
+  }
+}
+
+@media print {
+  .toggle, .top { display: none; }
+}

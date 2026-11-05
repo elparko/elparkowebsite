@@ -40,8 +40,8 @@ export function Full({ children }) {
   return tier === 'plain' ? null : children;
 }
 
-const wrap = { display: 'inline-flex', alignItems: 'center', gap: '0.5rem', border: '1px solid #000000', padding: '4px 6px 4px 10px', fontSize: '0.8rem', lineHeight: 1.4, margin: '0 0 1.5rem' };
-const seg = (on) => ({ font: 'inherit', fontSize: '0.8rem', padding: '3px 10px', border: '1px solid #000000', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
+const wrap = { display: 'inline-flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--fg)', padding: '4px 6px 4px 10px', fontSize: '0.8rem', lineHeight: 1.4, margin: '0 0 1.5rem' };
+const seg = (on) => ({ font: 'inherit', fontSize: '0.8rem', padding: '3px 10px', border: '1px solid var(--fg)', background: on ? 'var(--fg)' : 'transparent', color: on ? 'var(--bg)' : 'var(--fg)', cursor: 'pointer' });
 
 export function Dial() {
   const { tier, setTier } = useTier();

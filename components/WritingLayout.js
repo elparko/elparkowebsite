@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "@/styles/Writing.module.css";
 import { useState, useEffect, useRef } from 'react';
-import { AREAS, PAGES, byline, pageBySlug, slugFromHref } from '@/lib/pages.mjs';
+import { AREAS, PAGES, byline, formatDate, pageBySlug, slugFromHref } from '@/lib/pages.mjs';
 import backlinks from '@/lib/backlinks.json';
 import SocialMeta from '@/components/SocialMeta';
-import { Dial, LiteracyProvider, useTier } from '@/components/Literacy';
+import { Dial, LiteracyProvider } from '@/components/Literacy';
 
 function PageList({ heading, slugs }) {
   if (!slugs.length) return null;
@@ -36,16 +36,11 @@ export default function WritingLayout({ children }) {
 }
 
 function Layout({ slug, page, children }) {
-  const { tier } = useTier();
-  const [showArrow, setShowArrow] = useState(false);
   const [preview, setPreview] = useState(null);
   const contentRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShowArrow(window.scrollY > 100);
-      setPreview(null);
-    };
+    const handleScroll = () => setPreview(null);
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -75,14 +70,10 @@ function Layout({ slug, page, children }) {
     };
   }, [slug]);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const previewPage = preview && pageBySlug[preview.slug];
 
   return (
-    <div style={{minHeight: '100vh', backgroundColor: '#f5f5dc', color: '#000000'}}>
+    <div style={{minHeight: '100vh', backgroundColor: 'var(--bg)', color: 'var(--fg)'}}>
       <Head>
         <title>{`${page.title} - Parker Smith`}</title>
         <meta name="description" content={page.description} />
@@ -93,10 +84,10 @@ function Layout({ slug, page, children }) {
       </Head>
 
       <nav className={styles.menu}>
-        <div className={styles.menuToggle} style={{backgroundColor: 'rgba(0, 0, 0, 0.8)'}}>
-          <span style={{backgroundColor: '#f5f5dc'}}></span>
-          <span style={{backgroundColor: '#f5f5dc'}}></span>
-          <span style={{backgroundColor: '#f5f5dc'}}></span>
+        <div className={styles.menuToggle}>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
         <ul style={{padding: 0}}>
           <li><a href="/" className={styles.menuLink}>Home</a></li>
@@ -113,13 +104,6 @@ function Layout({ slug, page, children }) {
         </ul>
       </nav>
 
-      <button
-        onClick={scrollToTop}
-        className={`${styles.topArrow} ${showArrow ? styles.showArrow : ''}`}
-      >
-        <i className="fas fa-arrow-up"></i>
-      </button>
-
       <section style={{padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto'}}>
         <h1 className={styles.sectionTitle} style={{textAlign: 'center'}}>{page.title}</h1>
         <p className={styles.pageMeta}>
@@ -128,14 +112,14 @@ function Layout({ slug, page, children }) {
           <br />
           {page.authorship === 'human' ? byline(page) : <Link href="/about-this-site#authorship">{byline(page)}</Link>}
           <br />
-          created {page.created} · updated {page.updated}
+          created {formatDate(page.created)} · updated {formatDate(page.updated)}
         </p>
 
         <img src={`/drawings/${slug}.svg`} alt="" className={styles.drawing} />
 
         {page.literacy && <Dial />}
 
-        <div ref={contentRef} className={`${styles.content} ${tier === 'plain' ? styles.plain : ''}`} style={{textAlign: tier === 'plain' ? 'left' : 'justify', lineHeight: tier === 'plain' ? '1.85' : '1.8', fontSize: tier === 'plain' ? '1.12rem' : undefined, maxWidth: '100%', wordWrap: 'break-word'}}>
+        <div ref={contentRef} className={styles.content}>
           {children}
           {page.log?.length > 0 && (
             <div className={styles.pageList}>
@@ -143,7 +127,7 @@ function Layout({ slug, page, children }) {
               <ul>
                 {[...page.log].reverse().map((entry) => (
                   <li key={entry.date + entry.text} className={styles.logEntry}>
-                    <span className={styles.logDate}>{entry.date}</span>
+                    <span className={styles.logDate}>{formatDate(entry.date)}</span>
                     <span>{entry.text}</span>
                   </li>
                 ))}
@@ -159,11 +143,11 @@ function Layout({ slug, page, children }) {
         <div className={styles.preview} style={{top: preview.top, left: preview.left, transform: preview.above ? 'translateY(-100%)' : 'none'}}>
           <strong>{previewPage.title}</strong>
           <p>{previewPage.description}</p>
-          <small>{AREAS[previewPage.area]} · {previewPage.status.replace('-', ' ')} · {byline(previewPage)} · updated {previewPage.updated}</small>
+          <small>{AREAS[previewPage.area]} · {previewPage.status.replace('-', ' ')} · {byline(previewPage)} · updated {formatDate(previewPage.updated)}</small>
         </div>
       )}
 
-      <footer className={styles.footer}>
+      <footer className={styles.footer} data-fixed-footer>
         <p>&copy; 2026 Parker Smith · <a href="https://x.com/parker5smith" target="_blank" rel="noopener noreferrer" style={{color: 'inherit'}}>@parker5smith</a></p>
       </footer>
     </div>

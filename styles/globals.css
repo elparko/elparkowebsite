@@ -1,21 +1,63 @@
 @import './fonts.css';
 
+/* Site colors. Every page and chart reads these, so dark mode is one switch.
+   For in-between shades, use color-mix(in srgb, var(--fg) 40%, transparent) rather than a fixed rgba. */
+:root {
+  --bg: #f5f5dc;
+  --fg: #000000;
+  --muted: color-mix(in srgb, var(--fg) 62%, transparent);
+  --faint: color-mix(in srgb, var(--fg) 40%, transparent);
+  --line: color-mix(in srgb, var(--fg) 16%, transparent);
+  --soft: color-mix(in srgb, var(--fg) 5%, transparent);
+  --raised: #ecebcf;
+  --shadow: rgba(0, 0, 0, 0.3);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141412;
+    --fg: #ebe8d0;
+    --raised: #201f1b;
+    --shadow: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141412;
+  --fg: #ebe8d0;
+  --raised: #201f1b;
+  --shadow: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* Pages with the fixed footer strip lift the corner buttons above it. */
+:root:has([data-fixed-footer]) {
+  --corner-bottom: 48px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html,
 body {
-    font-family: 'JetBrains Mono', monospace;
+  background: var(--bg);
+  color: var(--fg);
 }
 
-/* Add any other global styles here */
+body {
+  font-family: 'JetBrains Mono', monospace;
+}
+
 /* horizontal scroll wrappers on the triage page: a thin bar in the page colours */
 .scrollX {
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #000000 #f5f5dc;
+  scrollbar-color: var(--fg) var(--bg);
   padding-bottom: 4px;
 }
 
@@ -24,11 +66,11 @@ body {
 }
 
 .scrollX::-webkit-scrollbar-track {
-  background: #f5f5dc;
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
 }
 
 .scrollX::-webkit-scrollbar-thumb {
-  background: #000000;
+  background: var(--fg);
   border-radius: 0;
 }

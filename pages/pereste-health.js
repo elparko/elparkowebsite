@@ -20,8 +20,8 @@ export default function PeresteHealth() {
           style={{
             display: 'inline-block',
             padding: '12px 24px',
-            backgroundColor: '#000000',
-            color: '#f5f5dc',
+            backgroundColor: 'var(--fg)',
+            color: 'var(--bg)',
             textDecoration: 'none',
             borderRadius: '8px',
             fontWeight: 'bold',
@@ -29,13 +29,13 @@ export default function PeresteHealth() {
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#f5f5dc';
-            e.target.style.color = '#000000';
-            e.target.style.border = '2px solid #000000';
+            e.target.style.backgroundColor = 'var(--bg)';
+            e.target.style.color = 'var(--fg)';
+            e.target.style.border = '2px solid var(--fg)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#000000';
-            e.target.style.color = '#f5f5dc';
+            e.target.style.backgroundColor = 'var(--fg)';
+            e.target.style.color = 'var(--bg)';
             e.target.style.border = 'none';
           }}
         >

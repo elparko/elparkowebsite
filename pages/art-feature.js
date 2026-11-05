@@ -3,7 +3,7 @@ import WritingLayout from '../components/WritingLayout';
 export default function ArtFeature() {
   return (
     <WritingLayout>
-      <div style={{textAlign: 'center', backgroundColor: 'rgba(0, 0, 0, 0.05)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
+      <div style={{textAlign: 'center', backgroundColor: 'var(--soft)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
         <p style={{margin: 0}}>Featured in the inaugural issue of Hippocratic Collective's magazine Ex Vivo.</p>
       </div>
 
@@ -30,15 +30,15 @@ export default function ArtFeature() {
           style={{
             display: 'inline-block',
             padding: '12px 30px',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            color: '#f5f5dc',
+            backgroundColor: 'color-mix(in srgb, var(--fg) 80%, transparent)',
+            color: 'var(--bg)',
             textDecoration: 'none',
             borderRadius: '5px',
             fontWeight: 'bold',
             transition: 'background-color 0.3s ease'
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 1)'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'}
+          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--fg)'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'color-mix(in srgb, var(--fg) 80%, transparent)'}
         >
           View Ex Vivo Magazine →
         </a>

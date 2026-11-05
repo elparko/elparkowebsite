@@ -3,7 +3,7 @@ import WritingLayout from '../components/WritingLayout';
 export default function LearningAtTheEdge() {
   return (
     <WritingLayout>
-      <div style={{textAlign: 'center', backgroundColor: 'rgba(0, 0, 0, 0.05)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
+      <div style={{textAlign: 'center', backgroundColor: 'var(--soft)', padding: '20px', borderRadius: '10px', marginBottom: '30px'}}>
         <p style={{margin: 0}}>"My own suspicion is that the universe is not only queerer than we suppose, but queerer than we <em>can</em> suppose."</p>
         <p style={{marginTop: '10px', fontSize: '0.9rem'}}>— JBS Haldane</p>
       </div>

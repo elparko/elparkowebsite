@@ -13,15 +13,15 @@ export function useCharts() {
   return data;
 }
 
-const C = { blue: '#0072b2', orange: '#d55e00', yellow: '#e69f00', green: '#009e73', sky: '#56b4e9', pink: '#cc79a7', gray: '#999999', dark: '#7f7f7f', black: '#000000', light: '#c4c4c4' };
+const C = { blue: '#0072b2', orange: '#d55e00', yellow: '#e69f00', green: '#009e73', sky: '#56b4e9', pink: '#cc79a7', gray: '#999999', dark: '#7f7f7f', black: 'var(--fg)', light: '#c4c4c4' };
 const ROLE = { blue: C.blue, orange: C.orange, gray: C.dark, black: C.black };
 const CAT = { ems_now: C.blue, go_to_er_yourself: C.orange, seek_immediate_care_unspecified: C.yellow, find_a_ride_or_neighbor: C.green, call_clinic_or_doctor: C.sky, clinic_today_or_urgent_care: C.sky, clinic_routine_or_call_doctor: '#8c6bb1', home_care_or_wait: C.pink, unclear: C.gray };
 
 const wrap = { position: 'relative', textAlign: 'left', fontSize: '0.8rem', lineHeight: '1.5', hyphens: 'none', margin: '18px 0 10px' };
-const tipStyle = { position: 'absolute', zIndex: 5, maxWidth: '320px', padding: '8px 10px', background: '#f5f5dc', color: '#000000', border: '1px solid #000000', boxShadow: '3px 3px 0 rgba(0, 0, 0, 0.8)', fontSize: '0.74rem', lineHeight: '1.45', pointerEvents: 'none' };
+const tipStyle = { position: 'absolute', zIndex: 5, maxWidth: '320px', padding: '8px 10px', background: 'var(--bg)', color: 'var(--fg)', border: '1px solid var(--fg)', boxShadow: '3px 3px 0 color-mix(in srgb, var(--fg) 80%, transparent)', fontSize: '0.74rem', lineHeight: '1.45', pointerEvents: 'none' };
 const small = { fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.6 };
 const row = { display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginBottom: '10px' };
-const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid #000000', borderRadius: '999px', background: on ? '#000000' : 'transparent', color: on ? '#f5f5dc' : '#000000', cursor: 'pointer' });
+const chip = (on) => ({ font: 'inherit', fontSize: '0.78rem', padding: '3px 9px', border: '1px solid var(--fg)', borderRadius: '999px', background: on ? 'var(--fg)' : 'transparent', color: on ? 'var(--bg)' : 'var(--fg)', cursor: 'pointer' });
 const legendRow = { display: 'flex', flexWrap: 'wrap', gap: '4px 14px', fontSize: '0.74rem', marginTop: '8px' };
 const hint = { fontSize: '0.72rem', opacity: 0.6, marginTop: '6px' };
 
@@ -43,7 +43,7 @@ function Tip({ tip }) {
 }
 
 function Swatch({ color, label }) {
-  const hollow = color === '#f5f5dc';
+  const hollow = color === 'var(--bg)';
   return <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}><span style={{ width: 10, height: 10, background: color, display: 'inline-block', borderRadius: 2, border: hollow ? `2px solid ${C.dark}` : 'none', boxSizing: 'border-box' }} />{label}</span>;
 }
 
@@ -61,7 +61,7 @@ function Hint() {
 }
 
 function Loading({ ok, src, alt, children }) {
-  if (!ok) return <img src={src} alt={alt} style={{ display: 'block', width: '100%', height: 'auto', background: '#fff', border: '1px solid rgba(0, 0, 0, 0.15)' }} />;
+  if (!ok) return <img src={src} alt={alt} style={{ display: 'block', width: '100%', height: 'auto', background: 'light-dark(#ffffff, var(--raised))', border: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)' }} />;
   return children;
 }
 
@@ -82,8 +82,8 @@ const mark = (show, hide, node) => ({
 });
 
 // the sample message shown above figures 1 and 3: one patient message with the selected sentence inserted
-const bubble = { maxWidth: '100%', padding: '10px 14px', background: '#e6e6d2', color: '#000000', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '14px 14px 3px 14px', hyphens: 'none', fontSize: '0.8rem', lineHeight: '1.55', margin: '0 0 6px', display: 'grid' };
-const inserted = { background: '#ffffff', color: '#000000', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px #000000' };
+const bubble = { maxWidth: '100%', padding: '10px 14px', background: 'light-dark(#e6e6d2, #2b2a23)', color: 'var(--fg)', border: '1px solid color-mix(in srgb, var(--fg) 25%, transparent)', borderRadius: '14px 14px 3px 14px', hyphens: 'none', fontSize: '0.8rem', lineHeight: '1.55', margin: '0 0 6px', display: 'grid' };
+const inserted = { background: 'light-dark(#ffffff, #3a392f)', color: 'var(--fg)', padding: '0 3px', borderRadius: '3px', boxShadow: '0 0 0 1px var(--fg)' };
 const who = { fontSize: '0.66rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '4px' };
 
 function longestOf(prompts, cues) {
@@ -132,8 +132,8 @@ export function Fig1({ src, alt }) {
         <div style={{ position: 'relative', width: '2.2em', height: H, flex: 'none' }}>
           {[0, 4, 8, 12, 16].map((v) => <span key={v} style={{ position: 'absolute', right: 4, bottom: `calc(${(v / 16) * 100}% - 0.6em)`, fontSize: '0.7rem', opacity: 0.6 }}>{v}</span>)}
         </div>
-        <div style={{ position: 'relative', flex: 1, height: H, borderLeft: '1px solid #000', borderBottom: '1px solid #000' }}>
-          {[4, 8, 12, 16].map((v) => <div key={v} style={{ position: 'absolute', left: 0, right: 0, bottom: `${(v / 16) * 100}%`, borderTop: '1px solid rgba(0,0,0,0.12)' }} />)}
+        <div style={{ position: 'relative', flex: 1, height: H, borderLeft: '1px solid var(--fg)', borderBottom: '1px solid var(--fg)' }}>
+          {[4, 8, 12, 16].map((v) => <div key={v} style={{ position: 'absolute', left: 0, right: 0, bottom: `${(v / 16) * 100}%`, borderTop: '1px solid color-mix(in srgb, var(--fg) 12%, transparent)' }} />)}
           <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'space-around', alignItems: 'flex-end', padding: '0 2%' }}>
             {f.cues.map((cue, ci) => (
               <div key={cue.key} style={{ display: 'flex', gap: '3px', height: '100%', alignItems: 'flex-end', width: '13%' }}>
@@ -151,7 +151,7 @@ export function Fig1({ src, alt }) {
                       );
                       return (
                         <div key={cat.key} {...mark(show, hide, node)} onMouseEnter={() => setSel(cue.key)} onClick={(e) => { setSel(cue.key); show(e, node); }}
-                          style={{ height: `calc(${(n / 16) * 100}% - 2px)`, marginTop: 2, background: CAT[cat.key], outline: cue.key === sel ? '2px solid #000' : 'none', outlineOffset: -2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.key === 'ems_now' ? '#fff' : '#000', fontSize: '0.7rem', cursor: 'default' }}>
+                          style={{ height: `calc(${(n / 16) * 100}% - 2px)`, marginTop: 2, background: CAT[cat.key], outline: cue.key === sel ? '2px solid var(--fg)' : 'none', outlineOffset: -2, display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.key === 'ems_now' ? '#fff' : INK, fontSize: '0.7rem', cursor: 'default' }}>
                           {n >= 2 ? n : ''}
                         </div>
                       );
@@ -181,14 +181,14 @@ export function HaikuGrid() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const h = d.haiku;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
-            {h.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000' }}>{c}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
+            {h.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid var(--fg)' }}>{c}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -198,7 +198,7 @@ export function HaikuGrid() {
               {rows.map((r) => (
                 <tr key={r.label}>
                   <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{r.label}</td>
-                  {r.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= 12 ? 'bold' : 'normal', background: v[0] >= 12 ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+                  {r.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= 12 ? 'bold' : 'normal', background: v[0] >= 12 ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
                 </tr>
               ))}
             </Fragment>
@@ -252,17 +252,17 @@ function LinePanel({ title, steps, series, sentences, question, onTip, onHide, n
       <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block', fontFamily: 'inherit', cursor: 'crosshair' }} onMouseMove={move} onMouseLeave={leave} onClick={move} tabIndex={0} onBlur={leave}
         onFocus={(e) => { const r = svgRef.current.getBoundingClientRect(); move({ clientX: r.left + r.width * ((L + (W - L - R) * 0.5) / W), clientY: r.top + r.height / 2 }); }}
         onKeyDown={(e) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { const r = svgRef.current.getBoundingClientRect(); const i = Math.max(0, Math.min(steps.length - 1, (hover ?? 0) + (e.key === 'ArrowRight' ? 1 : -1))); move({ clientX: r.left + r.width * (x(i) / W), clientY: r.top + r.height / 2 }); e.preventDefault(); } if (e.key === 'Escape') leave(); }}>
-        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? '#888' : 'rgba(0,0,0,0.1)'} strokeWidth={1} /><text x={L - 6} y={y(t) + 3.5} fontSize={10} textAnchor="end" fill="#444">{t}</text></g>)}
-        <line x1={L} x2={L} y1={T} y2={H - B} stroke="#000" strokeWidth={1} />
-        {labels.map((s, i) => <text key={s} x={x(i)} y={H - B + 14} fontSize={11} textAnchor="end" fill="#222" transform={`rotate(-35 ${x(i)} ${H - B + 14})`}>{s}</text>)}
+        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? 'color-mix(in srgb, var(--fg) 47%, transparent)' : 'color-mix(in srgb, var(--fg) 10%, transparent)'} strokeWidth={1} /><text x={L - 6} y={y(t) + 3.5} fontSize={10} textAnchor="end" fill="color-mix(in srgb, var(--fg) 73%, transparent)">{t}</text></g>)}
+        <line x1={L} x2={L} y1={T} y2={H - B} stroke="var(--fg)" strokeWidth={1} />
+        {labels.map((s, i) => <text key={s} x={x(i)} y={H - B + 14} fontSize={11} textAnchor="end" fill="color-mix(in srgb, var(--fg) 87%, transparent)" transform={`rotate(-35 ${x(i)} ${H - B + 14})`}>{s}</text>)}
         {series.map((s) => (
           <g key={s.label}>
             <path d={s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v[2])}`).join(' ') + ' ' + [...s.values].reverse().map((v, j) => `L${x(s.values.length - 1 - j)},${y(v[1])}`).join(' ') + ' Z'} fill={s.color} fillOpacity={0.15} stroke="none" />
             <path d={s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v[0])}`).join(' ')} fill="none" stroke={s.color} strokeWidth={2} />
-            {s.values.map((v, i) => <circle key={i} cx={x(i)} cy={y(v[0])} r={hover === i ? 5.5 : 4} fill={s.color} stroke="#f5f5dc" strokeWidth={1.5} />)}
+            {s.values.map((v, i) => <circle key={i} cx={x(i)} cy={y(v[0])} r={hover === i ? 5.5 : 4} fill={s.color} stroke="var(--bg)" strokeWidth={1.5} />)}
           </g>
         ))}
-        {hover != null && <line x1={x(hover)} x2={x(hover)} y1={T} y2={H - B} stroke="#000" strokeWidth={1} strokeDasharray="3 3" />}
+        {hover != null && <line x1={x(hover)} x2={x(hover)} y1={T} y2={H - B} stroke="var(--fg)" strokeWidth={1} strokeDasharray="3 3" />}
       </svg>
     </div>
   );
@@ -314,11 +314,11 @@ function HBars({ title, cues, values, max, format, baseline, tipFor, selected, o
       {cues.map((c, i) => (
         <div key={c.key} style={{ display: 'grid', gridTemplateColumns: 'minmax(7.5em, 12em) 1fr 4.8em', gap: '8px', alignItems: 'center', marginBottom: 5, fontSize: '0.74rem' }}>
           <span onClick={() => onSelect(c.key)} style={{ textAlign: 'right', fontWeight: c.key === selected ? 'bold' : 'normal', opacity: c.role === 'orange' || c.role === 'blue' || c.key === selected ? 1 : 0.7, cursor: 'pointer' }}>{c.label}</span>
-          <div style={{ position: 'relative', height: 16, background: 'rgba(0,0,0,0.06)', outline: c.key === selected ? '2px solid #000' : 'none', outlineOffset: 1 }} tabIndex={0}
+          <div style={{ position: 'relative', height: 16, background: 'color-mix(in srgb, var(--fg) 6%, transparent)', outline: c.key === selected ? '2px solid var(--fg)' : 'none', outlineOffset: 1 }} tabIndex={0}
             onMouseMove={(e) => tipFor(e, i)} onMouseEnter={() => onSelect(c.key)} onMouseLeave={tipFor.hide} onClick={(e) => { onSelect(c.key); tipFor(e, i); }}
             onFocus={(e) => { onSelect(c.key); const r = e.currentTarget.getBoundingClientRect(); tipFor({ clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }, i); }} onBlur={tipFor.hide} onKeyDown={(e) => { if (e.key === 'Escape') tipFor.hide(); }}>
             <div style={{ width: `${(values[i] / max) * 100}%`, height: '100%', background: ROLE[c.role], borderRadius: '0 3px 3px 0' }} />
-            {base != null && <div style={{ position: 'absolute', top: -3, bottom: -3, left: `${base}%`, borderLeft: '2px dashed #000' }} />}
+            {base != null && <div style={{ position: 'absolute', top: -3, bottom: -3, left: `${base}%`, borderLeft: '2px dashed var(--fg)' }} />}
           </div>
           <span>{format(values[i])}</span>
         </div>
@@ -378,19 +378,27 @@ export function Fig3({ src, alt }) {
   );
 }
 
-// colour scales for the heat maps
+// colour scales for the heat maps. Each colour is a [light, dark] pair, so the cells follow the theme.
+const NEUTRAL = ['#f7f7f7', '#2a2a25'];
+const NEUTRAL_CSS = 'light-dark(#f7f7f7, #2a2a25)';
+const INK = 'light-dark(#000000, #141412)';
+const LIGHT_INK = 'light-dark(#ffffff, #141412)';
 function mix(a, b, t) {
-  const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  const [x, y] = [p(a), p(b)];
-  return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(',')})`;
+  const p = Math.round(t * 100);
+  const m = (x, y) => `color-mix(in srgb, ${y} ${p}%, ${x})`;
+  return `light-dark(${m(a[0], b[0])}, ${m(a[1], b[1])})`;
 }
 function diverging(v, max) {
   const t = Math.max(-1, Math.min(1, v / max));
-  return t < 0 ? mix('#f7f7f7', '#2166ac', -t) : mix('#f7f7f7', '#b2182b', t);
+  return t < 0 ? mix(NEUTRAL, ['#2166ac', '#2166ac'], -t) : mix(NEUTRAL, ['#b2182b', '#b2182b'], t);
 }
 function sequential(v, max) {
   const t = Math.max(0, Math.min(1, v / max));
-  return t < 0.5 ? mix('#f7fbff', '#6baed6', t * 2) : mix('#6baed6', '#08306b', (t - 0.5) * 2);
+  return t < 0.5 ? mix(['#f7fbff', '#1b2129'], ['#6baed6', '#6baed6'], t * 2) : mix(['#6baed6', '#6baed6'], ['#08306b', '#c6dbef'], (t - 0.5) * 2);
+}
+function sequentialInk(v, max) {
+  if (v >= 2.1) return LIGHT_INK;
+  return v >= 0.5 * max ? INK : 'var(--fg)';
 }
 
 // Figure 4: persona heat map
@@ -402,7 +410,7 @@ export function Fig4({ src, alt }) {
   const max = Math.max(...f.M.flat().map(Math.abs));
   return (
     <div style={wrap} ref={ref}>
-      <div style={{ display: 'grid', gridTemplateColumns: `minmax(8em, 11em) repeat(${f.cues.length}, 1fr)`, gap: 2, fontSize: '0.74rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `minmax(7.5em, 11em) repeat(${f.cues.length}, minmax(0, 1fr))`, gap: 2, fontSize: '0.74rem' }}>
         <div />
         {f.cues.map((c) => <div key={c} style={{ textAlign: 'center', padding: '0 2px 4px' }}>{c}</div>)}
         {f.questions.map((q, i) => (
@@ -420,7 +428,7 @@ export function Fig4({ src, alt }) {
               );
               return (
                 <div key={c} {...mark(show, hide, node)}
-                  style={{ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '9px 2px', cursor: 'default' }}>{fmt(v)}</div>
+                  style={{ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : 'var(--fg)', textAlign: 'center', padding: '9px 2px', cursor: 'default' }}>{fmt(v)}</div>
               );
             })}
           </Fragment>
@@ -428,7 +436,7 @@ export function Fig4({ src, alt }) {
       </div>
       <div style={{ ...legendRow, alignItems: 'center' }}>
         <span>−{max.toFixed(1)}</span>
-        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
+        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, ${NEUTRAL_CSS}, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
         <span style={{ opacity: 0.6 }}>change in log-odds of Yes</span>
       </div>
@@ -467,7 +475,7 @@ export function Fig5({ src, alt }) {
                 );
                 return (
                   <div key={c} {...mark(show, hide, node)}
-                    style={{ background: sequential(v, vmax), color: v >= 2.1 ? '#fff' : '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default' }}>{v >= 0.5 ? v.toFixed(1) : ''}</div>
+                    style={{ background: sequential(v, vmax), color: sequentialInk(v, vmax), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'default' }}>{v >= 0.5 ? v.toFixed(1) : ''}</div>
                 );
               })}
             </Fragment>
@@ -516,9 +524,9 @@ function DotPanel({ title, arms, armLabels, groups, values, n, onTip, onHide }) 
     <div>
       <div style={{ fontSize: '0.74rem', marginBottom: 2, minHeight: '2.3em' }}>{title}</div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block', fontFamily: 'inherit', overflow: 'visible' }}>
-        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? '#888' : 'rgba(0,0,0,0.1)'} /><text x={L - 7} y={y(t) + 4} fontSize={12} textAnchor="end" fill="#444">{t}</text></g>)}
-        <line x1={L} x2={L} y1={T} y2={H - B} stroke="#000" />
-        {arms.map((a, ai) => <text key={a} x={L + slot * (ai + 0.5)} y={H - B + 20} fontSize={13} textAnchor="middle" fill="#222">{armLabels[a]}</text>)}
+        {ticks.map((t) => <g key={t}><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} stroke={t === 0 ? 'color-mix(in srgb, var(--fg) 47%, transparent)' : 'color-mix(in srgb, var(--fg) 10%, transparent)'} /><text x={L - 7} y={y(t) + 4} fontSize={12} textAnchor="end" fill="color-mix(in srgb, var(--fg) 73%, transparent)">{t}</text></g>)}
+        <line x1={L} x2={L} y1={T} y2={H - B} stroke="var(--fg)" />
+        {arms.map((a, ai) => <text key={a} x={L + slot * (ai + 0.5)} y={H - B + 20} fontSize={13} textAnchor="middle" fill="color-mix(in srgb, var(--fg) 87%, transparent)">{armLabels[a]}</text>)}
         {arms.map((a, ai) => groups.map((g, gi) => {
           const v = values[g.key][a];
           const node = (
@@ -534,7 +542,7 @@ function DotPanel({ title, arms, armLabels, groups, values, n, onTip, onHide }) 
             <g key={g.key} tabIndex={0} onMouseMove={(e) => onTip(e, node)} onMouseLeave={onHide} onClick={(e) => onTip(e, node)} onBlur={onHide} onKeyDown={(e) => { if (e.key === 'Escape') onHide(); }}
               onFocus={(e) => { const r = e.currentTarget.getBoundingClientRect(); onTip({ clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }, node); }} style={{ cursor: 'default' }}>
               <line x1={x(ai, gi)} x2={x(ai, gi)} y1={y(v[1])} y2={y(v[2])} stroke={color} strokeWidth={2} />
-              <circle cx={x(ai, gi)} cy={y(v[0])} r={7} fill={hollow ? '#f5f5dc' : color} stroke={hollow ? color : '#f5f5dc'} strokeWidth={hollow ? 2.5 : 1.5} />
+              <circle cx={x(ai, gi)} cy={y(v[0])} r={7} fill={hollow ? 'var(--bg)' : color} stroke={hollow ? color : 'var(--bg)'} strokeWidth={hollow ? 2.5 : 1.5} />
               <rect x={x(ai, gi) - 11} y={T} width={22} height={H - T - B} fill="transparent" />
             </g>
           );
@@ -556,7 +564,7 @@ export function Fig6({ src, alt }) {
         {f.metrics.map((m) => <DotPanel key={m.key} title={m.label} arms={f.arms} armLabels={f.armLabels} groups={groups} values={f.values[m.key]} n={f.n} onTip={show} onHide={hide} />)}
       </div>
       <div style={legendRow}>
-        <Swatch color={C.black} label="no units switched off" /><Swatch color={C.orange} label="20 units switched off" /><Swatch color={C.dark} label="random set A (filled)" /><Swatch color="#f5f5dc" label="random set B (hollow)" />
+        <Swatch color={C.black} label="no units switched off" /><Swatch color={C.orange} label="20 units switched off" /><Swatch color={C.dark} label="random set A (filled)" /><Swatch color="var(--bg)" label="random set B (hollow)" />
         <span style={{ opacity: 0.6 }}>vertical lines: 95% intervals</span>
       </div>
       <Hint />
@@ -591,7 +599,7 @@ function Mark7({ x, y = 15, r = 6, color, filled, tip, onTip, onHide }) {
   return (
     <g {...mark(onTip, onHide, tip)} style={{ cursor: 'default' }}>
       <line x1={`${x[1]}%`} x2={`${x[2]}%`} y1={y} y2={y} stroke={color} strokeWidth={2} />
-      <circle cx={`${x[0]}%`} cy={y} r={r} fill={filled ? color : '#f5f5dc'} stroke={filled ? '#f5f5dc' : color} strokeWidth={filled ? 1.5 : 2.5} />
+      <circle cx={`${x[0]}%`} cy={y} r={r} fill={filled ? color : 'var(--bg)'} stroke={filled ? 'var(--bg)' : color} strokeWidth={filled ? 1.5 : 2.5} />
       <rect x={`${Math.max(0, x[1] - 2)}%`} y={y - 8} width={`${Math.min(100, x[2] + 2) - Math.max(0, x[1] - 2)}%`} height={16} fill="transparent" />
     </g>
   );
@@ -634,13 +642,13 @@ export function Fig7({ src, alt }) {
           {rows.map((r) => (
             <Fragment key={r.key}>
               <div style={labelCell7}>
-                {r.swatch && <span style={{ width: 11, height: 11, borderRadius: '50%', flex: 'none', background: r.swatch.filled ? r.swatch.color : '#f5f5dc', border: r.swatch.filled ? 'none' : `2.5px solid ${r.swatch.color}`, boxSizing: 'border-box' }} />}
+                {r.swatch && <span style={{ width: 11, height: 11, borderRadius: '50%', flex: 'none', background: r.swatch.filled ? r.swatch.color : 'var(--bg)', border: r.swatch.filled ? 'none' : `2.5px solid ${r.swatch.color}`, boxSizing: 'border-box' }} />}
                 <span>{r.label}</span>
               </div>
               {arms.map((a) => (
                 <svg key={a} style={strip7} aria-label={`${r.label}, ${ARM7[a]}`}>
-                  <line x1="0%" x2="100%" y1={15} y2={15} stroke="rgba(0,0,0,0.08)" />
-                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={30} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  <line x1="0%" x2="100%" y1={15} y2={15} stroke="color-mix(in srgb, var(--fg) 8%, transparent)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={30} stroke={t === 0 ? 'color-mix(in srgb, var(--fg) 35%, transparent)' : 'color-mix(in srgb, var(--fg) 8%, transparent)'} />)}
                   {r.marks.filter((m) => m.arm === a).map((m, i, list) => {
                     const refX = X(m.ref);
                     const node = (
@@ -652,7 +660,7 @@ export function Fig7({ src, alt }) {
                     );
                     return (
                       <Fragment key={m.key}>
-                        {i === 0 && view === 'shift' && m.key !== 'none' && <line x1={`${refX}%`} x2={`${refX}%`} y1={2} y2={28} stroke="#000" strokeDasharray="3 3" />}
+                        {i === 0 && view === 'shift' && m.key !== 'none' && <line x1={`${refX}%`} x2={`${refX}%`} y1={2} y2={28} stroke="var(--fg)" strokeDasharray="3 3" />}
                         <Mark7 x={[X(m.v[0]), X(m.v[1]), X(m.v[2])]} y={15 + (i - (list.length - 1) / 2) * 9} r={list.length > 1 ? 4.5 : 6} color={m.color} filled={m.filled} tip={node} onTip={show} onHide={hide} />
                       </Fragment>
                     );
@@ -664,7 +672,7 @@ export function Fig7({ src, alt }) {
           <div />
           {arms.map((a) => (
             <svg key={a} style={{ ...strip7, height: 18 }}>
-              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="color-mix(in srgb, var(--fg) 73%, transparent)">{t}</text>)}
             </svg>
           ))}
         </div>
@@ -673,7 +681,7 @@ export function Fig7({ src, alt }) {
         <span>{metricLabel}, log-odds. Horizontal lines: 95% intervals.</span>
         {view === 'shift' && <span>Dashed line: the change with no fix.</span>}
         {view !== 'main' && <span>Black: no fix. Hollow: applied to every message. Filled: only when the switch is on.</span>}
-        {view === 'main' && MAIN7.map((m) => <Swatch key={m.key} color={m.filled ? m.color : '#f5f5dc'} label={m.label} />)}
+        {view === 'main' && MAIN7.map((m) => <Swatch key={m.key} color={m.filled ? m.color : 'var(--bg)'} label={m.label} />)}
       </div>
       <div style={{ ...hint, opacity: 0.8 }}>
         Switch on at layer {layer}: no-insurance messages {pct(g.emergency.uninsured)} / {pct(g.urgent.uninsured)} / {pct(g.routine.uninsured)} percent (emergency / same-day / routine); messages without one {pct(g.emergency.none)} / {pct(g.urgent.none)} / {pct(g.routine.none)} percent.
@@ -745,7 +753,7 @@ export function Fig8({ src, alt }) {
               );
               return (
                 <div key={a} {...mark(show, hide, node)}
-                  style={{ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '6px 2px', cursor: 'default' }}>{fmt(v)}</div>
+                  style={{ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : 'var(--fg)', textAlign: 'center', padding: '6px 2px', cursor: 'default' }}>{fmt(v)}</div>
               );
             })}
           </Fragment>
@@ -753,7 +761,7 @@ export function Fig8({ src, alt }) {
       </div>
       <div style={{ ...legendRow, alignItems: 'center' }}>
         <span>−{max.toFixed(1)}</span>
-        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
+        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, ${NEUTRAL_CSS}, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
         <span style={{ opacity: 0.6 }}>{label}, change in log-odds. Red: more likely to give that answer. Blue: less likely.</span>
       </div>
@@ -783,14 +791,14 @@ export function BreadthTable({ keys }) {
   const f = d.fig8;
   const byKey = Object.fromEntries(f.families.map((x) => [x.key, x]));
   const cols = [['ems2', 'routine', 'routine, call 911'], ['urgency2', 'routine', "routine, lean toward 'High' urgency"], ['ems2', 'emergency', 'emergency, call 911'], ['ride2', 'emergency', "emergency, 'Ambulance' over driving"]];
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>change, log-odds [95% interval]</th>
-            {cols.map((c) => <th key={c[2]} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c[2]}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>change, log-odds [95% interval]</th>
+            {cols.map((c) => <th key={c[2]} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', whiteSpace: 'normal', fontWeight: 'normal' }}>{c[2]}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -836,7 +844,7 @@ export function Fig9({ src, alt }) {
   const fams = [...f.families].sort((a, b) => f.atlas[b.key][layer].cos - f.atlas[a.key][layer].cos);
   const idx = Object.fromEntries(f.cosine[layer].families.map((k, i) => [k, i]));
   const M = f.cosine[layer].matrix;
-  const track = { position: 'relative', height: 18, alignSelf: 'center', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)', cursor: 'default' };
+  const track = { position: 'relative', height: 18, alignSelf: 'center', background: 'linear-gradient(to right, color-mix(in srgb, var(--fg) 15%, transparent) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', cursor: 'default' };
   return (
     <div style={wrap} ref={ref}>
       <div style={row}>
@@ -930,8 +938,8 @@ export function Fig9({ src, alt }) {
 const POS10 = { before: { label: 'Before the question', short: 'before the question', color: C.blue }, start: { label: 'First sentence', short: 'first sentence of the message', color: C.orange }, prior: { label: 'Earlier chat turn, acknowledged', short: 'an earlier turn, acknowledged', color: C.green } };
 const ARM10 = { emergency: 'Emergencies', routine: 'Routine complaints' };
 const AGAINST10 = [{ key: 'filler', label: 'the weather sentence in the same place' }, { key: 'none', label: 'the message with no added sentence' }];
-const miniBubble = { padding: '7px 10px', background: '#e6e6d2', border: '1px solid rgba(0, 0, 0, 0.25)', borderRadius: '12px 12px 3px 12px', fontSize: '0.7rem', lineHeight: 1.45, hyphens: 'none', marginBottom: 5 };
-const miniReply = { ...miniBubble, background: '#ffffff', borderRadius: '12px 12px 12px 3px' };
+const miniBubble = { padding: '7px 10px', background: 'light-dark(#e6e6d2, #2b2a23)', border: '1px solid color-mix(in srgb, var(--fg) 25%, transparent)', borderRadius: '12px 12px 3px 12px', fontSize: '0.7rem', lineHeight: 1.45, hyphens: 'none', marginBottom: 5 };
+const miniReply = { ...miniBubble, background: 'light-dark(#ffffff, var(--raised))', borderRadius: '12px 12px 12px 3px' };
 
 function Positions10({ s, cue }) {
   const sent = s.sentences[cue];
@@ -982,8 +990,8 @@ export function Fig10({ src, alt }) {
               <div style={{ ...labelCell7, fontWeight: c === cue ? 'bold' : 'normal' }}><span>{c === 'filler' ? 'weather sentence' : f.sample.cueLabels[c]}</span></div>
               {f.arms.map((a) => (
                 <svg key={a} style={{ ...strip7, height: 40 }} aria-label={`${c}, ${ARM10[a]}`}>
-                  <line x1="0%" x2="100%" y1={20} y2={20} stroke="rgba(0,0,0,0.08)" />
-                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={40} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  <line x1="0%" x2="100%" y1={20} y2={20} stroke="color-mix(in srgb, var(--fg) 8%, transparent)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={40} stroke={t === 0 ? 'color-mix(in srgb, var(--fg) 35%, transparent)' : 'color-mix(in srgb, var(--fg) 8%, transparent)'} />)}
                   {f.positions.map((p, i) => {
                     const v = table[a][c][p.key];
                     const node = (
@@ -1002,7 +1010,7 @@ export function Fig10({ src, alt }) {
           <div />
           {f.arms.map((a) => (
             <svg key={a} style={{ ...strip7, height: 18 }}>
-              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="color-mix(in srgb, var(--fg) 73%, transparent)">{t}</text>)}
             </svg>
           ))}
         </div>
@@ -1030,14 +1038,14 @@ export function OrderTable({ rows }) {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig10;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds [95% interval]</th>
-            {f.positions.map((p) => <th key={p.key} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: POS10[p.key].color }}>{POS10[p.key].label.toLowerCase()}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds [95% interval]</th>
+            {f.positions.map((p) => <th key={p.key} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', whiteSpace: 'normal', fontWeight: 'normal', color: POS10[p.key].color }}>{POS10[p.key].label.toLowerCase()}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1122,8 +1130,8 @@ export function Fig11({ src, alt }) {
               <div style={{ ...labelCell7, fontWeight: view === 'effect' && r.key === cue ? 'bold' : 'normal' }}><span>{r.label}</span></div>
               {f.arms.map((a) => (
                 <svg key={a} style={{ ...strip7, height: rowH }} aria-label={`${r.label}, ${ARM10[a]}`}>
-                  <line x1="0%" x2="100%" y1={rowH / 2} y2={rowH / 2} stroke="rgba(0,0,0,0.08)" />
-                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={rowH} stroke={t === 0 ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.08)'} />)}
+                  <line x1="0%" x2="100%" y1={rowH / 2} y2={rowH / 2} stroke="color-mix(in srgb, var(--fg) 8%, transparent)" />
+                  {ticks.map((t) => <line key={t} x1={`${X(t)}%`} x2={`${X(t)}%`} y1={0} y2={rowH} stroke={t === 0 ? 'color-mix(in srgb, var(--fg) 35%, transparent)' : 'color-mix(in srgb, var(--fg) 8%, transparent)'} />)}
                   {keys.map((k, i) => {
                     const v = r.get(a, k);
                     const ch = view === 'effect' && k !== 'clean' ? f.change[readout][a][r.key][k] : null;
@@ -1153,7 +1161,7 @@ export function Fig11({ src, alt }) {
           <div />
           {f.arms.map((a) => (
             <svg key={a} style={{ ...strip7, height: 18 }}>
-              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="#444">{t}</text>)}
+              {ticks.map((t) => <text key={t} x={`${X(t)}%`} y={13} fontSize={11} textAnchor="middle" fill="color-mix(in srgb, var(--fg) 73%, transparent)">{t}</text>)}
             </svg>
           ))}
         </div>
@@ -1193,15 +1201,15 @@ export function RealismTable({ rows }) {
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig11;
   const keys = Object.keys(TR11).slice(1);
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>no added sentence; change, log-odds [95% interval]</th>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal' }}>clean level</th>
-            {keys.map((k) => <th key={k} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal', color: TR11[k].color }}>{TR11[k].short}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>no added sentence; change, log-odds [95% interval]</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal' }}>clean level</th>
+            {keys.map((k) => <th key={k} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', whiteSpace: 'normal', fontWeight: 'normal', color: TR11[k].color }}>{TR11[k].short}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1242,7 +1250,7 @@ export function Fig12({ src, alt }) {
   const label = f.readouts.find((r) => r.key === readout).label;
   const vals = f.conditions.flatMap((c) => f.cues.map((q) => Math.abs(f.cell[readout][c.key][arm][q])));
   const max = Math.max(...vals, ...f.cues.map((q) => Math.abs(f.pooled[readout][arm][q][0])));
-  const cellStyle = (v) => ({ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : '#000', textAlign: 'center', padding: '8px 2px', cursor: 'default' });
+  const cellStyle = (v) => ({ background: diverging(v, max), color: Math.abs(v) > 0.6 * max ? '#fff' : 'var(--fg)', textAlign: 'center', padding: '8px 2px', cursor: 'default' });
   return (
     <div style={wrap} ref={ref}>
       <div style={row}><span style={small}>Model&apos;s answer</span>{f.readouts.map((r) => <button key={r.key} type="button" aria-pressed={r.key === readout} style={chip(r.key === readout)} onClick={() => setReadout(r.key)}>{r.label}</button>)}</div>
@@ -1269,7 +1277,7 @@ export function Fig12({ src, alt }) {
             </Fragment>
           );
         })}
-        <div style={{ alignSelf: 'center', lineHeight: 1.15, paddingRight: 6, fontWeight: 'bold', borderTop: '1.5px solid #000', paddingTop: 4, marginTop: 2 }}>pooled, six conditions</div>
+        <div style={{ alignSelf: 'center', lineHeight: 1.15, paddingRight: 6, fontWeight: 'bold', borderTop: '1.5px solid var(--fg)', paddingTop: 4, marginTop: 2 }}>pooled, six conditions</div>
         {f.cues.map((q) => {
           const [v, lo, hi] = f.pooled[readout][arm][q];
           const node = <div><div><b>Pooled over the six conditions</b>, {ARM12[arm].toLowerCase()} · {CUE12[q]}: {fmt(v)} [{fmt(lo)}, {fmt(hi)}]</div><div style={{ opacity: 0.6, marginTop: 3 }}>{label}, mean and 95% interval from resampling the six conditions</div></div>;
@@ -1278,7 +1286,7 @@ export function Fig12({ src, alt }) {
       </div>
       <div style={{ ...legendRow, alignItems: 'center' }}>
         <span>−{max.toFixed(1)}</span>
-        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, #f7f7f7, ${diverging(max, max)})`, display: 'inline-block' }} />
+        <span style={{ width: 120, height: 10, background: `linear-gradient(to right, ${diverging(-max, max)}, ${NEUTRAL_CSS}, ${diverging(max, max)})`, display: 'inline-block' }} />
         <span>+{max.toFixed(1)}</span>
         <span style={{ opacity: 0.6 }}>{label}, the sentence minus the weather sentence, log-odds. Red raises the lean toward the named answer, blue lowers it.</span>
       </div>
@@ -1298,14 +1306,14 @@ export function ConditionTable({ cols }) {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig12;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 520 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds</th>
-            {cols.map((c) => <th key={c.label} style={{ ...cell, borderBottom: '1.5px solid #000', whiteSpace: 'normal', fontWeight: 'normal' }}>{c.label}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>change, log-odds</th>
+            {cols.map((c) => <th key={c.label} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', whiteSpace: 'normal', fontWeight: 'normal' }}>{c.label}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1316,8 +1324,8 @@ export function ConditionTable({ cols }) {
             </tr>
           ))}
           <tr>
-            <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: 'bold', borderTop: '1.5px solid #000' }}>pooled, six conditions</td>
-            {cols.map((x) => { const [v, lo, hi] = f.pooled[x.readout][x.arm][x.cue]; return <td key={x.label} style={{ ...cell, fontWeight: 'bold', borderTop: '1.5px solid #000' }}>{fmt(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(lo)}, {fmt(hi)}]</div></td>; })}
+            <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: 'bold', borderTop: '1.5px solid var(--fg)' }}>pooled, six conditions</td>
+            {cols.map((x) => { const [v, lo, hi] = f.pooled[x.readout][x.arm][x.cue]; return <td key={x.label} style={{ ...cell, fontWeight: 'bold', borderTop: '1.5px solid var(--fg)' }}>{fmt(v)}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(lo)}, {fmt(hi)}]</div></td>; })}
           </tr>
         </tbody>
       </table>
@@ -1331,21 +1339,21 @@ export function ConditionReplies() {
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const r = d.fig12.replies;
   const names = { none: 'no sentence', filler: 'weather', distance: 'hospital 90 min', clinic_closed: 'clinic closed', no_transport: 'no ride', uninsured: 'no insurance' };
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
-            {r.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal' }}>{names[c]}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
+            {r.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal' }}>{names[c]}</th>)}
           </tr>
         </thead>
         <tbody>
           {r.rows.map((x) => (
             <tr key={x.label}>
               <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
-              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
             </tr>
           ))}
         </tbody>
@@ -1359,21 +1367,21 @@ export function BreadthReplies() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const r = d.fig8.replies;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 720 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
-            {r.cues.map((c) => <th key={c.key} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c.label}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>of {r.n}, reader 1 / reader 2</th>
+            {r.cues.map((c) => <th key={c.key} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c.label}</th>)}
           </tr>
         </thead>
         <tbody>
           {r.rows.map((x) => (
             <tr key={x.label}>
               <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>{x.label}</td>
-              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
+              {x.values.map((v, i) => <td key={i} style={{ ...cell, fontWeight: v[0] >= r.n ? 'bold' : 'normal', background: v[0] >= r.n ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>)}
             </tr>
           ))}
         </tbody>
@@ -1416,7 +1424,7 @@ export function Fig13({ src, alt }) {
               <div>{x.label}</div>
               <div style={{ opacity: 0.6, fontWeight: 'normal' }}>{GOOD13[x.arm]}</div>
             </div>
-            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid #000', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)' }}>
+            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid var(--fg)', background: 'linear-gradient(to right, color-mix(in srgb, var(--fg) 15%, transparent) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)' }}>
               {f.models.map((m) => {
                 const v = x.models[m.key];
                 if (!v) {
@@ -1430,10 +1438,10 @@ export function Fig13({ src, alt }) {
                 );
                 return (
                   <div key={m.key} {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
-                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL13[m.key], outline: x.key === sel ? '1px solid #000' : 'none' }} />
+                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL13[m.key], outline: x.key === sel ? '1px solid var(--fg)' : 'none' }} />
                     {v.share > 0.7
                       ? <span style={{ position: 'absolute', right: `calc(${100 - v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#fff' }}>{count13(v)}</span>
-                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#000' }}>{count13(v)}</span>}
+                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: 'var(--fg)' }}>{count13(v)}</span>}
                   </div>
                 );
               })}
@@ -1452,21 +1460,21 @@ export function Fig13({ src, alt }) {
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 420, marginTop: 4 }}>
           <thead>
             <tr>
-              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>model</th>
+              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>model</th>
               {set.cues.map((q) => {
                 const node = <div><div><b>{f.cueLabels[q]}</b></div>{f.sentences[q] ? <div style={{ marginTop: 3 }}>“{f.sentences[q]}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}</div>;
-                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
+                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
               })}
             </tr>
           </thead>
           <tbody>
             {models.map((m) => (
               <tr key={m.key}>
-                <td style={{ padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}><Swatch color={MODEL13[m.key]} label={m.label} /></td>
+                <td style={{ padding: '6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', whiteSpace: 'nowrap' }}><Swatch color={MODEL13[m.key]} label={m.label} /></td>
                 {set.cues.map((q) => {
                   const v = set.models[m.key].perCue[q];
                   const full = v[0] >= set.per && v[1] >= set.per;
-                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid rgba(0,0,0,0.15)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
+                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
                 })}
               </tr>
             ))}
@@ -1484,14 +1492,14 @@ export function LoraTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig13;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>set and cases; replies that open with “call 911”</th>
-            {f.models.map((m) => <th key={m.key} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{m.label}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>set and cases; replies that open with “call 911”</th>
+            {f.models.map((m) => <th key={m.key} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{m.label}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1548,7 +1556,7 @@ export function Fig14({ src, alt }) {
             <Fragment key={c.key}>
               <div style={{ ...labelCell7, fontWeight: c.key === cue ? 'bold' : 'normal', cursor: 'pointer' }} onClick={() => setCue(c.key)}><span>{c.label}</span></div>
               <svg viewBox="0 0 100 34" preserveAspectRatio="none" style={{ ...strip7, height: 34 }} onClick={() => setCue(c.key)}>
-                <line x1={`${X(0)}%`} x2={`${X(0)}%`} y1={2} y2={32} stroke="#000" strokeWidth={1} />
+                <line x1={`${X(0)}%`} x2={`${X(0)}%`} y1={2} y2={32} stroke="var(--fg)" strokeWidth={1} />
                 {['original', 'replication'].map((k, i) => {
                   const v = vals[c.key][k];
                   const node = (
@@ -1566,7 +1574,7 @@ export function Fig14({ src, alt }) {
         </div>
       </div>
       <div style={legendRow}>
-        <Swatch color="#f5f5dc" label={`hollow grey: ${SET14.original.label}`} /><Swatch color={C.blue} label={`blue: ${SET14.replication.label}`} />
+        <Swatch color="var(--bg)" label={`hollow grey: ${SET14.original.label}`} /><Swatch color={C.blue} label={`blue: ${SET14.replication.label}`} />
         <span>{p.label}, log-odds. Horizontal lines: 95% intervals. Dark line: no change.</span>
       </div>
       <div style={{ fontSize: '0.76rem', lineHeight: 1.55, marginTop: 10, opacity: 0.85 }}>
@@ -1587,14 +1595,14 @@ export function RepTable() {
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig14;
   const cols = [['em_ems2', 'original', "Emergency, 'call 911': original set"], ['em_ems2', 'replication', "Emergency, 'call 911': new set"], ['ro_urgency2', 'original', "Routine, 'High' urgency: original set"], ['ro_urgency2', 'replication', "Routine, 'High' urgency: new set"]];
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>sentence; change, log-odds [95% interval]</th>
-            {cols.map((x) => <th key={x[2]} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{x[2]}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>sentence; change, log-odds [95% interval]</th>
+            {cols.map((x) => <th key={x[2]} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{x[2]}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1619,14 +1627,14 @@ export function RepReplies() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const f = d.fig14;
-  const cell = { padding: '6px 5px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '6px 5px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.76rem', lineHeight: 1.35, minWidth: 760 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
-            {f.replies.emergency.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.7rem', lineHeight: 1.2 }}>{f.cueLabels[c]}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>of 16, reader 1 / reader 2</th>
+            {f.replies.emergency.cues.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.7rem', lineHeight: 1.2 }}>{f.cueLabels[c]}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1652,14 +1660,14 @@ export function SelfDirTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const t = d.tab12;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases and answer; change, log-odds</th>
-            {t.conds.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases and answer; change, log-odds</th>
+            {t.conds.map((c) => <th key={c} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{c}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1680,15 +1688,15 @@ export function BankTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const b = d.bank;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'left', whiteSpace: 'normal' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'left', whiteSpace: 'normal' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 480 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>kind of text</th>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, textAlign: 'center' }}>units that single it out (of {b.n})</th>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>strongest unit: how many times more active on that kind than on the next kind</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>kind of text</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, textAlign: 'center' }}>units that single it out (of {b.n})</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>strongest unit: how many times more active on that kind than on the next kind</th>
           </tr>
         </thead>
         <tbody>
@@ -1716,15 +1724,15 @@ export function ControlTable() {
   const { ref, tip, show, hide } = useTip();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const t = d.tab14;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }} ref={ref}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>extra sentence (hover for its wording)</th>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>“call 911” first, of {t.n} (reader 1 / reader 2)</th>
-            <th style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>change in the lean toward “Yes, call 911”, log-odds [95% interval]</th>
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>extra sentence (hover for its wording)</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>“call 911” first, of {t.n} (reader 1 / reader 2)</th>
+            <th style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>change in the lean toward “Yes, call 911”, log-odds [95% interval]</th>
           </tr>
         </thead>
         <tbody>
@@ -1732,7 +1740,7 @@ export function ControlTable() {
             const moved = Math.max(...r.counts) <= 11;
             const node = <div><div><b>{r.label}</b></div>{r.sentence ? <div style={{ marginTop: 3 }}>“{r.sentence}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}<div style={{ opacity: 0.6, marginTop: 3 }}>{t.n - Math.min(...r.counts)} to {t.n - Math.max(...r.counts)} of {t.n} replies open with something other than call 911.</div></div>;
             return (
-              <tr key={r.key} {...mark(show, hide, node)} style={{ cursor: 'default', background: moved ? 'rgba(0,0,0,0.06)' : 'transparent' }}>
+              <tr key={r.key} {...mark(show, hide, node)} style={{ cursor: 'default', background: moved ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>
                 <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal', fontWeight: moved ? 'bold' : 'normal' }}>{r.label}</td>
                 <td style={{ ...cell, fontWeight: moved ? 'bold' : 'normal' }}>{r.counts[0] === r.counts[1] ? r.counts[0] : `${r.counts[0]} / ${r.counts[1]}`}</td>
                 <td style={{ ...cell, fontWeight: r.change && r.change[2] < 0 && Math.abs(r.change[0]) >= 0.5 ? 'bold' : 'normal' }}>{r.change ? <>{fmt(r.change[0])}<div style={{ fontSize: '0.68rem', opacity: 0.55, fontWeight: 'normal' }}>[{fmt(r.change[1])}, {fmt(r.change[2])}]</div></> : <span style={{ opacity: 0.5 }}>reference</span>}</td>
@@ -1752,14 +1760,14 @@ export function GemmaRerunTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const t = d.tab15;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 600 }}>
         <thead>
           <tr>
-            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases, sentence; change, log-odds</th>
-            {t.head.slice(1).map((h) => <th key={h} style={{ ...cell, borderBottom: '1.5px solid #000', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{h}</th>)}
+            <th style={{ ...cell, textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, whiteSpace: 'normal' }}>cases, sentence; change, log-odds</th>
+            {t.head.slice(1).map((h) => <th key={h} style={{ ...cell, borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', whiteSpace: 'normal', fontSize: '0.72rem', lineHeight: 1.25 }}>{h}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1801,7 +1809,7 @@ export function Fig15({ src, alt }) {
               <div>{x.label}</div>
               <div style={{ opacity: 0.6, fontWeight: 'normal' }}>replies that {MEASURE15[x.arm]}; {GOOD13[x.arm]}</div>
             </div>
-            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid #000', background: 'linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid rgba(0,0,0,0.15)' }}>
+            <div onClick={() => setSel(x.key)} style={{ display: 'grid', gap: 2, cursor: 'pointer', padding: '2px 0', borderLeft: '1px solid var(--fg)', background: 'linear-gradient(to right, color-mix(in srgb, var(--fg) 15%, transparent) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)' }}>
               {f.models.map((m) => {
                 const v = x.models[m.key];
                 if (!v) {
@@ -1815,10 +1823,10 @@ export function Fig15({ src, alt }) {
                 );
                 return (
                   <div key={m.key} {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
-                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL15[m.key], outline: x.key === sel ? '1px solid #000' : 'none' }} />
+                    <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${v.share * 100}%`, background: MODEL15[m.key], outline: x.key === sel ? '1px solid var(--fg)' : 'none' }} />
                     {v.share > 0.7
                       ? <span style={{ position: 'absolute', right: `calc(${100 - v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#fff' }}>{count13(v)}</span>
-                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#000' }}>{count13(v)}</span>}
+                      : <span style={{ position: 'absolute', left: `calc(${v.share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: 'var(--fg)' }}>{count13(v)}</span>}
                   </div>
                 );
               })}
@@ -1837,21 +1845,21 @@ export function Fig15({ src, alt }) {
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.74rem', lineHeight: 1.35, minWidth: 420, marginTop: 4 }}>
           <thead>
             <tr>
-              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>model</th>
+              <th style={{ padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>model</th>
               {set.cues.map((q) => {
                 const node = <div><div><b>{f.cueLabels[q]}</b></div>{f.sentences[q] ? <div style={{ marginTop: 3 }}>“{f.sentences[q]}”</div> : <div style={{ marginTop: 3, opacity: 0.6 }}>the message as written</div>}</div>;
-                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
+                return <th key={q} {...mark(show, hide, node)} style={{ padding: '5px 4px', textAlign: 'center', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', fontSize: '0.68rem', lineHeight: 1.2, cursor: 'default' }}>{f.cueLabels[q]}</th>;
               })}
             </tr>
           </thead>
           <tbody>
             {models.map((m) => (
               <tr key={m.key}>
-                <td style={{ padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}><Swatch color={MODEL15[m.key]} label={m.label} /></td>
+                <td style={{ padding: '6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', whiteSpace: 'nowrap' }}><Swatch color={MODEL15[m.key]} label={m.label} /></td>
                 {set.cues.map((q) => {
                   const v = set.models[m.key].perCue[q];
                   const full = set.arm === 'emergency' ? v[0] >= set.per && v[1] >= set.per : v[0] === 0 && v[1] === 0;
-                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid rgba(0,0,0,0.15)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'rgba(0,0,0,0.06)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
+                  return <td key={q} style={{ padding: '6px 4px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', fontWeight: full ? 'bold' : 'normal', background: full ? 'color-mix(in srgb, var(--fg) 6%, transparent)' : 'transparent' }}>{v[0] === v[1] ? v[0] : `${v[0]} / ${v[1]}`}</td>;
                 })}
               </tr>
             ))}
@@ -1873,13 +1881,13 @@ export function SoftTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const t = d.fig15.tab16;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.78rem', lineHeight: 1.4, minWidth: 560 }}>
         <thead>
           <tr>
-            {t.header.map((h, i) => <th key={h} style={{ ...cell, textAlign: i ? 'center' : 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: i ? 1 : 0.6, whiteSpace: 'normal', fontSize: i ? '0.72rem' : 'inherit', lineHeight: 1.25 }}>{h}</th>)}
+            {t.header.map((h, i) => <th key={h} style={{ ...cell, textAlign: i ? 'center' : 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: i ? 1 : 0.6, whiteSpace: 'normal', fontSize: i ? '0.72rem' : 'inherit', lineHeight: 1.25 }}>{h}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -1900,7 +1908,7 @@ export function SoftTable() {
 
 // Figure 16 and Table 17: the medication danger bank
 const FRAME16 = { morning: C.dark, refill: C.green, forgot: C.orange, question: C.blue, double: C.pink };
-const chip16 = (on) => ({ font: 'inherit', fontSize: '0.74rem', padding: '2px 9px', border: '1px solid #000', borderRadius: '999px', background: on ? '#000' : 'transparent', color: on ? '#f5f5dc' : '#000', cursor: 'pointer' });
+const chip16 = (on) => ({ font: 'inherit', fontSize: '0.74rem', padding: '2px 9px', border: '1px solid var(--fg)', borderRadius: '999px', background: on ? 'var(--fg)' : 'transparent', color: on ? 'var(--bg)' : 'var(--fg)', cursor: 'pointer' });
 export function Fig16({ src, alt }) {
   const d = useCharts();
   const [on, setOn] = useState(null);
@@ -1913,13 +1921,13 @@ export function Fig16({ src, alt }) {
   const series = (mk) => frames.map((fr) => ({ label: fr.label, color: FRAME16[fr.key], values: f.tiers.map((t) => f.values[`${fr.key}|${t.key}`][mk]) }));
   const sel = on ? f.frames.find((x) => x.key === on) : null;
   const tierLabel = Object.fromEntries(f.tiers.map((t) => [t.key, t.label]));
-  const cell = { padding: '5px 6px', borderBottom: '1px solid rgba(0,0,0,0.15)', whiteSpace: 'nowrap' };
+  const cell = { padding: '5px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', whiteSpace: 'nowrap' };
   return (
     <div style={wrap} ref={ref}>
       <div style={{ ...row, marginBottom: 8 }}>
         <span style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.6 }}>Sentence</span>
         <button type="button" aria-pressed={on === null} style={chip16(on === null)} onClick={() => setOn(null)}>all five</button>
-        {f.frames.map((fr) => <button key={fr.key} type="button" aria-pressed={on === fr.key} style={chip16(on === fr.key)} onClick={() => setOn(on === fr.key ? null : fr.key)}><span style={{ display: 'inline-block', width: 8, height: 8, background: FRAME16[fr.key], marginRight: 6, verticalAlign: 'middle', border: '1px solid rgba(0,0,0,0.3)' }} />{fr.label}</button>)}
+        {f.frames.map((fr) => <button key={fr.key} type="button" aria-pressed={on === fr.key} style={chip16(on === fr.key)} onClick={() => setOn(on === fr.key ? null : fr.key)}><span style={{ display: 'inline-block', width: 8, height: 8, background: FRAME16[fr.key], marginRight: 6, verticalAlign: 'middle', border: '1px solid color-mix(in srgb, var(--fg) 30%, transparent)' }} />{fr.label}</button>)}
       </div>
       <div style={{ fontSize: '0.76rem', opacity: 0.75, marginBottom: 8, minHeight: '2.4em' }}>
         {sel ? <>“{sel.sentence}” For a household object the sentence reads “{sel.objectSentence}”</> : 'Each sentence is the same for the 24 medicines; only the name X changes. The household objects use a second wording. Select a sentence to see both.'}
@@ -1943,7 +1951,7 @@ export function Fig16({ src, alt }) {
         <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.72rem', lineHeight: 1.35, minWidth: 640, marginTop: 4 }}>
           <thead>
             <tr>
-              {['item', 'tier', 'P(High)', '“Yes, call 911”', 'first advice (reader 1 / reader 2)', 'reader flags'].map((h, i) => <th key={h} style={{ ...cell, textAlign: i < 2 || i > 3 ? 'left' : 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6 }}>{h}</th>)}
+              {['item', 'tier', 'P(High)', '“Yes, call 911”', 'first advice (reader 1 / reader 2)', 'reader flags'].map((h, i) => <th key={h} style={{ ...cell, textAlign: i < 2 || i > 3 ? 'left' : 'center', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6 }}>{h}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -1981,13 +1989,13 @@ export function MedsTable() {
   const d = useCharts();
   if (!d) return <div style={{ ...wrap, opacity: 0.6 }}>Loading the table.</div>;
   const t = d.fig16.tab17;
-  const cell = { padding: '7px 6px', borderBottom: '1px solid rgba(0, 0, 0, 0.15)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
+  const cell = { padding: '7px 6px', borderBottom: '1px solid color-mix(in srgb, var(--fg) 15%, transparent)', textAlign: 'center', whiteSpace: 'nowrap', verticalAlign: 'top' };
   return (
     <div className="scrollX" style={{ ...wrap, overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.76rem', lineHeight: 1.4, minWidth: 820 }}>
         <thead>
           <tr>
-            {t.header.map((h, i) => <th key={h} style={{ ...cell, textAlign: i === 0 || i === 4 ? 'left' : 'center', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: i ? 1 : 0.6, whiteSpace: 'normal', fontSize: '0.7rem', lineHeight: 1.25, minWidth: i === 4 ? '14em' : undefined }}>{h}</th>)}
+            {t.header.map((h, i) => <th key={h} style={{ ...cell, textAlign: i === 0 || i === 4 ? 'left' : 'center', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: i ? 1 : 0.6, whiteSpace: 'normal', fontSize: '0.7rem', lineHeight: 1.25, minWidth: i === 4 ? '14em' : undefined }}>{h}</th>)}
           </tr>
         </thead>
         <tbody>

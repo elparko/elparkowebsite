@@ -17,7 +17,7 @@ export default function AboutThisSite() {
             {pages.length > 0 && (
               <ul style={{marginLeft: '20px'}}>
                 {pages.map((p) => (
-                  <li key={p.slug}><Link href={`/${p.slug}`} style={{color: '#000000'}}>{p.title}</Link></li>
+                  <li key={p.slug}><Link href={`/${p.slug}`} style={{color: 'var(--fg)'}}>{p.title}</Link></li>
                 ))}
               </ul>
             )}

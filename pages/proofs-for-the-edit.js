@@ -2,19 +2,19 @@ import WritingLayout from '../components/WritingLayout';
 import ProofFig from '../components/ProofFig';
 
 const eyebrowStyle = { fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', opacity: 0.6, marginTop: '2.6em', marginBottom: '0.3em', textAlign: 'left' };
-const headingStyle = { marginTop: 0, marginBottom: '0.7em', paddingTop: '0.4em', borderTop: '1.5px solid #000000', textAlign: 'left', fontSize: '1.25rem' };
+const headingStyle = { marginTop: 0, marginBottom: '0.7em', paddingTop: '0.4em', borderTop: '1.5px solid var(--fg)', textAlign: 'left', fontSize: '1.25rem' };
 const listStyle = { marginTop: '12px', marginBottom: '20px', marginLeft: '20px', lineHeight: '1.7' };
 const itemStyle = { marginBottom: '0.7em' };
 const figureStyle = { margin: '24px 0 28px' };
 const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
-const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
-const keyStyle = { border: '1.5px solid #000000', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
+const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)' };
+const keyStyle = { border: '1.5px solid var(--fg)', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
 const claimStyle = { display: 'grid', gridTemplateColumns: '2.2em 1fr', gap: '6px 10px', margin: '14px 0 18px', fontSize: '0.92rem', lineHeight: 1.6, textAlign: 'left' };
-const claimNum = { fontWeight: 'bold', borderTop: '1.5px solid #000', paddingTop: '4px' };
-const claimText = { borderTop: '1px solid rgba(0,0,0,0.2)', paddingTop: '4px', hyphens: 'none' };
+const claimNum = { fontWeight: 'bold', borderTop: '1.5px solid var(--fg)', paddingTop: '4px' };
+const claimText = { borderTop: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)', paddingTop: '4px', hyphens: 'none' };
 const math = { fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '0.88em', whiteSpace: 'nowrap' };
-const th = { padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid #000', fontWeight: 'normal', opacity: 0.6, fontSize: '0.72rem' };
-const td = { padding: '6px', borderBottom: '1px solid rgba(0,0,0,0.15)', fontSize: '0.8rem', verticalAlign: 'top' };
+const th = { padding: '5px 6px', textAlign: 'left', borderBottom: '1.5px solid var(--fg)', fontWeight: 'normal', opacity: 0.6, fontSize: '0.72rem' };
+const td = { padding: '6px', borderBottom: '1px solid var(--line)', fontSize: '0.8rem', verticalAlign: 'top' };
 
 function Section({ eyebrow, title, children }) {
   return (

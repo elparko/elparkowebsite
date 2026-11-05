@@ -4,17 +4,17 @@ import { GateFig, StanceFig, DoseFig, ReferralFig, RedTeamFig } from '../compone
 import { Full, Plain } from '../components/Literacy';
 
 const eyebrowStyle = { fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', opacity: 0.6, marginTop: '2.6em', marginBottom: '0.3em', textAlign: 'left' };
-const headingStyle = { marginTop: 0, marginBottom: '0.7em', paddingTop: '0.4em', borderTop: '1.5px solid #000000', textAlign: 'left', fontSize: '1.25rem' };
+const headingStyle = { marginTop: 0, marginBottom: '0.7em', paddingTop: '0.4em', borderTop: '1.5px solid var(--fg)', textAlign: 'left', fontSize: '1.25rem' };
 const listStyle = { marginTop: '12px', marginBottom: '20px', marginLeft: '20px', lineHeight: '1.7' };
 const itemStyle = { marginBottom: '0.7em' };
 const figureStyle = { margin: '24px 0 28px' };
 const captionStyle = { fontSize: '0.85rem', lineHeight: '1.55', opacity: 0.75, marginTop: '8px', textAlign: 'left' };
 const plainCaptionStyle = { fontSize: '1rem', lineHeight: '1.6', marginTop: '10px', textAlign: 'left' };
-const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid rgba(0, 0, 0, 0.2)' };
-const keyStyle = { border: '1.5px solid #000000', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
+const noteStyle = { fontSize: '0.85rem', lineHeight: '1.6', opacity: 0.75, marginTop: '2.5em', paddingTop: '1em', borderTop: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)' };
+const keyStyle = { border: '1.5px solid var(--fg)', padding: '14px 16px', margin: '16px 0 8px', lineHeight: '1.7', fontSize: '0.95rem' };
 const stepStyle = { display: 'grid', gridTemplateColumns: '2.2em 1fr', gap: '6px 10px', margin: '14px 0 18px', fontSize: '0.92rem', lineHeight: 1.6, textAlign: 'left' };
-const stepNum = { fontWeight: 'bold', borderTop: '1.5px solid #000', paddingTop: '4px' };
-const stepText = { borderTop: '1px solid rgba(0,0,0,0.2)', paddingTop: '4px', hyphens: 'none' };
+const stepNum = { fontWeight: 'bold', borderTop: '1.5px solid var(--fg)', paddingTop: '4px' };
+const stepText = { borderTop: '1px solid color-mix(in srgb, var(--fg) 20%, transparent)', paddingTop: '4px', hyphens: 'none' };
 
 function Section({ eyebrow, title, plainTitle, children }) {
   return (
@@ -42,7 +42,7 @@ export default function EducationNotAdvice() {
   return (
     <WritingLayout>
       <Plain plain={
-        <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.2rem' }}>
+        <p style={{ marginBottom: '20px', textAlign: 'center', fontSize: '1.1rem' }}>
           We changed a small chat program so it explains medicine but stops telling you what to do about your own body. If you describe a stroke, it still says call 911 first.
         </p>
       }>
@@ -51,7 +51,7 @@ export default function EducationNotAdvice() {
         </p>
       </Plain>
       <Plain plain={
-        <p style={{ textAlign: 'center', fontSize: '0.95rem', opacity: 0.8, marginBottom: '8px' }}>
+        <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.75, marginBottom: '8px' }}>
           An early research note from 3 November 2026. The answers were graded by other computer programs, not by doctors. This is shared so people can check it. It is not medical advice.
         </p>
       }>
