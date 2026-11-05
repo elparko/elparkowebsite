@@ -71,6 +71,13 @@ function Loading({ ok, src, alt, children }) {
   return children;
 }
 
+function CountLabel({ share, text }) {
+  const inside = share > 0.7;
+  return inside
+    ? <span style={{ position: 'absolute', right: `calc(${100 - share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', color: '#fff' }}>{text}</span>
+    : <span style={{ position: 'absolute', left: `calc(${share * 100}% + 4px)`, top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap' }}>{text}</span>;
+}
+
 function StackedBar({ parts, n, height = 14, outline, show, hide, node }) {
   let x = 0;
   return (
@@ -86,7 +93,6 @@ function StackedBar({ parts, n, height = 14, outline, show, hide, node }) {
 }
 
 const gridStyle = { display: 'grid', gridTemplateColumns: 'minmax(9em, 14em) minmax(0, 1fr)', gap: '4px 10px', fontSize: '0.74rem', alignItems: 'center' };
-function barLabel(share) { return share >= 0.9 ? { right: 4, color: 'var(--bg)' } : { left: `calc(${share * 100}% + 4px)` }; }
 const barsCell = { display: 'grid', gap: 2, padding: '2px 0', borderLeft: '1px solid var(--fg)', background: 'linear-gradient(to right, var(--line) 1px, transparent 1px) 0 0 / 50% 100% repeat-x', borderRight: '1px solid var(--line)' };
 const axis = <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}><span>0%</span><span>50%</span><span>100%</span></div>;
 
@@ -128,7 +134,7 @@ export function GateFig({ src, alt }) {
               <div style={barsCell}>
                 <div {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
                   <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${share * 100}%`, background: c.key.startsWith('advice_emergency') ? C.orange : C.blue }} />
-                  <span style={{ position: 'absolute', top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', ...barLabel(share) }}>{g.fires} of {g.n}</span>
+                  <CountLabel share={share} text={`${g.fires} of ${g.n}`} />
                 </div>
               </div>
             </Fragment>
@@ -322,7 +328,7 @@ export function RedTeamFig({ src, alt }) {
               <div style={barsCell}>
                 <div {...mark(show, hide, node)} style={{ height: 14, position: 'relative' }}>
                   <div style={{ position: 'absolute', left: 0, top: 1, height: 12, width: `${share * 100}%`, background: emergency ? C.orange : C.blue }} />
-                  <span style={{ position: 'absolute', top: 0, fontSize: '0.66rem', lineHeight: '14px', whiteSpace: 'nowrap', ...barLabel(share) }}>{f.fires} of {f.n}</span>
+                  <CountLabel share={share} text={`${f.fires} of ${f.n}`} />
                 </div>
               </div>
             </Fragment>
