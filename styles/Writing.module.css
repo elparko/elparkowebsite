@@ -14,6 +14,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0;
+  border: 0;
   cursor: pointer;
   border-radius: 50%;
   background-color: color-mix(in srgb, var(--fg) 80%, transparent);
@@ -42,16 +44,45 @@
   transition: all 0.3s ease;
 }
 
-.menu:hover ul {
-  max-height: 90vh;
+.menu.menuOpen ul {
+  max-height: calc(100vh - 110px);
+  max-height: calc(100dvh - 110px);
   opacity: 1;
   margin-top: 10px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: none;
 }
 
-.menu:hover ul::-webkit-scrollbar {
+.menu.menuOpen ul::-webkit-scrollbar {
   display: none;
+}
+
+@media (hover: hover) {
+  .menu:hover ul {
+    max-height: calc(100vh - 110px);
+    max-height: calc(100dvh - 110px);
+    opacity: 1;
+    margin-top: 10px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .menu:hover ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu li:hover {
+    background-color: color-mix(in srgb, var(--bg) 80%, transparent);
+  }
+
+  .menu .menuLink:hover {
+    color: var(--fg);
+  }
+
+  .menu li.menuArea:hover {
+    background-color: transparent;
+  }
 }
 
 .menu li {
@@ -67,20 +98,28 @@
   padding: 12px 30px;
 }
 
-.menu li:hover {
-  background-color: color-mix(in srgb, var(--bg) 80%, transparent);
-}
+/* On a phone the toggle stays at the top of the page, so it does not sit over the text while reading. */
+@media (max-width: 720px) {
+  .menu {
+    position: absolute;
+  }
 
-.menu .menuLink:hover {
-  color: var(--fg);
+  .menu ul {
+    background-color: var(--fg);
+  }
+
+  .menuToggle {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 /* Footer Styles */
 /* Black strip in light mode; in dark mode a raised dark strip, since a beige one glares over the page. */
 .footer {
-  background-color: light-dark(var(--fg), var(--raised));
-  color: light-dark(var(--bg), var(--fg));
-  border-top: 1px solid light-dark(transparent, var(--line));
+  background-color: var(--strip-bg);
+  color: var(--strip-fg);
+  border-top: 1px solid var(--strip-line);
   text-align: center;
   padding: 0.5rem;
   position: fixed;
@@ -169,10 +208,6 @@
 
 .preview small {
   opacity: 0.7;
-}
-
-.menu li.menuArea:hover {
-  background-color: transparent;
 }
 
 .logEntry {

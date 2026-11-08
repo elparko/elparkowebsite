@@ -49,8 +49,8 @@ export function Dial() {
     <div style={{ textAlign: 'center' }}>
       <div style={wrap} role="group" aria-label="Reading level">
         <span>Read as</span>
-        <button type="button" style={seg(tier === 'plain')} onClick={() => setTier('plain')} aria-pressed={tier === 'plain'}>plain</button>
-        <button type="button" style={{ ...seg(tier === 'full'), marginLeft: '-1px' }} onClick={() => setTier('full')} aria-pressed={tier === 'full'}>full</button>
+        <button type="button" className="tapTarget" style={seg(tier === 'plain')} onClick={() => setTier('plain')} aria-pressed={tier === 'plain'}>plain</button>
+        <button type="button" className="tapTarget" style={{ ...seg(tier === 'full'), marginLeft: '-1px' }} onClick={() => setTier('full')} aria-pressed={tier === 'full'}>full</button>
       </div>
     </div>
   );

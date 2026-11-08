@@ -82,6 +82,8 @@
   .toggle,
   .top {
     right: 14px;
+    width: 44px;
+    height: 44px;
   }
 
   .toggle {

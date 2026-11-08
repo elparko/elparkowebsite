@@ -81,7 +81,8 @@ function useSnapBetween(pagesRef) {
     let touching = false;
 
     const settle = () => {
-      if (touching) return;
+      // iOS scrolls the page itself to keep a focused field above the keyboard; that scroll is not a gesture.
+      if (touching || document.activeElement?.matches('input, textarea')) return;
       const y = window.scrollY;
       const end = pagesRef.current.offsetTop;
       if (target !== null) {

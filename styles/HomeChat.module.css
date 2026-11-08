@@ -311,6 +311,24 @@
     border-radius: 12px;
   }
 
+  .send {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .bar {
+    padding-block: 0;
+  }
+
+  .clear {
+    min-height: 44px;
+  }
+
+  .suggest button {
+    min-height: 44px;
+    padding: 0.5rem 0.8rem;
+  }
+
   .log {
     padding: 1rem 0.75rem 0.25rem;
   }

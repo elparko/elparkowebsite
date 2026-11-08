@@ -46,9 +46,9 @@ export default function ProofFig() {
     <div style={wrap}>
       <div style={row}>
         <span style={small}>Direction removed</span>
-        <input type="range" min="0" max="180" value={deg} onChange={(ev) => setDeg(Number(ev.target.value))} aria-label="angle of the removed direction" style={{ width: 160 }} />
+        <input type="range" className="tapTarget" min="0" max="180" value={deg} onChange={(ev) => setDeg(Number(ev.target.value))} aria-label="angle of the removed direction" style={{ width: 160 }} />
         <span>{deg}°</span>
-        <button type="button" aria-pressed={guarded} style={chip(guarded)} onClick={() => setGuarded((g) => !g)}>{guarded ? 'guard on: u made orthogonal to e' : 'guard off'}</button>
+        <button type="button" className="tapTarget" aria-pressed={guarded} style={chip(guarded)} onClick={() => setGuarded((g) => !g)}>{guarded ? 'guard on: u made orthogonal to e' : 'guard off'}</button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px 18px', alignItems: 'start' }}>
         <svg viewBox="0 0 300 300" style={{ width: '100%', maxWidth: 300, background: 'light-dark(#ffffff, var(--bg))', border: '1px solid var(--line)' }} role="img" aria-label="Two-dimensional picture of a state vector, the direction removed from it, the emergency axis, and the result of the removal">

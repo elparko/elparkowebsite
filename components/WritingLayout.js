@@ -38,6 +38,17 @@ export default function WritingLayout({ children }) {
 function Layout({ slug, page, children }) {
   const [preview, setPreview] = useState(null);
   const contentRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOutside = (e) => {
+      if (!menuRef.current.contains(e.target)) setMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', closeOutside);
+    return () => document.removeEventListener('pointerdown', closeOutside);
+  }, [menuOpen]);
 
   useEffect(() => {
     const handleScroll = () => setPreview(null);
@@ -83,12 +94,12 @@ function Layout({ slug, page, children }) {
         <SocialMeta title={page.title} description={page.description} path={`/${slug}/`} image={`/og/${slug}.png`} />
       </Head>
 
-      <nav className={styles.menu}>
-        <div className={styles.menuToggle}>
+      <nav ref={menuRef} className={`${styles.menu} ${menuOpen ? styles.menuOpen : ''}`}>
+        <button type="button" className={styles.menuToggle} aria-label="Menu" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
           <span></span>
           <span></span>
           <span></span>
-        </div>
+        </button>
         <ul style={{padding: 0}}>
           <li><a href="/" className={styles.menuLink}>Home</a></li>
           {Object.entries(AREAS).map(([area, name]) => (

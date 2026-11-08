@@ -11,6 +11,10 @@ export default function ArtFeature() {
       <div style={{textAlign: 'center', marginBottom: '40px'}}>
         <img
           src="/mohs map.jpeg"
+          srcSet="/mohs-map-1200.jpeg 1200w, /mohs%20map.jpeg 2861w"
+          sizes="(max-width: 800px) 100vw, 800px"
+          width={2861}
+          height={2827}
           alt="Mohs Map artwork"
           style={{
             maxWidth: '100%',

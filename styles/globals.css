@@ -11,6 +11,9 @@
   --soft: color-mix(in srgb, var(--fg) 5%, transparent);
   --raised: #ecebcf;
   --shadow: rgba(0, 0, 0, 0.3);
+  --strip-bg: var(--fg);
+  --strip-fg: var(--bg);
+  --strip-line: transparent;
   color-scheme: light;
 }
 
@@ -20,6 +23,9 @@
     --fg: #ebe8d0;
     --raised: #201f1b;
     --shadow: rgba(0, 0, 0, 0.6);
+    --strip-bg: var(--raised);
+    --strip-fg: var(--fg);
+    --strip-line: var(--line);
     color-scheme: dark;
   }
 }
@@ -29,6 +35,9 @@
   --fg: #ebe8d0;
   --raised: #201f1b;
   --shadow: rgba(0, 0, 0, 0.6);
+  --strip-bg: var(--raised);
+  --strip-fg: var(--fg);
+  --strip-line: var(--line);
   color-scheme: dark;
 }
 
@@ -47,6 +56,18 @@ html,
 body {
   background: var(--bg);
   color: var(--fg);
+}
+
+/* Stops iOS from enlarging text when the phone turns sideways. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (pointer: coarse) {
+  .tapTarget {
+    min-height: 44px;
+  }
 }
 
 body {

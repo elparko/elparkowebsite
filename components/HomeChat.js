@@ -11,6 +11,8 @@ const loadRuntime = () => import(/* webpackIgnore: true */ RUNTIME);
 
 const VECTORS = Object.fromEntries(Object.entries(EMBEDDINGS.pages).map(([href, p]) => [href, p.vector]));
 
+const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
+
 const LEAD = {
   hello: 'Hello. Ask about anything on the site and I will point you to the pages that match.',
   contact: 'Email is fastest.',
@@ -146,6 +148,9 @@ export default function HomeChat() {
     e.preventDefault();
     const query = q.trim();
     if (!query) return;
+    // On a phone the keyboard closes so the reply has the screen. A failed download is tried again once per question.
+    if (isTouch()) inputRef.current?.blur();
+    if (status === 'failed') loading.current = null;
     const id = nextId.current++;
     setQ('');
     setLog((l) => [...l, { id, q: query, r: null }]);
@@ -162,17 +167,17 @@ export default function HomeChat() {
 
   function onChange(e) {
     setQ(e.target.value);
-    if (e.target.value.trim()) loadModel();
+    // A phone waits for the first question, so a stray keystroke on cellular does not start the download.
+    if (e.target.value.trim() && status === 'idle' && !isTouch()) loadModel();
   }
 
   function clear() {
     setLog([]);
-    inputRef.current?.focus({ preventScroll: true });
   }
 
   const statusLine = {
-    idle: 'Runs in your browser. Nothing you type leaves this page.',
-    loading: `Loading the search model${progress ? `, ${progress} of 23 MB` : ''}. Nothing you type leaves this page.`,
+    idle: 'Your first search downloads a 26 MB model to this browser. Nothing you type leaves this page.',
+    loading: `Loading the search model${progress ? `, ${progress}` : ''}. Nothing you type leaves this page.`,
     ready: 'Search model loaded in your browser. Nothing you type leaves this page.',
     failed: 'The search model could not load here, so replies match words only.',
   }[status];
