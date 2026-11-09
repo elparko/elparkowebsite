@@ -6,7 +6,7 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
 
 - Home: two full screens, as in the first version of the site. Between them the page settles on one: scrolling down more
   than a quarter of the way lands on the second screen, less returns to the top, and scrolling up works the same in
-  reverse (`useSnapBetween` in `pages/index.js`). Below the top of the second screen, scrolling is free. The first is always dark:
+  reverse (`useSnapBetween` in `pages/index.js`). Below the top of the second screen, scrolling is free. The first follows the site theme:
   the name, "Medical student;" with "builds things." on the line below and a link to Pereste Health, Inc. on the left, the links (CV, GitHub, X,
   Email, About this site) stacked on the right, and one centered search bar that becomes a chat window after the first
   question. The second follows the site theme and shows every page as a card, grouped by type (Research, Projects,
@@ -15,8 +15,7 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
 - Dark mode on every page: colors come from variables in `styles/globals.css`, it follows the system setting, and a
   round sun or moon button in the bottom-right corner of every page saves a choice that `pages/_document.js` applies
   before first paint. A back-to-top arrow appears above it after scrolling. Both are mounted once in `pages/_app.js` and
-  sit above the footer strip on the writing pages. In dark mode the home's first screen goes a step darker than the
-  second.
+  sit above the footer strip on the writing pages.
 - Each page in `lib/pages.mjs` has `topics`: words a visitor might use for it that the title and description lack (the
   CV lists education, schools, jobs and awards). Topics go into the word index and the embedded text. A reply also lists
   up to two of the top page's `related` pages under "Related".

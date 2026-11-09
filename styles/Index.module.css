@@ -1,5 +1,5 @@
-/* Two full screens, like the first version of the home: a dark one with the search, then a light one with
-   every page grouped by type. pages/index.js snaps between them. */
+/* Two full screens, like the first version of the home: one with the search, then one with
+   every page grouped by type. Both follow the site theme. pages/index.js snaps between them. */
 :global(html):has(.home) {
   scroll-behavior: smooth;
 }
@@ -14,38 +14,12 @@
   line-height: 1.6;
 }
 
-/* The first screen always uses the dark colors. In dark mode it goes a step darker than the rest of the site,
-   so the two screens still read as two. */
-.night {
-  --bg: #141412;
-  --fg: #ebe8d0;
-  --raised: #201f1b;
-  --shadow: rgba(0, 0, 0, 0.6);
-  --muted: color-mix(in srgb, var(--fg) 62%, transparent);
-  --faint: color-mix(in srgb, var(--fg) 40%, transparent);
-  --line: color-mix(in srgb, var(--fg) 16%, transparent);
-  --soft: color-mix(in srgb, var(--fg) 5%, transparent);
-  color-scheme: dark;
-  background: var(--bg);
-  color: var(--fg);
-}
-
-:global(:root[data-theme="dark"]) .night {
-  --bg: #0a0a09;
-  --raised: #181815;
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme="light"])) .night {
-    --bg: #0a0a09;
-    --raised: #181815;
-  }
-}
-
 /* Name on the left, the search in the middle, the links stacked on the right. */
+/* The screen is as tall as the largest viewport, so its color runs behind Safari's bottom bar and the second screen
+   does not show under the bar. */
 .hero {
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100lvh;
   display: grid;
   grid-template-columns: minmax(170px, 220px) minmax(0, 1fr) auto;
   grid-template-rows: 1fr auto;
@@ -130,10 +104,11 @@
   color: var(--fg);
 }
 
-/* The second screen follows the site theme: light by default, dark in dark mode. */
+/* The line keeps the two screens apart now that they share a color. */
 .pages {
   min-height: 100vh;
   min-height: 100dvh;
+  border-top: 1px solid var(--line);
   background: var(--bg);
   color: var(--fg);
   padding: 4rem clamp(1.25rem, 4vw, 3.5rem) 6rem;
@@ -246,8 +221,6 @@
       'links'
       'hint';
     padding-top: 2rem;
-    /* Keeps the links and the hint clear of the corner buttons. */
-    padding-bottom: 4.25rem;
     --chat-h: max(18rem, calc(100dvh - 22rem));
   }
 
@@ -259,9 +232,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     column-gap: 1rem;
-    padding: 0.25rem 0 0;
-    border-top: 1px solid var(--line);
+    padding: 0;
   }
 
   .links a,
@@ -282,5 +255,21 @@
 
   .group h3 {
     padding-top: 0;
+  }
+}
+
+/* iOS 26 Safari draws the page down to the screen edge, past 100lvh, under its floating bar. The extra height fills
+   that strip, and the matching padding keeps the content in the part of the screen the bar does not cover. The hint
+   sits on the same row as the theme button, so the content can run down to the bar. */
+@media (max-width: 1100px) and (pointer: coarse) {
+  .hero {
+    min-height: calc(100lvh + 5rem);
+    padding-bottom: calc(5.875rem + 100lvh - 100dvh);
+  }
+}
+
+@media (max-width: 720px) and (pointer: coarse) {
+  .hero {
+    --chat-h: max(18rem, calc(100dvh - 19rem));
   }
 }

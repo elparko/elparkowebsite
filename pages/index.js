@@ -46,26 +46,6 @@ function Card({ item }) {
   );
 }
 
-// While the dark first screen is behind the corner buttons, they take its colors.
-function useCornerOver(ref) {
-  useEffect(() => {
-    const root = document.documentElement;
-    const check = () => {
-      const under = ref.current && ref.current.getBoundingClientRect().bottom > window.innerHeight - 90;
-      if (under) root.dataset.corner = 'night';
-      else delete root.dataset.corner;
-    };
-    check();
-    window.addEventListener('scroll', check, { passive: true });
-    window.addEventListener('resize', check);
-    return () => {
-      window.removeEventListener('scroll', check);
-      window.removeEventListener('resize', check);
-      delete root.dataset.corner;
-    };
-  }, [ref]);
-}
-
 // Between the two screens the page settles on one of them. Scrolling down more than a quarter of the way
 // lands on the "Every page" screen; less goes back to the top. Scrolling up from the second screen does the
 // same in reverse. Past the top of the second screen, scrolling is free.
@@ -91,8 +71,9 @@ function useSnapBetween(pagesRef) {
         if (arrived) return;
       }
       if (y <= 1 || y >= end - 1) return;
-      // A first screen taller than the window (a very small phone after a search) scrolls freely to its bottom.
-      if (y <= end - window.innerHeight) return;
+      // A first screen whose content is taller than the window (a very small phone after a search) scrolls freely to its bottom.
+      const contentEnd = pagesRef.current.previousElementSibling.lastElementChild.getBoundingClientRect().bottom + y;
+      if (y <= contentEnd - window.innerHeight) return;
       const to = (down ? y > end * SNAP : y > end * (1 - SNAP)) ? end : 0;
       target = to;
       window.scrollTo({ top: to, behavior: reduce.matches ? 'auto' : 'smooth' });
@@ -134,9 +115,7 @@ function useSnapBetween(pagesRef) {
 }
 
 export default function Home() {
-  const hero = useRef(null);
   const pages = useRef(null);
-  useCornerOver(hero);
   useSnapBetween(pages);
   return (
     <div className={styles.home}>
@@ -149,7 +128,7 @@ export default function Home() {
         <SocialMeta title={HOME.title} description={HOME.description} path="/" image="/og/home.png" />
       </Head>
 
-      <section className={`${styles.hero} ${styles.night}`} id="top" ref={hero}>
+      <section className={styles.hero} id="top">
         <header className={styles.side}>
           <h1>Parker Smith</h1>
           <p>Medical student;<br />builds things.</p>

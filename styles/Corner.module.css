@@ -26,15 +26,6 @@
   bottom: var(--corner-bottom, 20px);
 }
 
-/* Over the home's dark first screen (set by pages/index.js), the buttons use its colors. */
-:global(:root[data-corner="night"]) .toggle,
-:global(:root[data-corner="night"]) .top {
-  --bg: #141412;
-  --fg: #ebe8d0;
-  --line: color-mix(in srgb, #ebe8d0 22%, transparent);
-  color-scheme: dark;
-}
-
 .top {
   bottom: calc(var(--corner-bottom, 20px) + 52px);
   opacity: 0;
