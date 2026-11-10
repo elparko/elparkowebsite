@@ -3,6 +3,7 @@ import styles from '@/styles/Writing.module.css';
 
 const READ = [
   { year: 2026, books: [
+    { title: 'A Psalm for the Wild-Built', author: 'Becky Chambers', note: 'Nice and whimsical. I enjoyed it, but I\'m not sure I have the desire to read the second one.' },
     { title: 'To Be Taught, If Fortunate', author: 'Becky Chambers', note: 'Existential and interstellar. Pretty sad, and I really enjoy melancholy books.' },
     { title: 'Klara and the Sun', author: 'Kazuo Ishiguro', note: 'Beautiful and profound. I think they\'re going to butcher the movie.' },
     { title: 'The Last Unicorn', author: 'Peter S. Beagle', note: 'Whimsical and fun. I can\'t believe I hadn\'t heard of it before.' },
@@ -28,7 +29,6 @@ const READ = [
 ];
 
 const READING = [
-  { title: 'A Psalm for the Wild-Built', author: 'Becky Chambers' },
   { title: 'The Technological Republic', author: 'Alexander C. Karp and Nicholas W. Zamiska' },
 ];
 
