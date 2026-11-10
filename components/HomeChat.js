@@ -58,7 +58,7 @@ const LEAD = {
 };
 
 const HOW = {
-  answer: 'A written answer. Nothing here is generated.',
+  answer: 'An answer Parker wrote in advance. This one is not generated.',
   meaning: 'Matched by meaning and by words.',
   words: 'Matched by words only. The search model had not loaded.',
 };
