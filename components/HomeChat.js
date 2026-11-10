@@ -44,7 +44,7 @@ async function draft(question, r, previous) {
 }
 
 // Written answers offered under the search before the first question. Picking one needs no model.
-const STARTERS = ['who-is-parker', 'triage-what-is-it', 'education-not-advice-plain-words', 'what-is-pereste-health', 'smile-msi-what-is']
+const STARTERS = ['who-is-parker', 'triage-what-is-it', 'education-not-advice-overview', 'what-is-pereste-health', 'smile-msi-what-is']
   .map((id) => ANSWERS.find((a) => a.id === id))
   .filter((a) => a?.answer)
   .map((a) => ({ id: a.id, question: a.questions[0] }));
