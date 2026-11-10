@@ -1,35 +1,46 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from '@/styles/Index.module.css';
 import SocialMeta from '@/components/SocialMeta';
 import HomeChat from '@/components/HomeChat';
 import { EXTERNAL, HOME, PAGES, formatDate } from '@/lib/pages.mjs';
+import { DOCS, rank } from '@/lib/guide.mjs';
 
 // Every page on the site, grouped by type, newest first within each group. A page's date is the day it was started.
 const GROUPS = [
   ['Research', 'Research'],
-  ['Project', 'Projects'],
   ['Company', 'Company'],
+  ['Project', 'Projects'],
   ['Build', 'Builds'],
   ['Web', 'Web'],
   ['Essay', 'Essays'],
   ['Art', 'Art'],
   ['Log', 'Log'],
+  ['Site', 'Site'],
 ];
 
-const everything = [
-  ...PAGES.filter((p) => p.area !== 'site'),
-  ...EXTERNAL,
-].map((p) => ({ ...p, date: p.created || '' }));
+// The four pages shown first, each with its drawing.
+const FEATURED = ['circumstance-sensitive-triage', 'education-not-advice', 'smile-msi', 'pereste-health']
+  .map((slug) => PAGES.find((p) => p.slug === slug))
+  .filter(Boolean);
 
-const groups = GROUPS
-  .map(([type, label]) => ({
-    type,
-    label,
-    items: everything.filter((p) => p.type === type).sort((a, b) => b.date.localeCompare(a.date)),
-  }))
-  .filter((g) => g.items.length);
+const everything = [...PAGES, ...EXTERNAL].map((p) => ({ ...p, date: p.created || '' }));
+
+const hrefOf = (p) => (p.slug ? `/${p.slug}` : p.href);
+
+// One typed letter matches nearly every page, so the list narrows from the second letter on.
+const MIN_FILTER = 2;
+
+// The pages that match what is typed so far: the word ranker (stems, synonyms, typos), plus any page whose
+// title, description or group holds the typed letters, so a half-typed word already narrows the list.
+// With nothing typed, the list is every page except the site's own (the CV and About this site sit in the links).
+function matcher(text) {
+  const t = text.trim().toLowerCase();
+  if (t.length < MIN_FILTER) return (p) => p.area !== 'site';
+  const found = new Set(rank(t, DOCS.length).map((r) => r.doc.href));
+  return (p) => found.has(hrefOf(p)) || `${p.title} ${p.description} ${p.type}`.toLowerCase().includes(t);
+}
 
 function Card({ item }) {
   const body = (
@@ -46,77 +57,31 @@ function Card({ item }) {
   );
 }
 
-// Between the two screens the page settles on one of them. Scrolling down more than a quarter of the way
-// lands on the "Every page" screen; less goes back to the top. Scrolling up from the second screen does the
-// same in reverse. Past the top of the second screen, scrolling is free.
-const SNAP = 0.25;
-
-function useSnapBetween(pagesRef) {
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let last = window.scrollY;
-    let down = true;
-    let target = null;
-    let timer = null;
-    let touching = false;
-
-    const settle = () => {
-      // iOS scrolls the page itself to keep a focused field above the keyboard; that scroll is not a gesture.
-      if (touching || document.activeElement?.matches('input, textarea')) return;
-      const y = window.scrollY;
-      const end = pagesRef.current.offsetTop;
-      if (target !== null) {
-        const arrived = Math.abs(y - target) < 2;
-        target = null;
-        if (arrived) return;
-      }
-      if (y <= 1 || y >= end - 1) return;
-      // A first screen whose content is taller than the window (a very small phone after a search) scrolls freely to its bottom.
-      const contentEnd = pagesRef.current.previousElementSibling.lastElementChild.getBoundingClientRect().bottom + y;
-      if (y <= contentEnd - window.innerHeight) return;
-      const to = (down ? y > end * SNAP : y > end * (1 - SNAP)) ? end : 0;
-      target = to;
-      window.scrollTo({ top: to, behavior: reduce.matches ? 'auto' : 'smooth' });
-    };
-
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (y !== last) down = y > last;
-      last = y;
-      if (!('onscrollend' in window)) {
-        clearTimeout(timer);
-        timer = setTimeout(settle, 140);
-      }
-    };
-    const onTouchStart = () => { touching = true; target = null; };
-    const onTouchEnd = () => {
-      touching = false;
-      if (!('onscrollend' in window)) {
-        clearTimeout(timer);
-        timer = setTimeout(settle, 140);
-      }
-    };
-    const onWheel = () => { target = null; };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('scrollend', settle);
-    window.addEventListener('touchstart', onTouchStart, { passive: true });
-    window.addEventListener('touchend', onTouchEnd, { passive: true });
-    window.addEventListener('wheel', onWheel, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('scrollend', settle);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('wheel', onWheel);
-    };
-  }, [pagesRef]);
-}
-
 export default function Home() {
-  const pages = useRef(null);
-  useSnapBetween(pages);
+  const [typed, setTyped] = useState('');
+  const groups = useMemo(() => {
+    const match = matcher(typed);
+    return GROUPS
+      .map(([type, label]) => ({
+        type,
+        label,
+        items: everything
+          .filter((p) => p.type === type && match(p))
+          .sort((a, b) => b.date.localeCompare(a.date)),
+      }))
+      .filter((g) => g.items.length);
+  }, [typed]);
+  const filtering = typed.trim().length >= MIN_FILTER;
+  const count = groups.reduce((n, g) => n + g.items.length, 0);
+  const heading = filtering ? `${count} ${count === 1 ? 'page matches' : 'pages match'} “${typed.trim()}”` : 'Every page';
+
+  // A screen reader hears the count once typing pauses, not on every letter.
+  const [spoken, setSpoken] = useState('');
+  useEffect(() => {
+    const timer = setTimeout(() => setSpoken(filtering ? heading : ''), 700);
+    return () => clearTimeout(timer);
+  }, [filtering, heading]);
+
   return (
     <div className={styles.home}>
       <Head>
@@ -128,12 +93,12 @@ export default function Home() {
         <SocialMeta title={HOME.title} description={HOME.description} path="/" image="/og/home.png" />
       </Head>
 
-      <section className={styles.hero} id="top">
-        <header className={styles.side}>
+      <header className={styles.top}>
+        <div className={styles.side}>
           <h1>Parker Smith</h1>
-          <p>Medical student;<br />builds things.</p>
+          <p>Medical student; builds things.</p>
           <p className={styles.company}><Link href="/pereste-health">Pereste Health, Inc.</Link></p>
-        </header>
+        </div>
 
         <nav className={styles.links} aria-label="Links">
           <Link href="/cv">CV</Link>
@@ -142,17 +107,38 @@ export default function Home() {
           <a href="mailto:pjs002@lsuhs.edu">Email</a>
           <Link href="/about-this-site">About this site</Link>
         </nav>
+      </header>
 
-        <main className={styles.chat}>
-          <HomeChat />
-        </main>
+      <main>
+        <div className={styles.chat}>
+          <HomeChat onType={setTyped} />
+        </div>
 
-        <a href="#pages" className={styles.hint}>Every page ↓</a>
-      </section>
+        {!filtering && (
+          <section className={styles.featured} aria-labelledby="start-here">
+            <h2 id="start-here">Start here</h2>
+            <ul>
+              {FEATURED.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/${p.slug}`}>
+                    <img src={`/drawings/${p.slug}.svg`} alt="" className={styles.drawing} />
+                    <span className={styles.featuredText}>
+                      <span className={styles.cardTitle}>{p.title}</span>
+                      <span className={styles.cardLine}>{p.description}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      <section className={styles.pages} id="pages" aria-labelledby="every-page" ref={pages}>
-        <div className={styles.pagesInner}>
-          <h2 id="every-page">Every page</h2>
+        <section className={styles.pages} aria-labelledby="every-page">
+          <h2 id="every-page">{heading}</h2>
+          <p className={styles.hidden} role="status">{spoken}</p>
+          {filtering && count === 0 && (
+            <p className={styles.none}>No page has those words. Press Enter to ask it as a question.</p>
+          )}
           {groups.map((g) => (
             <div key={g.type} className={styles.group}>
               <h3>{g.label} <span>{g.items.length}</span></h3>
@@ -161,8 +147,8 @@ export default function Home() {
               </ul>
             </div>
           ))}
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

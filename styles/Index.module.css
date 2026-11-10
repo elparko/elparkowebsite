@@ -1,39 +1,23 @@
-/* Two full screens, like the first version of the home: one with the search, then one with
-   every page grouped by type. Both follow the site theme. pages/index.js snaps between them. */
-:global(html):has(.home) {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :global(html):has(.home) {
-    scroll-behavior: auto;
-  }
-}
-
+/* One page that scrolls: the name and links, the search, four featured pages with their drawings,
+   then every page grouped by type. Typing in the search narrows the list. */
 .home {
   line-height: 1.6;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 26px clamp(1.25rem, 4vw, 3.5rem) 6rem;
+  /* The chat window's height after the first question: most of the screen, with the name still in view. */
+  --chat-h: max(18rem, min(40rem, calc(100dvh - 14rem)));
 }
 
-/* Name on the left, the search in the middle, the links stacked on the right. */
-/* The screen is as tall as the largest viewport, so its color runs behind Safari's bottom bar and the second screen
-   does not show under the bar. */
-.hero {
-  min-height: 100vh;
-  min-height: 100lvh;
-  display: grid;
-  grid-template-columns: minmax(170px, 220px) minmax(0, 1fr) auto;
-  grid-template-rows: 1fr auto;
-  grid-template-areas:
-    'side chat links'
-    'hint hint hint';
-  column-gap: clamp(2rem, 5vw, 5rem);
-  padding: 26px clamp(1.25rem, 4vw, 3.5rem) 1.25rem;
-  --chat-h: min(44rem, calc(100dvh - 9rem));
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
 }
 
 .side {
-  grid-area: side;
-  align-self: start;
   font-size: 0.9rem;
 }
 
@@ -62,12 +46,9 @@
 }
 
 .links {
-  grid-area: links;
-  align-self: start;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.15rem;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
   padding-top: 2px;
   font-size: 0.85rem;
 }
@@ -75,7 +56,6 @@
 .links a {
   color: inherit;
   text-decoration: none;
-  width: fit-content;
 }
 
 .links a:hover {
@@ -84,44 +64,80 @@
 }
 
 .chat {
-  grid-area: chat;
-  align-self: center;
-  justify-self: center;
   width: 100%;
   max-width: 46rem;
   min-width: 0;
+  margin: clamp(2.5rem, 9vh, 5.5rem) auto clamp(2.5rem, 7vh, 4.5rem);
 }
 
-.hint {
-  grid-area: hint;
-  justify-self: center;
-  font-size: 0.75rem;
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.hint:hover {
-  color: var(--fg);
-}
-
-/* The line keeps the two screens apart now that they share a color. */
-.pages {
-  min-height: 100vh;
-  min-height: 100dvh;
-  border-top: 1px solid var(--line);
-  background: var(--bg);
-  color: var(--fg);
-  padding: 4rem clamp(1.25rem, 4vw, 3.5rem) 6rem;
-}
-
-.pagesInner {
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
+.featured h2,
 .pages h2 {
   font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.featured ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  gap: 0.75rem;
+}
+
+.featured a {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  height: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--soft);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.featuredText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.drawing {
+  flex: 0 0 auto;
+  width: 6.5rem;
+  height: 6.5rem;
+  object-fit: contain;
+}
+
+/* The line drawings are dark strokes on beige. In dark mode they are inverted, as on the writing pages. */
+:global(:root[data-theme="dark"]) .drawing {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .drawing {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+.pages {
+  margin-top: 3rem;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.none {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .group {
@@ -164,11 +180,13 @@
   transition: border-color 0.15s ease;
 }
 
-.card a:hover {
+.card a:hover,
+.featured a:hover {
   border-color: var(--fg);
 }
 
-.card a:focus-visible {
+.card a:focus-visible,
+.featured a:focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
@@ -191,61 +209,32 @@
   color: var(--muted);
 }
 
-/* On a laptop or tablet: name and the stacked links share the top row, the search takes the full width. */
-@media (max-width: 1100px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas:
-      'side links'
-      'chat chat'
-      'hint hint';
-    /* The chat window spans the full width here, so the bottom padding keeps it and the hint clear of the corner buttons. */
-    padding-bottom: 4.25rem;
-    --chat-h: max(18rem, min(44rem, calc(100dvh - 17rem)));
-  }
-
-  .chat {
-    margin: 1rem 0;
-  }
-}
-
-/* On a phone: one column, the links in a row under the search, the group names above their cards. */
+/* On a phone: the links in a row under the name with full-height touch targets, the group names above their cards. */
 @media (max-width: 720px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto auto;
-    grid-template-areas:
-      'side'
-      'chat'
-      'links'
-      'hint';
+  .home {
     padding-top: 2rem;
-    --chat-h: max(18rem, calc(100dvh - 22rem));
-  }
-
-  .chat {
-    margin: 1.5rem 0;
+    --chat-h: max(18rem, calc(100dvh - 16rem));
   }
 
   .links {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
+    width: 100%;
     justify-content: space-between;
-    column-gap: 1rem;
-    padding: 0;
   }
 
   .links a,
-  .hint {
+  .company a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
   }
 
-  .pages {
-    padding-top: 2.5rem;
+  .chat {
+    margin: 1.5rem auto 2.5rem;
+  }
+
+  .drawing {
+    width: 4.75rem;
+    height: 4.75rem;
   }
 
   .group {
@@ -255,21 +244,5 @@
 
   .group h3 {
     padding-top: 0;
-  }
-}
-
-/* iOS 26 Safari draws the page down to the screen edge, past 100lvh, under its floating bar. The extra height fills
-   that strip, and the matching padding keeps the content in the part of the screen the bar does not cover. The hint
-   sits on the same row as the theme button, so the content can run down to the bar. */
-@media (max-width: 1100px) and (pointer: coarse) {
-  .hero {
-    min-height: calc(100lvh + 5rem);
-    padding-bottom: calc(5.875rem + 100lvh - 100dvh);
-  }
-}
-
-@media (max-width: 720px) and (pointer: coarse) {
-  .hero {
-    --chat-h: max(18rem, calc(100dvh - 19rem));
   }
 }

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import styles from '@/styles/HomeChat.module.css';
-import { EMBED_DTYPE, EMBED_MODEL, answerReply, answerableNow, decodeAnswerVectors, reply } from '@/lib/guide.mjs';
+import { ANSWERS, EMBED_DTYPE, EMBED_MODEL, answerReply, answerableNow, decodeAnswerVectors, reply } from '@/lib/guide.mjs';
 import EMBEDDINGS from '@/lib/embeddings.json';
 
-// The runtime comes from a CDN on the visitor's first keystroke, so the site's own bundle stays small.
+// The runtime comes from a CDN when the visitor sends a first question, so the site's own bundle stays small.
 // transformers.min.js is the build with onnxruntime inlined; the .web builds import it by bare name and need a bundler.
 const RUNTIME = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2/dist/transformers.min.js';
 const loadRuntime = () => import(/* webpackIgnore: true */ RUNTIME);
@@ -12,6 +12,12 @@ const loadRuntime = () => import(/* webpackIgnore: true */ RUNTIME);
 const VECTORS = Object.fromEntries(Object.entries(EMBEDDINGS.pages).map(([href, p]) => [href, p.vector]));
 
 const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
+
+// Written answers offered under the search before the first question. Picking one needs no model.
+const STARTERS = ['who-is-parker', 'triage-what-is-it', 'education-not-advice-plain-words', 'what-is-pereste-health', 'smile-msi-what-is']
+  .map((id) => ANSWERS.find((a) => a.id === id))
+  .filter((a) => a?.answer)
+  .map((a) => ({ id: a.id, question: a.questions[0] }));
 
 const LEAD = {
   hello: 'Hello. Ask about anything on the site and I will point you to the pages that match.',
@@ -73,7 +79,8 @@ function Reply({ r, onPick }) {
   );
 }
 
-export default function HomeChat() {
+// `onType` receives the text in the search bar before the first question, so the home can narrow its page list.
+export default function HomeChat({ onType }) {
   const [q, setQ] = useState('');
   const [log, setLog] = useState([]);
   const [status, setStatus] = useState('idle'); // idle | loading | ready | failed
@@ -92,11 +99,13 @@ export default function HomeChat() {
     if (window.matchMedia('(pointer: fine)').matches) inputRef.current?.focus({ preventScroll: true });
   }, [chatting]);
 
-  // New messages scroll the conversation, not the page, so the input stays where it is.
+  // A new message, or its first reply, scrolls the conversation, not the page, so the input stays where it is.
+  // A reply redone once the model loads does not, so a visitor reading further up is left there.
+  const waiting = log.some((m) => !m.r);
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [log]);
+  }, [log.length, waiting]);
 
   function loadModel() {
     if (loading.current) return loading.current;
@@ -141,6 +150,11 @@ export default function HomeChat() {
 
   function pick(s) {
     const id = nextId.current++;
+    // A starter picked from the home clears the filter text. A pick inside the chat leaves a half-typed question alone.
+    if (!chatting) {
+      setQ('');
+      onType?.('');
+    }
     setLog((l) => [...l, { id, q: s.question, r: answerReply(s.id) }]);
   }
 
@@ -153,6 +167,7 @@ export default function HomeChat() {
     if (status === 'failed') loading.current = null;
     const id = nextId.current++;
     setQ('');
+    onType?.('');
     setLog((l) => [...l, { id, q: query, r: null }]);
     const set = (r) => setLog((l) => l.map((m) => (m.id === id ? { ...m, r } : m)));
     const r = await answer(query);
@@ -167,16 +182,21 @@ export default function HomeChat() {
 
   function onChange(e) {
     setQ(e.target.value);
-    // A phone waits for the first question, so a stray keystroke on cellular does not start the download.
-    if (e.target.value.trim() && status === 'idle' && !isTouch()) loadModel();
+    // Before the first question, typing only narrows the page list, which needs no model. The model
+    // downloads when a question is sent. In the chat window a keystroke starts it early on a desktop.
+    if (!chatting) onType?.(e.target.value);
+    else if (e.target.value.trim() && status === 'idle' && !isTouch()) loadModel();
   }
 
   function clear() {
+    setQ('');
     setLog([]);
   }
 
   const statusLine = {
-    idle: 'Your first search downloads a 24 MB model to this browser. Nothing you type leaves this page.',
+    idle: chatting
+      ? 'Your first typed question downloads a 24 MB model to this browser. Nothing you type leaves this page.'
+      : 'Typing narrows the pages below. Enter asks a question, which downloads a 24 MB model to this browser. Nothing you type leaves this page.',
     loading: `Loading the search model${progress ? `, ${progress}` : ''}. Nothing you type leaves this page.`,
     ready: 'Search model loaded in your browser. Nothing you type leaves this page.',
     failed: 'The search model could not load here, so replies match words only.',
@@ -205,6 +225,11 @@ export default function HomeChat() {
     return (
       <section className={styles.searchHome} aria-label="Search the site">
         {form}
+        <div className={`${styles.suggest} ${styles.starters}`}>
+          {STARTERS.map((s) => (
+            <button key={s.id} type="button" onClick={() => pick(s)}>{s.question}</button>
+          ))}
+        </div>
         <p className={styles.status}>{statusLine}</p>
       </section>
     );

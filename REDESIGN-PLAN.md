@@ -4,14 +4,17 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
 
 ## What is on this branch
 
-- Home: two full screens, as in the first version of the site. Between them the page settles on one: scrolling down more
-  than a quarter of the way lands on the second screen, less returns to the top, and scrolling up works the same in
-  reverse (`useSnapBetween` in `pages/index.js`). Below the top of the second screen, scrolling is free. The first follows the site theme:
-  the name, "Medical student;" with "builds things." on the line below and a link to Pereste Health, Inc. on the left, the links (CV, GitHub, X,
-  Email, About this site) stacked on the right, and one centered search bar that becomes a chat window after the first
-  question. The second follows the site theme and shows every page as a card, grouped by type (Research, Projects,
-  Company, Builds, Web, Essays, Art, Log), newest first, with dates as month, day, year. On a phone the links sit in a
-  row under the search.
+- Home (rebuilt 2026-11-09): one page that scrolls, with no scripted snapping. From the top: the name, "Medical
+  student; builds things." and a link to Pereste Health, Inc. on the left with the links (CV, GitHub, X, Email, About
+  this site) in a row on the right; one centered search bar; four featured pages with their drawings under "Start
+  here" (the triage study, Education, not advice, SMILE-MSI, Pereste Health; the list is `FEATURED` in
+  `pages/index.js`); then every page as a card, grouped by type (Research, Company, Projects, Builds, Web, Essays, Art,
+  Log), newest first.
+  - Typing in the search bar narrows the page list at once, using the word ranker and a match on the letters of each
+    title and description. This needs no model. The featured pages hide while a filter is typed.
+  - Five questions with written answers sit under the search bar as buttons (three on a phone; `STARTERS` in
+    `components/HomeChat.js`). Picking one opens the chat window with that answer and needs no model.
+  - Pressing Enter sends the text as a question and the search bar becomes the chat window.
 - Dark mode on every page: colors come from variables in `styles/globals.css`, it follows the system setting, and a
   round sun or moon button in the bottom-right corner of every page saves a choice that `pages/_document.js` applies
   before first paint. A back-to-top arrow appears above it after scrolling. Both are mounted once in `pages/_app.js` and
@@ -23,8 +26,9 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
   phrasings, the answer, and links), plus 6 personal ones with empty answers for Parker to fill in. Once the model
   has loaded, a question gets a written answer directly when it is close in meaning to a phrasing, its own words
   appear in that entry, and no other entry is about as close. Otherwise up to three entries are offered as buttons.
-  On 198 reworded test questions: 37 answered directly and correctly, 4 given a closely related entry's answer,
-  99 offered the right question, 58 found nothing; none of 25 off-topic questions got an answer. Answer vectors
+  On 196 reworded test questions (remeasured 2026-11-09): 37 answered directly and correctly, 4 given a closely
+  related entry's answer, 99 offered the right question, 50 listed the right page without the entry, 8 found nothing
+  useful; none of 25 off-topic questions got an answer. Answer vectors
   (`lib/answer-vectors.json`, signed bytes, 181 KB compressed) load only after the model.
 - Search tolerates typos ("sauana", "lipdis"), matches the start of a word ("spectro"), and no longer mistakes topic
   questions that contain "email", "reach" or "latest" for a contact or "what's new" request.
@@ -32,8 +36,8 @@ Status on 2026-11-04. Nothing here is on main. The branch is pushed to origin.
   now left-aligned at both levels instead of justified.
 - Home chat: the visitor types a question and the reply is the pages that match, each with its own description. Nothing
   is generated, so nothing can be made up.
-  - Meaning: `Xenova/all-MiniLM-L6-v2` (q8, 23 MB) loads from the Hugging Face hub on the visitor's first keystroke and
-    is cached by the browser. The runtime is `transformers.min.js` 4.3.2 from jsDelivr (the `.web` builds import
+  - Meaning: `Xenova/all-MiniLM-L6-v2` (q8, 24 MB with its tokenizer) loads from the Hugging Face hub when the visitor
+    sends a first typed question, and is cached by the browser. The runtime is `transformers.min.js` 4.3.2 from jsDelivr (the `.web` builds import
     onnxruntime by bare name and do not load without a bundler). The browser embeds only the question.
   - Page vectors: `npm run embed` writes `lib/embeddings.json` from each page's title and description. `npm test` fails
     and `npm run dev` / `npm run build` warn when a title or description changed after the last embed. Changing `topics` needs `npm run embed` too.

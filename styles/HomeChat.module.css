@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-bottom: 6vh;
   font-size: 0.9rem;
   animation: fade 160ms ease-out;
 }
@@ -20,6 +19,11 @@
 
 .searchHome .status {
   text-align: center;
+  margin-top: 0.9rem;
+}
+
+.searchHome .starters {
+  justify-content: center;
   margin-top: 0.9rem;
 }
 
@@ -303,8 +307,9 @@
 }
 
 @media (max-width: 720px) {
-  .searchHome {
-    padding-bottom: 0;
+  /* Three starter questions on a phone, so the featured pages stay on the first screen. */
+  .starters button:nth-child(n + 4) {
+    display: none;
   }
 
   .window {
@@ -327,6 +332,12 @@
   .suggest button {
     min-height: 44px;
     padding: 0.5rem 0.8rem;
+  }
+
+  .items a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .log {
