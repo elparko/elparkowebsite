@@ -29,17 +29,19 @@ const READ = [
 ];
 
 const READING = [
-  { title: 'The Technological Republic', author: 'Alexander C. Karp and Nicholas W. Zamiska' },
+  { title: 'The Codex', author: 'Scott Alexander', href: 'https://www.lesswrong.com/codex' },
 ];
 
-const NEXT = [
+// Started or planned, then set aside. I may not come back to these.
+const TABLED = [
+  { title: 'The Technological Republic', author: 'Alexander C. Karp and Nicholas W. Zamiska' },
   { title: 'A Prayer for the Crown-Shy', author: 'Becky Chambers', note: 'The sequel to A Psalm for the Wild-Built.' },
 ];
 
 function Book({ b }) {
   return (
     <div className={styles.book}>
-      <h4>{b.title}</h4>
+      <h4>{b.href ? <a href={b.href}>{b.title}</a> : b.title}</h4>
       <p className={styles.bookMeta}>{b.author}</p>
       {b.note && <p>{b.note}</p>}
     </div>
@@ -50,14 +52,14 @@ export default function Books() {
   return (
     <WritingLayout>
       <p style={{marginBottom: '30px', textAlign: 'center', fontSize: '1.1rem'}}>
-        What I'm reading now, what's next, and what I've read, newest first.
+        What I'm reading now, what I've set aside, and what I've read, newest first.
       </p>
 
       <h3 className={styles.bookHeading}>Reading now</h3>
       {READING.map((b) => <Book key={b.title} b={b} />)}
 
-      <h3 className={styles.bookHeading}>Up next</h3>
-      {NEXT.map((b) => <Book key={b.title} b={b} />)}
+      <h3 className={styles.bookHeading}>Tabled, may not read</h3>
+      {TABLED.map((b) => <Book key={b.title} b={b} />)}
 
       {READ.map(({ year, books }) => (
         <div key={year}>
