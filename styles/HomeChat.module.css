@@ -349,3 +349,20 @@
     max-width: 92%;
   }
 }
+
+/* The answer a small model drafts, under the pages the search found. */
+.draft {
+  margin-top: 0.85rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line);
+}
+
+.drafting {
+  margin-top: 0.6rem !important;
+  font-size: 0.78rem;
+}
+
+.draft .answer {
+  white-space: pre-line;
+  margin-bottom: 0.4rem !important;
+}

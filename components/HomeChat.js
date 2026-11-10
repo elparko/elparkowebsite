@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import styles from '@/styles/HomeChat.module.css';
-import { ANSWERS, EMBED_DTYPE, EMBED_MODEL, answerReply, answerableNow, decodeAnswerVectors, reply } from '@/lib/guide.mjs';
+import { ANSWERS, EMBED_DTYPE, EMBED_MODEL, answerReply, answerableNow, decodeAnswerVectors, nearestAnswers, reply } from '@/lib/guide.mjs';
 import EMBEDDINGS from '@/lib/embeddings.json';
 
 // The runtime comes from a CDN when the visitor sends a first question, so the site's own bundle stays small.
@@ -13,6 +13,36 @@ const VECTORS = Object.fromEntries(Object.entries(EMBEDDINGS.pages).map(([href, 
 
 const isTouch = () => window.matchMedia('(pointer: coarse)').matches;
 
+// The address of the Worker in worker/ that drafts an answer with a small model. Unset, nothing is generated
+// and no question leaves the browser.
+const ANSWER_URL = process.env.NEXT_PUBLIC_ANSWER_URL || '';
+
+// A reply gets a drafted answer when the search did not answer directly and the model has loaded, so the
+// nearest written answers are known. The drafting model declines when they do not hold the answer.
+const draftable = (r) => r.kind === 'creative' || (['meaning', 'none'].includes(r.kind) && r.near?.length > 0);
+
+// The Worker receives the question and the ids of what the search found, and reads the text from its own copy.
+// `previous` is the last exchange with the bot, so a follow-up such as "why?" makes sense to it.
+async function draft(question, r, previous) {
+  try {
+    const res = await fetch(ANSWER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question,
+        answers: r.near || [],
+        previous,
+        pages: r.kind === 'none' ? [] : r.items.map((it) => it.href),
+      }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()).answer || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 // Written answers offered under the search before the first question. Picking one needs no model.
 const STARTERS = ['who-is-parker', 'triage-what-is-it', 'education-not-advice-plain-words', 'what-is-pereste-health', 'smile-msi-what-is']
   .map((id) => ANSWERS.find((a) => a.id === id))
@@ -23,6 +53,7 @@ const LEAD = {
   hello: 'Hello. Ask about anything on the site and I will point you to the pages that match.',
   contact: 'Email is fastest.',
   recent: 'Newest first:',
+  creative: ANSWER_URL ? 'The search only finds pages, so this one goes to Parker-bot.' : 'This search finds pages. It does not write poems or jokes.',
   none: 'Nothing on the site matches that. Every page is listed below, and the CV has the rest.',
 };
 
@@ -141,7 +172,7 @@ export default function HomeChat({ onType }) {
     if (!extractor.current) return reply(query, null, VECTORS);
     try {
       const out = await extractor.current(query, { pooling: 'mean', normalize: true });
-      return reply(query, out.data, VECTORS, answerVectors.current);
+      return { ...reply(query, out.data, VECTORS, answerVectors.current), near: nearestAnswers(out.data, answerVectors.current) };
     } catch (e) {
       console.error(e);
       return reply(query, null, VECTORS);
@@ -170,13 +201,22 @@ export default function HomeChat({ onType }) {
     onType?.('');
     setLog((l) => [...l, { id, q: query, r: null }]);
     const set = (r) => setLog((l) => l.map((m) => (m.id === id ? { ...m, r } : m)));
-    const r = await answer(query);
+    let r = await answer(query);
     set(r);
     // A strong word match answers before the model has loaded. Once it loads, the reply is redone with
     // meaning, which is what finds written answers.
     if (r.kind === 'words') {
       await loadModel();
-      if (extractor.current) set(await answer(query));
+      if (extractor.current) {
+        r = await answer(query);
+        set(r);
+      }
+    }
+    if (ANSWER_URL && draftable(r)) {
+      const setDraft = (g) => setLog((l) => l.map((m) => (m.id === id ? { ...m, g } : m)));
+      setDraft('pending');
+      const last = [...log].reverse().find((m) => m.g && m.g !== 'pending');
+      setDraft(await draft(query, r, last ? { question: last.q, answer: last.g } : undefined));
     }
   }
 
@@ -193,12 +233,16 @@ export default function HomeChat({ onType }) {
     setLog([]);
   }
 
+  // With the drafting Worker on, a sent question does leave the page, and the status line says so.
+  const privacy = ANSWER_URL
+    ? 'A question you send also goes to a small AI model on Cloudflare, which answers as an impression of Parker.'
+    : 'Nothing you type leaves this page.';
   const statusLine = {
     idle: chatting
-      ? 'Your first typed question downloads a 24 MB model to this browser. Nothing you type leaves this page.'
-      : 'Typing narrows the pages below. Enter asks a question, which downloads a 24 MB model to this browser. Nothing you type leaves this page.',
-    loading: `Loading the search model${progress ? `, ${progress}` : ''}. Nothing you type leaves this page.`,
-    ready: 'Search model loaded in your browser. Nothing you type leaves this page.',
+      ? `Your first typed question downloads a 24 MB model to this browser. ${privacy}`
+      : `Typing narrows the pages below. Enter asks a question, which downloads a 24 MB model to this browser. ${privacy}`,
+    loading: `Loading the search model${progress ? `, ${progress}` : ''}. ${privacy}`,
+    ready: `Search model loaded in your browser. ${privacy}`,
     failed: 'The search model could not load here, so replies match words only.',
   }[status];
 
@@ -247,6 +291,14 @@ export default function HomeChat({ onType }) {
             <p className={styles.you}>{m.q}</p>
             <div className={styles.them}>
               {m.r ? <Reply r={m.r} onPick={pick} /> : <p className={styles.wait}>Looking…</p>}
+              {m.g === 'pending' && <p className={`${styles.wait} ${styles.drafting}`}>Asking Parker-bot…</p>}
+              {m.g && m.g !== 'pending' && (
+                <div className={styles.draft}>
+                  <p className={styles.answering}>Parker-bot</p>
+                  <p className={styles.answer}>{m.g}</p>
+                  <p className={styles.how}>An AI impression of Parker, written by a small model. It does not represent Parker and can be wrong.</p>
+                </div>
+              )}
             </div>
           </li>
         ))}

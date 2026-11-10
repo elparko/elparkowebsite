@@ -77,6 +77,15 @@ test('singular and plural stem alike, and notes is not not', () => {
   assert.notDeepEqual(tokens('sites'), tokens('sit'));
 });
 
+test('a request to write something is not searched', () => {
+  for (const q of ['write a haiku about medical school', 'tell me a joke', 'Can you write me a poem about the ocean?']) {
+    assert.equal(reply(q, null, vectors).kind, 'creative', q);
+  }
+  for (const q of ['what did Claude Haiku do in the triage study', 'the story behind the sauna', 'haiku']) {
+    assert.notEqual(reply(q, null, vectors).kind, 'creative', q);
+  }
+});
+
 test('contact words reach the contact reply only when they mean reaching Parker', () => {
   for (const q of ['how do I contact him', 'contact', 'email', 'his email', 'get in touch', 'how can I reach Parker']) {
     assert.equal(reply(q, null, vectors).kind, 'contact', q);
