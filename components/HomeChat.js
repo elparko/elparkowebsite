@@ -176,7 +176,7 @@ export default function HomeChat() {
   }
 
   const statusLine = {
-    idle: 'Your first search downloads a 26 MB model to this browser. Nothing you type leaves this page.',
+    idle: 'Your first search downloads a 24 MB model to this browser. Nothing you type leaves this page.',
     loading: `Loading the search model${progress ? `, ${progress}` : ''}. Nothing you type leaves this page.`,
     ready: 'Search model loaded in your browser. Nothing you type leaves this page.',
     failed: 'The search model could not load here, so replies match words only.',

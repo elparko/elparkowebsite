@@ -87,10 +87,10 @@ test('contact words reach the contact reply only when they mean reaching Parker'
 });
 
 test('recent asks reach the recent list only when they ask what is new', () => {
-  for (const q of ["what's new", 'what is he working on', 'what has he done lately', 'latest', 'recent', 'newest']) {
+  for (const q of ["what's new", "what's new with Parker?", 'what is new on the site', 'what is he working on', 'what has he done lately', 'latest', 'recent', 'newest']) {
     assert.equal(reply(q, null, vectors).kind, 'recent', q);
   }
-  for (const q of ['recent advances in MSI', 'the latest version of qwen', 'working on a steering vector for qwen']) {
+  for (const q of ['recent advances in MSI', 'the latest version of qwen', 'working on a steering vector for qwen', 'What example from medicine does the essay use to show new knowledge?']) {
     assert.notEqual(reply(q, null, vectors).kind, 'recent', q);
   }
 });
