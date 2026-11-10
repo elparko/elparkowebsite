@@ -350,16 +350,20 @@
   }
 }
 
-/* The answer a small model drafts, under the pages the search found. */
-.draft {
+/* Parker-bot's reply comes first, and what the search found follows under a line. */
+.fromSite {
   margin-top: 0.85rem;
   padding-top: 0.6rem;
   border-top: 1px solid var(--line);
 }
 
-.drafting {
-  margin-top: 0.6rem !important;
-  font-size: 0.78rem;
+.fromSite > .answering {
+  margin-bottom: 0.4rem;
+}
+
+.fromSite .lead {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .draft .answer {

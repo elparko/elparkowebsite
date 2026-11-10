@@ -110,6 +110,34 @@ function Reply({ r, onPick }) {
   );
 }
 
+// One reply. When Parker-bot answers, its reply comes first and the search's pages follow. A search reply that
+// found nothing (or a request to write something) is left out once the bot is asked, and comes back if the bot fails.
+function Turn({ m, onPick }) {
+  if (!m.r) return <p className={styles.wait}>Looking…</p>;
+  const asking = m.g === 'pending';
+  const bot = m.g && !asking ? m.g : null;
+  if (!asking && !bot) return <Reply r={m.r} onPick={onPick} />;
+  const empty = m.r.kind === 'creative' || (m.r.kind === 'none' && m.r.suggest.length === 0);
+  return (
+    <>
+      {asking && <p className={styles.wait}>Asking Parker-bot…</p>}
+      {bot && (
+        <div className={styles.draft}>
+          <p className={styles.answering}>Parker-bot</p>
+          <p className={styles.answer}>{bot}</p>
+          <p className={styles.how}>An AI impression of Parker, written by a small model. It does not represent Parker and can be wrong.</p>
+        </div>
+      )}
+      {!empty && (
+        <div className={styles.fromSite}>
+          <p className={styles.answering}>From the site</p>
+          <Reply r={m.r} onPick={onPick} />
+        </div>
+      )}
+    </>
+  );
+}
+
 // `onType` receives the text in the search bar before the first question, so the home can narrow its page list.
 export default function HomeChat({ onType }) {
   const [q, setQ] = useState('');
@@ -290,15 +318,7 @@ export default function HomeChat({ onType }) {
           <li key={m.id} className={styles.turn}>
             <p className={styles.you}>{m.q}</p>
             <div className={styles.them}>
-              {m.r ? <Reply r={m.r} onPick={pick} /> : <p className={styles.wait}>Looking…</p>}
-              {m.g === 'pending' && <p className={`${styles.wait} ${styles.drafting}`}>Asking Parker-bot…</p>}
-              {m.g && m.g !== 'pending' && (
-                <div className={styles.draft}>
-                  <p className={styles.answering}>Parker-bot</p>
-                  <p className={styles.answer}>{m.g}</p>
-                  <p className={styles.how}>An AI impression of Parker, written by a small model. It does not represent Parker and can be wrong.</p>
-                </div>
-              )}
+              <Turn m={m} onPick={pick} />
             </div>
           </li>
         ))}
